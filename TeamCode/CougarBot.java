@@ -71,6 +71,7 @@ public class CougarBot extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotor leftFrontDrive = null;
     private DcMotor leftBackDrive = null;
+    //hi 
     private DcMotor rightFrontDrive = null;
     private DcMotor rightBackDrive = null;
 
