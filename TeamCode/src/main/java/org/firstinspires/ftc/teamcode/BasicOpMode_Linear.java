@@ -8,7 +8,6 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 @TeleOp(name="Basic: Servo Tester", group="Linear OpMode")
-//This is a test comment
 public class BasicOpMode_Linear extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotor test_motor = null;
