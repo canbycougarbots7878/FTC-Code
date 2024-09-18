@@ -11,11 +11,7 @@ import com.qualcomm.robotcore.util.Range;
 public class BasicOpMode_Linear extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotor test_motor = null;
-    private Servo test_servo = null;
-    @Override
-    public void runOpMode() {
-        test_motor = hardwareMap.get(DcMotor.class, "motor");
-        test_servo = hardwareMap.get(Servo.class, "servo");
+    private Servo test_sareMap.get(Servo.class, "servo");
         waitForStart();
         runtime.reset();
 
