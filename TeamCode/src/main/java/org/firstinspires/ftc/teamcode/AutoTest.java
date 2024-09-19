@@ -38,6 +38,7 @@ public class AutoTest extends LinearOpMode {
             motorFL.setPower(-1);
             motorBR.setPower(1);
             motorBL.setPower(-1);
+            sleep(1000);
         }
     }
 }
