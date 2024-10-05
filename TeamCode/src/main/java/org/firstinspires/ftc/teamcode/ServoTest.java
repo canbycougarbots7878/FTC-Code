@@ -1,4 +1,5 @@
 package org.firstinspires.ftc.teamcode;
+
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -6,7 +7,8 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import java.util.List;
 import java.util.ListIterator;
-@TeleOp(name = "Test", group = "Concept")
+
+@TeleOp(name = "Not Test", group = "Concept")
 public class ServoTest extends LinearOpMode {
 
     private ElapsedTime runtime = new ElapsedTime();
@@ -39,15 +41,17 @@ public class ServoTest extends LinearOpMode {
         runtime.reset();
 
         while (opModeIsActive()) {
-            double max;
+
             double axial   = -gamepad1.left_stick_y;
             double lateral =  gamepad1.left_stick_x;
             double yaw     =  gamepad1.right_stick_x;
             double speed   =  gamepad1.right_trigger;
+
             double leftFrontPower  = axial + lateral - yaw;
             double rightFrontPower = axial - lateral + yaw;
             double leftBackPower   = axial - lateral - yaw;
             double rightBackPower  = axial + lateral + yaw;
+
             motorFR.setPower(leftFrontPower / speed);
             motorFL.setPower(rightFrontPower / speed);
             motorBR.setPower(leftBackPower / speed);
