@@ -4,8 +4,6 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.hardware.CRServo;
 
 @TeleOp(name = "Competition Code", group = "Concept")
 public class CompetitionRobotCode extends LinearOpMode {
@@ -42,8 +40,8 @@ public class CompetitionRobotCode extends LinearOpMode {
             motorBR.setPower(leftBackPower / speed);
             motorBL.setPower(rightBackPower / speed);
 
-            Servo0.setPower(gamepad1.right_trigger);
-            Servo0.setPower(gamepad1.left_trigger * -1);
+            Servo0.setPower(gamepad2.right_trigger);
+            Servo0.setPower(gamepad2.left_trigger * -1);
         }
     }
 }
