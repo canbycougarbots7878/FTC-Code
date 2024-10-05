@@ -16,7 +16,6 @@ public class AutoTest extends LinearOpMode {
     private DcMotor motorFL = null;
     private DcMotor motorBR = null;
     private DcMotor motorBL = null;
-
     @Override
     public void runOpMode() {
         motorFL = hardwareMap.get(DcMotor.class, "FrontLeft");
@@ -39,6 +38,25 @@ public class AutoTest extends LinearOpMode {
             motorBR.setPower(1);
             motorBL.setPower(-1);
             sleep(1000);
+
+            motorFR.setPower(0);
+            motorFL.setPower(0);
+            motorBR.setPower(0);
+            motorBL.setPower(0);
+            sleep(1000);
+
+            motorFR.setPower(1);
+            motorFL.setPower(1);
+            motorBR.setPower(1);
+            motorBL.setPower(1);
+            sleep(1000);
+
+            motorFR.setPower(0);
+            motorFL.setPower(0);
+            motorBR.setPower(0);
+            motorBL.setPower(0);
+            sleep(1000);
+
         }
     }
 }
