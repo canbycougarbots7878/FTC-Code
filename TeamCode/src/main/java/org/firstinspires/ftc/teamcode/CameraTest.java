@@ -1,4 +1,5 @@
 package org.firstinspires.ftc.teamcode;
+
 import android.annotation.SuppressLint;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -9,25 +10,32 @@ import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 import java.util.List;
+
 @TeleOp(name = "Camera Test", group = "Concept")
 public class CameraTest extends LinearOpMode {
+
     private AprilTagProcessor aprilTag;
     private VisionPortal visionPortal;
+
     private DcMotor FrontRight;
     private DcMotor FrontLeft;
     private DcMotor BackRight;
     private DcMotor BackLeft;
+
     @Override
     public void runOpMode() {
         initAprilTag();
         waitForStart();
+
         FrontRight = hardwareMap.get(DcMotor.class, "FrontRight");
         FrontLeft = hardwareMap.get(DcMotor.class, "FrontLeft");
         BackRight = hardwareMap.get(DcMotor.class, "BackRight");
         BackLeft = hardwareMap.get(DcMotor.class, "BackLeft");
 
         if (opModeIsActive()) {
+
             while (opModeIsActive()) {
+
                 if (ftcPosX() != 2009) {
                     RotateRobot(ftcPoseX());
                 } else {
