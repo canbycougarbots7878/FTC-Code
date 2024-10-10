@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.hardware.motors.RevRoboticsCoreHexMotor;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -19,7 +20,10 @@ public class CompetitionRobotCode extends LinearOpMode {
         motorBR.setDirection(DcMotor.Direction.FORWARD);
         motorBL.setDirection(DcMotor.Direction.REVERSE);
 
-        CRServo Servo0  = hardwareMap.get(CRServo.class,   "Servo0");
+        CRServo CRServo0  = hardwareMap.get(CRServo.class,"arm");
+        CRServo CRServo1  = hardwareMap.get(CRServo.class,"grabber");
+
+        DcMotor RevRoboticsCoreHexMotor0 = hardwareMap.get(DcMotor.class,"Lift");
 
         waitForStart();
 
@@ -28,7 +32,7 @@ public class CompetitionRobotCode extends LinearOpMode {
             double axial   = -gamepad1.left_stick_y;
             double lateral =  gamepad1.left_stick_x;
             double yaw     =  gamepad1.right_stick_x;
-            double speed   =  gamepad1.right_trigger;
+            double speed   =  1 + gamepad1.right_trigger;
 
             double leftFrontPower  = axial + lateral - yaw;
             double rightFrontPower = axial - lateral + yaw;
@@ -40,8 +44,18 @@ public class CompetitionRobotCode extends LinearOpMode {
             motorBR.setPower(leftBackPower / speed);
             motorBL.setPower(rightBackPower / speed);
 
-            Servo0.setPower(gamepad2.right_trigger);
-            Servo0.setPower(gamepad2.left_trigger * -1);
+            if (gamepad1.x) {
+                CRServo0.setPower(gamepad1.right_trigger - gamepad1.left_trigger);
+            }
+            if (gamepad1.y) {
+                CRServo1.setPower(gamepad1.right_trigger - gamepad1.left_trigger);
+            }
+            if (gamepad1.a) {
+                RevRoboticsCoreHexMotor0.setPower(gamepad1.right_trigger - gamepad1.left_trigger);
+            }
+            if (gamepad1.b) {
+                double position = 0.5 + ((gamepad1.right_trigger) - (gamepad1.left_trigger)) / 2;
+            }
         }
     }
 }
