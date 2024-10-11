@@ -39,10 +39,10 @@ public class CompetitionRobotCode extends LinearOpMode {
             double leftBackPower   = axial - lateral - yaw;
             double rightBackPower  = axial + lateral + yaw;
 
-            motorFR.setPower(leftFrontPower / speed);
-            motorFL.setPower(rightFrontPower / speed);
-            motorBR.setPower(leftBackPower / speed);
-            motorBL.setPower(rightBackPower / speed);
+            motorFR.setPower(leftFrontPower);
+            motorFL.setPower(rightFrontPower);
+            motorBR.setPower(leftBackPower);
+            motorBL.setPower(rightBackPower);
 
             if (gamepad1.x) {
                 CRServo0.setPower(gamepad1.right_trigger - gamepad1.left_trigger);
