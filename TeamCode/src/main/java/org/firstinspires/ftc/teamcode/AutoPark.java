@@ -23,13 +23,19 @@ public class AutoPark extends LinearOpMode {
         motorFL.setDirection(DcMotor.Direction.FORWARD);
         motorBR.setDirection(DcMotor.Direction.REVERSE);
         motorBL.setDirection(DcMotor.Direction.FORWARD);
-
+        motorFR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        motorFL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        motorBR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        motorBL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
         waitForStart();
-        MoveDistance(10);
-        //Stop();
+        MoveDistance(30);
+        RotateDegrees(90);
+        MoveDistance(103);
+        RotateDegrees(90);
+        MoveDistance(20);
     }
     private void SetMotors(double FR, double FL, double BR, double BL) {
         motorFR.setPower(FR);
@@ -59,5 +65,24 @@ public class AutoPark extends LinearOpMode {
         }
         sleep(time);
         StopMotors();
+        sleep(500);
+    }
+    private void RotateDegrees(double Degree) {
+        motorFR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        motorFL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        motorBR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        motorBL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        long time;
+        double DEGREECONSTANT = 20.5;
+        time = (long) ((500 * Math.abs(Degree)) / DEGREECONSTANT);
+        if (Degree > 0) {
+            SetMotors(-.5,.5,-.5,.5);
+        }
+        if (Degree < 0) {
+            SetMotors(.5,-.5,.5,-.5);
+        }
+        sleep(time);
+        StopMotors();
+        sleep(500);
     }
 }
