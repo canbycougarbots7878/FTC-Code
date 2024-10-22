@@ -4,8 +4,6 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-import java.util.Set;
-
 @Autonomous(name = "Autonomous", group = "Concept")
 public class AutoPark extends LinearOpMode {
     private DcMotor motorFR = null;
@@ -46,9 +44,7 @@ public class AutoPark extends LinearOpMode {
     private void StopMotors() {
         SetMotors(0,0,0,0);
     }
-    private void Stop() {
-        DcMotor stopprogram = hardwareMap.get(DcMotor.class, "Program Succesfully Stopped");
-    }
+
     private void MoveDistance(double distance) {
         motorFR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         motorFL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
