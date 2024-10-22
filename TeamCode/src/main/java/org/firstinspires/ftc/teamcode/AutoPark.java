@@ -32,9 +32,9 @@ public class AutoPark extends LinearOpMode {
 
         waitForStart();
         MoveDistance(30);
-        RotateDegrees(90);
+        RotateDegrees(-90);
         MoveDistance(103);
-        RotateDegrees(90);
+        RotateDegrees(-90);
         MoveDistance(20);
     }
     private void SetMotors(double FR, double FL, double BR, double BL) {
