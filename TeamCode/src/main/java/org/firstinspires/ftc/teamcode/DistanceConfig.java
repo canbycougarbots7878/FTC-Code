@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 import java.util.Set;
 
-@Autonomous(name = "Autonomous", group = "Concept")
+@Autonomous(name = "DistanceConfig", group = "Concept")
 public class DistanceConfig extends LinearOpMode {
     private DcMotor motorFR = null;
     private DcMotor motorFL = null;
