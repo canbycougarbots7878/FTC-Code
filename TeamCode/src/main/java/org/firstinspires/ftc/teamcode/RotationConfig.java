@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 import java.util.Set;
 
-@Autonomous(name = "Autonomous", group = "Concept")
+@Autonomous(name = "Rotation Calibration", group = "Concept")
 public class RotationConfig extends LinearOpMode {
     private DcMotor motorFR = null;
     private DcMotor motorFL = null;
