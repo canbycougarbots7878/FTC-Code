@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.ExposureControl;
@@ -27,12 +26,6 @@ public class ConceptAprilTag extends LinearOpMode {
     private DcMotor motorBR      = null;
     private DcMotor motorBL      = null;
 
-    final double SPEED_GAIN      = 0.02;
-    final double STRAFE_GAIN     = 0.015;
-    final double TURN_GAIN       = 0.01;
-    final double MAX_AUTO_SPEED  = 0.5;
-    final double MAX_AUTO_STRAFE = 0.5;
-    final double MAX_AUTO_TURN   = 0.3;
     final double DESIRED_DISTANCE = 12.0;
 
     @Override
@@ -45,10 +38,6 @@ public class ConceptAprilTag extends LinearOpMode {
         telemetry.addData("DS preview on/off", "3 dots, Camera Stream");
         telemetry.addData(">", "Touch Play to start OpMode");
         telemetry.update();
-
-        double drive;
-        double strafe;
-        double turn;
 
         waitForStart();
 
@@ -76,10 +65,6 @@ public class ConceptAprilTag extends LinearOpMode {
                     else
 
                         stopRobot();
-
-                    double  rangeError      = (desiredTag.ftcPose.range - DESIRED_DISTANCE);
-                    double  headingError    = desiredTag.ftcPose.bearing;
-                    double  yawError        = desiredTag.ftcPose.yaw;
 
                     sleep(10);
                 }

@@ -4,8 +4,6 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-import java.util.Set;
-
 @Autonomous(name = "Distance Calibration", group = "Concept")
 public class DistanceConfig extends LinearOpMode {
     private DcMotor motorFR = null;
@@ -49,10 +47,7 @@ public class DistanceConfig extends LinearOpMode {
         SetMotors(0, 0, 0, 0);
     }
 
-    private void Stop() {
-        DcMotor stopprogram = hardwareMap.get(DcMotor.class, "Program Succesfully Stopped");
-    }
-
+    /*
     private void MoveDistance(double distance) {
         motorFR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         motorFL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -71,4 +66,6 @@ public class DistanceConfig extends LinearOpMode {
         StopMotors();
         sleep(500);
     }
+
+    */
 }

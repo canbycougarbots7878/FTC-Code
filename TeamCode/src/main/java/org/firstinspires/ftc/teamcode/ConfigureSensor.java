@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 @Config
 public class ConfigureSensor extends LinearOpMode {
     @Override
-    public void runOpMode() throws InterruptedException {
+    public void runOpMode() {
         ColorRangefinder crf =
                 new ColorRangefinder(hardwareMap.get(RevColorSensorV3.class, "Color"));
 
