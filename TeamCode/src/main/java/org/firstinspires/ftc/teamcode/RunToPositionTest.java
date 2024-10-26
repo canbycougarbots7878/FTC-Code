@@ -26,11 +26,11 @@ public class RunToPositionTest extends LinearOpMode{
 
         waitForStart();
 
-        DriveForwardDistance(0.5, 10);
-        TurnRightDistance(0.5, 90);
-        DriveForwardDistance(0.5, 10);
-        TurnRightDistance(0.5, 90);
-        DriveForwardDistance(0.5, 10);
+        DriveForwardDistance(-0.5, 10);
+        TurnRightDistance(-0.5, 90);
+        DriveForwardDistance(-0.5, 10);
+        TurnRightDistance(-0.5, 90);
+        DriveForwardDistance(-0.5, 10);
 
     }
 
