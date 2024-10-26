@@ -4,8 +4,12 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-@TeleOp(name = "Test Wheels", group = "Concept")
-public class WheelTest extends LinearOpMode {
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+
+import java.util.Set;
+
+@TeleOp(name = "Omni Drive", group = "Concept")
+public class OmniDrive extends LinearOpMode {
     DcMotor motorFR = null;
     DcMotor motorFL = null;
     DcMotor motorBR = null;
@@ -21,10 +25,9 @@ public class WheelTest extends LinearOpMode {
         motorBL.setDirection(DcMotor.Direction.REVERSE);
         waitForStart();
         while (opModeIsActive()) {
-            Display("[-] [#]\n[-] [-]"); SetWheels(1,0,0,0); StopWheels(500);
-            Display("[#] [-]\n[-] [-]"); SetWheels(0,1,0,0); StopWheels(500);
-            Display("[-] [-]\n[-] [#]"); SetWheels(0,0,1,0); StopWheels(500);
-            Display("[-] [-]\n[#] [-]"); SetWheels(0,0,0,1); StopWheels(500);
+            MoveRobot(- gamepad1.left_stick_y,
+                      gamepad1.left_stick_x,
+                      gamepad1.right_stick_x);
         }
     }
 
@@ -44,7 +47,7 @@ public class WheelTest extends LinearOpMode {
     } private void TurnRobot(double amount, long time) { TurnRobot(amount); StopWheels(time); }
 
     private void MoveRobot(double forward, double right, double turn) {
-        SetWheels(forward + right - turn, forward - right + turn, forward - right - turn, forward + right + turn);
+        SetWheels(forward - right - turn, forward + right + turn, forward + right - turn, forward - right + turn);
     } private void MoveRobot(double forward, double right) { MoveRobot(forward, right, 0);}
 
     private void Display(String Message) {

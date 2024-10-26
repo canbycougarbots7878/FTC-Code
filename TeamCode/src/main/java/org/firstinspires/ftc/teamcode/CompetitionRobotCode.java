@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-@TeleOp(name = "Manual Drive", group = "Concept")
+@TeleOp(name = "COMPETITION: Manual Drive", group = "Concept")
 public class CompetitionRobotCode extends LinearOpMode {
     public void runOpMode() {
         DcMotor motorFL = hardwareMap.get(DcMotor.class, "FrontLeft");
