@@ -67,12 +67,21 @@ public class EncoderOpmode extends LinearOpMode {
         return (n > 0) ? 1 : -1;
     }
     private void MoveWheels(int position) {
-        int pos = motorFR.getCurrentPosition();
-        while(motorFR.getCurrentPosition() != position) {
-            double dir = Range.clip(- ((float) position - motorFR.getCurrentPosition()) / 100, -1, 1);
-            telemetry.addData("Position", motorFR.getCurrentPosition());
-            telemetry.update();
-            SetWheels(dir,dir,dir,dir);
+        motorFR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motorFL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motorBR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motorBL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motorFR.setTargetPosition(position);
+        motorFL.setTargetPosition(position);
+        motorBR.setTargetPosition(position);
+        motorBL.setTargetPosition(position);
+        motorFR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        motorFL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        motorBR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        motorBL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        MoveRobot(1, 0);
+        while((motorFR.isBusy() || motorFL.isBusy() || motorBR.isBusy() || motorBL.isBusy()) && !isStopRequested()) {
+
         }
         StopWheels();
     }
