@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.hardware.motors.RevRoboticsCoreHexMotor;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -9,7 +8,6 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 @TeleOp(name = "Manual Drive", group = "Concept")
 public class CompetitionRobotCode extends LinearOpMode {
-    private double Speed = .5;
     public void runOpMode() {
         DcMotor motorFL = hardwareMap.get(DcMotor.class, "FrontLeft");
         DcMotor motorBL = hardwareMap.get(DcMotor.class, "BackLeft");
@@ -61,9 +59,6 @@ public class CompetitionRobotCode extends LinearOpMode {
             }
             if (gamepad1.a) {
                 RevRoboticsCoreHexMotor0.setPower(gamepad1.right_trigger - gamepad1.left_trigger);
-            }
-            if (gamepad1.b) {
-                double position = 0.5 + ((gamepad1.right_trigger) - (gamepad1.left_trigger)) / 2;
             }
         }
     }

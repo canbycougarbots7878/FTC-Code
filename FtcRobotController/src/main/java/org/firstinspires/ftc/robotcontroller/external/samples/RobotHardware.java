@@ -56,7 +56,7 @@ import com.qualcomm.robotcore.util.Range;
 public class RobotHardware {
 
     /* Declare OpMode members. */
-    private LinearOpMode myOpMode = null;   // gain access to methods in the calling OpMode.
+    private final LinearOpMode myOpMode;   // gain access to methods in the calling OpMode.
 
     // Define Motor and Servo objects  (Make them private so they can't be accessed externally)
     private DcMotor leftDrive   = null;
@@ -137,7 +137,6 @@ public class RobotHardware {
     /**
      * Send the two hand-servos to opposing (mirrored) positions, based on the passed offset.
      *
-     * @param offset
      */
     public void setHandPositions(double offset) {
         offset = Range.clip(offset, -0.5, 0.5);

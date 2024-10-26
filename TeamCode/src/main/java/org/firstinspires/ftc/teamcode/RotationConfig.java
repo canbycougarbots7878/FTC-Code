@@ -4,8 +4,6 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-import java.util.Set;
-
 @Autonomous(name = "Rotation Calibration", group = "Concept")
 public class RotationConfig extends LinearOpMode {
     private DcMotor motorFR = null;
@@ -45,10 +43,8 @@ public class RotationConfig extends LinearOpMode {
     private void StopMotors() {
         SetMotors(0,0,0,0);
     }
-    private void Stop() {
-        DcMotor stopprogram = hardwareMap.get(DcMotor.class, "Program Succesfully Stopped");
-    }
 
+    /*
     private void RotateDegrees(double Degree) {
         motorFR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         motorFL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -67,4 +63,5 @@ public class RotationConfig extends LinearOpMode {
         StopMotors();
         sleep(500);
     }
+     */
 }

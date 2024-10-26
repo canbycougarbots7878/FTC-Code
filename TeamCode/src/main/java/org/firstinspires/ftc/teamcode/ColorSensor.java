@@ -1,9 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.hardware.rev.RevColorSensorV3;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.I2cDeviceSynchSimple;
 
 import java.nio.ByteBuffer;
@@ -64,73 +61,14 @@ class ColorRangefinder {
      * This is useful if we want to threshold red; instead of having two thresholds we would invert
      * the color and look for blue.
      */
-    public void setPin0InvertHue() {
-        setPin0DigitalMaxDistance(DigitalMode.HSV, 200);
-    }
-
-    /**
-     * Invert the hue value before thresholding it, meaning that the colors become their opposite.
-     * This is useful if we want to threshold red; instead of having two thresholds we would invert
-     * the color and look for blue.
-     */
     public void setPin1InvertHue() {
         setPin1DigitalMaxDistance(DigitalMode.HSV, 200);
-    }
-
-    /**
-     * The denominator is what the raw sensor readings will be divided by before being scaled to 12-bit analog.
-     * For the full range of that channel, leave the denominator as 65535 for colors or 100 for distance.
-     * Smaller values will clip off higher ranges of the data in exchange for higher resolution within a lower range.
-     */
-    public void setPin0Analog(AnalogMode analogMode, int denominator) {
-        byte denom0 = (byte) (denominator & 0xFF);
-        byte denom1 = (byte) ((denominator & 0xFF00) >> 8);
-        i2c.write(PinNum.PIN0.modeAddress, new byte[]{analogMode.value, denom0, denom1});
-    }
-
-    /**
-     * Configure Pin 0 as analog output of one of the six data channels.
-     * To read analog, make sure the physical switch on the sensor is flipped away from the
-     * connector side.
-     */
-    public void setPin0Analog(AnalogMode analogMode) {
-        setPin0Analog(analogMode, analogMode == AnalogMode.DISTANCE ? 100 : 0xFFFF);
     }
 
     public float[] getCalibration() {
         ByteBuffer bytes =
                 ByteBuffer.wrap(i2c.read(CALIB_A_VAL_0, 16)).order(ByteOrder.LITTLE_ENDIAN);
         return new float[]{bytes.getFloat(), bytes.getFloat(), bytes.getFloat(), bytes.getFloat()};
-    }
-
-    /**
-     * Save a brightness value of the LED to the sensor.
-     *
-     * @param value brightness between 0-255
-     */
-    public void setLedBrightness(int value) {
-
-        i2c.write8(LED_BRIGHTNESS, value);
-    }
-
-    /**
-     * Change the I2C address at which the sensor will be found. The address can be reset to the
-     * default of 0x52 by holding the reset button.
-     *
-     * @param value new I2C address from 1 to 127
-     */
-    public void setI2cAddress(int value) {
-        i2c.write8(I2C_ADDRESS_REG, value << 1);
-    }
-
-    /**
-     * Read distance via I2C
-     * @return distance in millimeters
-     */
-    public double readDistance() {
-        ByteBuffer bytes =
-                ByteBuffer.wrap(i2c.read(PS_DISTANCE_0, 4)).order(ByteOrder.LITTLE_ENDIAN);
-        return bytes.getFloat();
     }
 
     private void setDigital(
@@ -183,16 +121,9 @@ class ColorRangefinder {
 
     // other writeable registers
     private static final byte CALIB_A_VAL_0 = 0x32;
-    private static final byte PS_DISTANCE_0 = 0x42;
-    private static final byte LED_BRIGHTNESS = 0x46;
-    private static final byte I2C_ADDRESS_REG = 0x47;
-
-    public static int invertHue(int hue360) {
-        return ((hue360 - 180) % 360);
-    }
 
     public enum DigitalMode {
-        RED(1), BLUE(2), GREEN(3), ALPHA(4), HSV(5), DISTANCE(6);
+        HSV(5);
         public final byte value;
 
         DigitalMode(int value) {
@@ -200,12 +131,4 @@ class ColorRangefinder {
         }
     }
 
-    public enum AnalogMode {
-        RED(13), BLUE(14), GREEN(15), ALPHA(16), HSV(17), DISTANCE(18);
-        public final byte value;
-
-        AnalogMode(int value) {
-            this.value = (byte) value;
-        }
-    }
 }

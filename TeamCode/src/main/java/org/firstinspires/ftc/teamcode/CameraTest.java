@@ -91,5 +91,4 @@ public class CameraTest extends LinearOpMode {
     private void RotateRobot(float amount) {
         SetMotors(-amount,amount,-amount,amount);
     }
-    private void MoveRobot(float forward, float right) { SetMotors(forward,forward,forward,forward); }
 }

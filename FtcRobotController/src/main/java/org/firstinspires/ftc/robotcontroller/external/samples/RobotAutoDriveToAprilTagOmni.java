@@ -112,14 +112,13 @@ public class RobotAutoDriveToAprilTagOmni extends LinearOpMode
     private static final int DESIRED_TAG_ID = -1;     // Choose the tag you want to approach or set to -1 for ANY tag.
     private VisionPortal visionPortal;               // Used to manage the video source.
     private AprilTagProcessor aprilTag;              // Used for managing the AprilTag detection process.
-    private AprilTagDetection desiredTag = null;     // Used to hold the data for a detected AprilTag
 
     @Override public void runOpMode()
     {
-        boolean targetFound     = false;    // Set to true when an AprilTag target is detected
-        double  drive           = 0;        // Desired forward power/speed (-1 to +1)
-        double  strafe          = 0;        // Desired strafe power/speed (-1 to +1)
-        double  turn            = 0;        // Desired turning power/speed (-1 to +1)
+        boolean targetFound;    // Set to true when an AprilTag target is detected
+        double  drive;        // Desired forward power/speed (-1 to +1)
+        double  strafe;        // Desired strafe power/speed (-1 to +1)
+        double  turn;        // Desired turning power/speed (-1 to +1)
 
         // Initialize the Apriltag Detection process
         initAprilTag();
@@ -141,7 +140,7 @@ public class RobotAutoDriveToAprilTagOmni extends LinearOpMode
         rightBackDrive.setDirection(DcMotor.Direction.FORWARD);
 
         if (USE_WEBCAM)
-            setManualExposure(6, 250);  // Use low exposure time to reduce motion blur
+            setManualExposure();  // Use low exposure time to reduce motion blur
 
         // Wait for driver to press start
         telemetry.addData("Camera preview on/off", "3 dots, Camera Stream");
@@ -152,7 +151,8 @@ public class RobotAutoDriveToAprilTagOmni extends LinearOpMode
         while (opModeIsActive())
         {
             targetFound = false;
-            desiredTag  = null;
+            // Used to hold the data for a detected AprilTag
+            AprilTagDetection desiredTag = null;
 
             // Step through the list of detected tags and look for a matching tag
             List<AprilTagDetection> currentDetections = aprilTag.getDetections();
@@ -285,7 +285,7 @@ public class RobotAutoDriveToAprilTagOmni extends LinearOpMode
      Manually set the camera gain and exposure.
      This can only be called AFTER calling initAprilTag(), and only works for Webcams;
     */
-    private void    setManualExposure(int exposureMS, int gain) {
+    private void    setManualExposure() {
         // Wait for the camera to be open, then use the controls
 
         if (visionPortal == null) {
@@ -311,10 +311,10 @@ public class RobotAutoDriveToAprilTagOmni extends LinearOpMode
                 exposureControl.setMode(ExposureControl.Mode.Manual);
                 sleep(50);
             }
-            exposureControl.setExposure((long)exposureMS, TimeUnit.MILLISECONDS);
+            exposureControl.setExposure(6, TimeUnit.MILLISECONDS);
             sleep(20);
             GainControl gainControl = visionPortal.getCameraControl(GainControl.class);
-            gainControl.setGain(gain);
+            gainControl.setGain(250);
             sleep(20);
         }
     }

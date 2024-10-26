@@ -29,6 +29,8 @@
 
 package org.firstinspires.ftc.robotcontroller.external.samples;
 
+import androidx.annotation.NonNull;
+
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
@@ -153,9 +155,7 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
          *
          * To Do:  EDIT these two lines to match YOUR mounting configuration.
          */
-        RevHubOrientationOnRobot.LogoFacingDirection logoDirection = RevHubOrientationOnRobot.LogoFacingDirection.UP;
-        RevHubOrientationOnRobot.UsbFacingDirection  usbDirection  = RevHubOrientationOnRobot.UsbFacingDirection.FORWARD;
-        RevHubOrientationOnRobot orientationOnRobot = new RevHubOrientationOnRobot(logoDirection, usbDirection);
+        RevHubOrientationOnRobot orientationOnRobot = getRevHubOrientationOnRobot();
 
         // Now initialize the IMU with this mounting orientation
         // This sample expects the IMU to be in a REV Hub and named "imu".
@@ -201,6 +201,12 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
         telemetry.addData("Path", "Complete");
         telemetry.update();
         sleep(1000);  // Pause to display last telemetry message.
+    }
+
+    private static @NonNull RevHubOrientationOnRobot getRevHubOrientationOnRobot() {
+        RevHubOrientationOnRobot.LogoFacingDirection logoDirection = RevHubOrientationOnRobot.LogoFacingDirection.UP;
+        RevHubOrientationOnRobot.UsbFacingDirection  usbDirection  = RevHubOrientationOnRobot.UsbFacingDirection.FORWARD;
+        return new RevHubOrientationOnRobot(logoDirection, usbDirection);
     }
 
     /*
