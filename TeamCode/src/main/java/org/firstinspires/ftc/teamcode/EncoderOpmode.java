@@ -3,6 +3,10 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.util.Range;
+
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+
 @TeleOp
 public class EncoderOpmode extends LinearOpMode {
     DcMotor motorFR = null;
@@ -19,20 +23,57 @@ public class EncoderOpmode extends LinearOpMode {
         motorFL.setDirection(DcMotor.Direction.REVERSE);
         motorBR.setDirection(DcMotor.Direction.FORWARD);
         motorBL.setDirection(DcMotor.Direction.REVERSE);
-        motorFR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motorFR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        motorFL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motorFL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        motorBR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motorBR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        motorBL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motorBL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        motorFR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER); motorFR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        motorFL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER); motorFL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        motorBR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER); motorBR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        motorBL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER); motorBL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        motorFR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        motorFL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        motorBR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        motorBL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         waitForStart();
         while (opModeIsActive()) {
-            double CPR = 1;
-            int position = motor.getCurrentPosition();
-            telemetry.addData()
-            telemetry.update();
+            MoveWheels(1000);
+            sleep(500);
+            MoveWheels(0);
+            sleep(500);
         }
+    }
+    private void SetWheels(double FR, double FL, double BR, double BL) {
+        motorFR.setPower(FR);
+        motorFL.setPower(FL);
+        motorBR.setPower(BR);
+        motorBL.setPower(BL);
+    }
+
+    private void StopWheels() {
+        SetWheels(0,0,0,0);
+    } private void StopWheels(long wait) { sleep(wait); StopWheels(); }
+
+    private void TurnRobot(double amount) {
+        SetWheels(-amount, amount, -amount, amount);
+    } private void TurnRobot(double amount, long time) { TurnRobot(amount); StopWheels(time); }
+
+    private void MoveRobot(double forward, double right, double turn) {
+        SetWheels(forward + right - turn, forward - right + turn, forward - right - turn, forward + right + turn);
+    } private void MoveRobot(double forward, double right) { MoveRobot(forward, right, 0);}
+
+    private void Display(String Message) {
+        telemetry.addLine(Message);
+        telemetry.update();
+    }
+    private int sign(int n) {
+        if(n==0){return 0;}
+        return (n > 0) ? 1 : -1;
+    }
+    private void MoveWheels(int position) {
+        int pos = motorFR.getCurrentPosition();
+        while(motorFR.getCurrentPosition() != position) {
+            double dir = Range.clip(- ((float) position - motorFR.getCurrentPosition()) / 100, -1, 1);
+            telemetry.addData("Position", motorFR.getCurrentPosition());
+            telemetry.update();
+            SetWheels(dir,dir,dir,dir);
+        }
+        StopWheels();
     }
 }
