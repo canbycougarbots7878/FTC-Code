@@ -87,10 +87,13 @@ public class RunToPositionTest extends LinearOpMode{
 
         StopDriving();
 
+
         FrontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODERS);
         FrontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODERS);
         BackRight.setMode(DcMotor.RunMode.RUN_USING_ENCODERS);
         BackLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODERS);
+
+        sleep(500);
 
     }
     public void TurnLeftDistance(double power, int distance){
@@ -122,6 +125,8 @@ public class RunToPositionTest extends LinearOpMode{
         BackRight.setMode(DcMotor.RunMode.RUN_USING_ENCODERS);
         BackLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODERS);
 
+        sleep(500);
+
     }
     public void TurnRightDistance(double power, int distance){
         FrontRight.setMode(DcMotor.RunMode.RESET_ENCODERS);
@@ -151,6 +156,8 @@ public class RunToPositionTest extends LinearOpMode{
         FrontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODERS);
         BackRight.setMode(DcMotor.RunMode.RUN_USING_ENCODERS);
         BackLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODERS);
+
+        sleep(500);
 
     }
 }
