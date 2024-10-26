@@ -29,10 +29,13 @@
 
 package org.firstinspires.ftc.robotcontroller.external.samples;
 
+import android.annotation.SuppressLint;
+
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.Gyroscope;
 import com.qualcomm.robotcore.hardware.IntegratingGyroscope;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -53,7 +56,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 @Disabled
 public class SensorMRGyro extends LinearOpMode {
 
-  /* In this sample, for illustration purposes we use two interfaces on the one gyro object.
+  /** In this sample, for illustration purposes we use two interfaces on the one gyro object.
    * That's likely atypical: you'll probably use one or the other in any given situation,
    * depending on what you're trying to do. {@link IntegratingGyroscope} (and it's base interface,
    * {@link Gyroscope}) are common interfaces supported by possibly several different gyro
@@ -70,12 +73,12 @@ public class SensorMRGyro extends LinearOpMode {
   public void runOpMode() {
 
     boolean lastResetState = false;
-    boolean curResetState  = false;
+    boolean curResetState;
 
     // Get a reference to a Modern Robotics gyro object. We use several interfaces
     // on this object to illustrate which interfaces support which functionality.
     modernRoboticsI2cGyro = hardwareMap.get(ModernRoboticsI2cGyro.class, "gyro");
-    gyro = (IntegratingGyroscope)modernRoboticsI2cGyro;
+    gyro = modernRoboticsI2cGyro;
     // If you're only interested int the IntegratingGyroscope interface, the following will suffice.
     // gyro = hardwareMap.get(IntegratingGyroscope.class, "gyro");
     // A similar approach will work for the Gyroscope interface, if that's all you need.
@@ -145,14 +148,17 @@ public class SensorMRGyro extends LinearOpMode {
     }
   }
 
+  @SuppressLint("DefaultLocale")
   String formatRaw(int rawValue) {
     return String.format("%d", rawValue);
   }
 
+  @SuppressLint("DefaultLocale")
   String formatRate(float rate) {
     return String.format("%.3f", rate);
   }
 
+  @SuppressLint("DefaultLocale")
   String formatFloat(float rate) {
     return String.format("%.3f", rate);
   }
