@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -7,8 +8,8 @@ import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
-@TeleOp
-public class EncoderOpmode extends LinearOpMode {
+@Autonomous(name="Encoder Check", group="Robot")
+public class SelfCheck extends LinearOpMode {
     DcMotor motorFR = null;
     DcMotor motorFL = null;
     DcMotor motorBR = null;
@@ -23,37 +24,22 @@ public class EncoderOpmode extends LinearOpMode {
         motorFL.setDirection(DcMotor.Direction.REVERSE);
         motorBR.setDirection(DcMotor.Direction.FORWARD);
         motorBL.setDirection(DcMotor.Direction.REVERSE);
-        motorFR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motorFL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motorBR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motorBL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motorFR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER); motorFR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        motorFL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER); motorFL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        motorBR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER); motorBR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        motorBL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER); motorBL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        motorFR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        motorFL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        motorBR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        motorBL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         waitForStart();
         while (opModeIsActive()) {
-            TelemetryPosition();
-            if (gamepad1.a) {
-                motorFR.setTargetPosition(0);
-                motorFL.setTargetPosition(0);
-                motorBR.setTargetPosition(0);
-                motorBL.setTargetPosition(0);
-                motorFR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                motorFL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                motorBR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                motorBL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                SetWheels(1,1,1,1);
-                while(motorFR.isBusy() || motorFL.isBusy() || motorBR.isBusy() || motorBL.isBusy() ) {
-                    TelemetryPosition();
-                }
-                SetWheels(0,0,0,0);
-            }
+            telemetry.addData("Front Right", motorFR.getCurrentPosition());
+            telemetry.addData("Front Left", motorFL.getCurrentPosition());
+            telemetry.addData("Back Right", motorBR.getCurrentPosition());
+            telemetry.addData("Back Left", motorBL.getCurrentPosition());
+            telemetry.update();
         }
-    }
-    private void waitFor(boolean condition) { while (!condition && !isStopRequested()); }
-    private void TelemetryPosition() {
-        telemetry.addData("Front Right", motorFR.getCurrentPosition());
-        telemetry.addData("Front Left", motorFL.getCurrentPosition());
-        telemetry.addData("Back Right", motorBR.getCurrentPosition());
-        telemetry.addData("Back Left", motorBL.getCurrentPosition());
-        telemetry.update();
     }
     private void SetWheels(double FR, double FL, double BR, double BL) {
         motorFR.setPower(FR);
