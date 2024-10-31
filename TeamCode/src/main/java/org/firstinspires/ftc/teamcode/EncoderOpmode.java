@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
+import java.util.Set;
 @TeleOp
 public class EncoderOpmode extends LinearOpMode {
     DcMotor motorFR = null;
@@ -40,14 +41,21 @@ public class EncoderOpmode extends LinearOpMode {
                 motorBR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 motorBL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 SetWheels(1,1,1,1);
-                while(motorFR.isBusy() || motorFL.isBusy() || motorBR.isBusy() || motorBL.isBusy() ) {
-                    TelemetryPosition();
-                }
-                SetWheels(0,0,0,0);
             }
         }
     }
-    private void waitFor(boolean condition) { while (!condition && !isStopRequested()); }
+    private void motorFRsetTargetPosition(int targetPos) {
+        int currentPos = - motorFR.getCurrentPosition();
+        if (currentPos < targetPos) {
+            motorFR.setPower((- motorFR.getCurrentPosition()) / 100);
+            while(- motorFR.getCurrentPosition() < targetPos) {}
+        }
+        if (currentPos > targetPos) {
+            motorFR.setPower((motorFR.getCurrentPosition()) / 100);
+            while(- motorFR.getCurrentPosition() > targetPos) {}
+        }
+        motorFR.setPower(0);
+    }
     private void TelemetryPosition() {
         telemetry.addData("Front Right", motorFR.getCurrentPosition());
         telemetry.addData("Front Left", motorFL.getCurrentPosition());
@@ -77,28 +85,5 @@ public class EncoderOpmode extends LinearOpMode {
     private void Display(String Message) {
         telemetry.addLine(Message);
         telemetry.update();
-    }
-    private int sign(int n) {
-        if(n==0){return 0;}
-        return (n > 0) ? 1 : -1;
-    }
-    private void MoveWheels(int position) {
-        motorFR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motorFL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motorBR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motorBL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motorFR.setTargetPosition(position);
-        motorFL.setTargetPosition(position);
-        motorBR.setTargetPosition(position);
-        motorBL.setTargetPosition(position);
-        motorFR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        motorFL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        motorBR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        motorBL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        MoveRobot(1, 0);
-        while((motorFR.isBusy() || motorFL.isBusy() || motorBR.isBusy() || motorBL.isBusy()) && !isStopRequested()) {
-
-        }
-        StopWheels();
     }
 }
