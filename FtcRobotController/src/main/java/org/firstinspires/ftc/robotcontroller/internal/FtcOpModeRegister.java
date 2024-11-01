@@ -34,8 +34,6 @@ package org.firstinspires.ftc.robotcontroller.internal;
 import com.qualcomm.robotcore.eventloop.opmode.OpModeManager;
 import com.qualcomm.robotcore.eventloop.opmode.OpModeRegister;
 
-import org.firstinspires.ftc.robotcontroller.external.samples.ConceptNullOp;
-
 /**
  * {@link FtcOpModeRegister} is responsible for registering OpModes for use in an FTC game.
  * @see #register(OpModeManager)
@@ -45,12 +43,12 @@ public class FtcOpModeRegister implements OpModeRegister {
     /**
      * {@link #register(OpModeManager)} is called by the SDK game in order to register
      * OpMode classes or instances that will participate in an FTC game.
-     * <p>
+     *
      * There are two mechanisms by which an OpMode may be registered.
-     * <p>
+     *
      *  1) The preferred method is by means of class annotations in the OpMode itself.
-     *  See, for example the class annotations in {@link ConceptNullOp}.
-     * <p>
+     *  See, for example the class annotations in {@link org.firstinspires.ftc.robotcontroller.external.samples.ConceptNullOp}.
+     *
      *  2) The other, retired,  method is to modify this {@link #register(OpModeManager)}
      *  method to include explicit calls to OpModeManager.register().
      *  This method of modifying this file directly is discouraged, as it
@@ -63,5 +61,8 @@ public class FtcOpModeRegister implements OpModeRegister {
      */
     public void register(OpModeManager manager) {
 
+        /**
+         * Any manual OpMode class registrations should go here.
+         */
     }
 }

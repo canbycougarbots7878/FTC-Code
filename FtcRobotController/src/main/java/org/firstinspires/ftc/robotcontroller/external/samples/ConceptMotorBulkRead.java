@@ -33,6 +33,7 @@ import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import java.util.List;
@@ -84,6 +85,10 @@ public class ConceptMotorBulkRead extends LinearOpMode {
 
     final int       TEST_CYCLES    = 500;   // Number of control cycles to run to determine cycle times.
 
+    private DcMotorEx m1, m2, m3, m4; // Motor Objects
+    private long      e1, e2, e3, e4; // Encoder Values
+    private double    v1, v2, v3, v4; // Velocities
+
     // Cycle Times
     double t1 = 0;
     double t2 = 0;
@@ -95,16 +100,17 @@ public class ConceptMotorBulkRead extends LinearOpMode {
         int cycles;
 
         // Important Step 1:  Make sure you use DcMotorEx when you instantiate your motors.
-        // Configure the robot to use these 4 motor names,
-        // or change these strings to match your existing Robot Configuration.
-        // Motor Objects
+        m1 = hardwareMap.get(DcMotorEx.class, "m1");  // Configure the robot to use these 4 motor names,
+        m2 = hardwareMap.get(DcMotorEx.class, "m2");  // or change these strings to match your existing Robot Configuration.
+        m3 = hardwareMap.get(DcMotorEx.class, "m3");
+        m4 = hardwareMap.get(DcMotorEx.class, "m4");
 
         // Important Step 2: Get access to a list of Expansion Hub Modules to enable changing caching methods.
         List<LynxModule> allHubs = hardwareMap.getAll(LynxModule.class);
 
         ElapsedTime timer = new ElapsedTime();
 
-        telemetry.addData(">", "Press play to start tests");
+        telemetry.addData(">", "Press START to start tests");
         telemetry.addData(">", "Test results will update for each access method.");
         telemetry.update();
         waitForStart();
@@ -120,9 +126,16 @@ public class ConceptMotorBulkRead extends LinearOpMode {
 
         timer.reset();
         cycles = 0;
-        // Encoder Values
-        // Velocities
         while (opModeIsActive() && (cycles++ < TEST_CYCLES)) {
+            e1 = m1.getCurrentPosition();
+            e2 = m2.getCurrentPosition();
+            e3 = m3.getCurrentPosition();
+            e4 = m4.getCurrentPosition();
+
+            v1 = m1.getVelocity();
+            v2 = m2.getVelocity();
+            v3 = m3.getVelocity();
+            v4 = m4.getVelocity();
 
             // Put Control loop action code here.
 
@@ -144,6 +157,15 @@ public class ConceptMotorBulkRead extends LinearOpMode {
         timer.reset();
         cycles = 0;
         while (opModeIsActive() && (cycles++ < TEST_CYCLES)) {
+            e1 = m1.getCurrentPosition();  // Uses 1 bulk-read for all 4 encoder/velocity reads,
+            e2 = m2.getCurrentPosition();  // but don't do any `get` operations more than once per cycle.
+            e3 = m3.getCurrentPosition();
+            e4 = m4.getCurrentPosition();
+
+            v1 = m1.getVelocity();
+            v2 = m2.getVelocity();
+            v3 = m3.getVelocity();
+            v4 = m4.getVelocity();
 
             // Put Control loop action code here.
 
@@ -171,6 +193,16 @@ public class ConceptMotorBulkRead extends LinearOpMode {
             for (LynxModule module : allHubs) {
                 module.clearBulkCache();
             }
+
+            e1 = m1.getCurrentPosition();   // Uses 1 bulk-read to obtain ALL the motor data
+            e2 = m2.getCurrentPosition();   // There is no penalty for doing more `get` operations in this cycle,
+            e3 = m3.getCurrentPosition();   // but they will return the same data.
+            e4 = m4.getCurrentPosition();
+
+            v1 = m1.getVelocity();
+            v2 = m2.getVelocity();
+            v3 = m3.getVelocity();
+            v4 = m4.getVelocity();
 
             // Put Control loop action code here.
 

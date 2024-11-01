@@ -34,7 +34,7 @@ import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-
+import org.firstinspires.ftc.robotcore.external.Func;
 import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
@@ -45,12 +45,12 @@ import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
 
 import java.util.Locale;
 
-/**
+/*
  * This OpMode gives a short demo on how to use the BNO055 Inertial Motion Unit (IMU) from AdaFruit.
- * <p>
+ *
  * Note: this is a Legacy example that will not work with newer Control/Expansion Hubs that use a different IMU
  * Please use the new SensorIMUOrthogonal or SensorIMUNonOrthogonal samples for a more universal IMU interface.
- * <p>
+ *
  * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
  *
@@ -117,29 +117,59 @@ public class SensorBNO055IMU extends LinearOpMode
 
         // At the beginning of each telemetry update, grab a bunch of data
         // from the IMU that we will then display in separate lines.
-        telemetry.addAction(() -> {
-        // Acquiring the angles is relatively expensive; we don't want
-        // to do that in each of the three items that need that info, as that's
-        // three times the necessary expense.
-        angles   = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-        gravity  = imu.getGravity();
-        });
+        telemetry.addAction(new Runnable() { @Override public void run()
+                {
+                // Acquiring the angles is relatively expensive; we don't want
+                // to do that in each of the three items that need that info, as that's
+                // three times the necessary expense.
+                angles   = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+                gravity  = imu.getGravity();
+                }
+            });
 
         telemetry.addLine()
-            .addData("status", () -> imu.getSystemStatus().toShortString())
-            .addData("calib", () -> imu.getCalibrationStatus().toString());
+            .addData("status", new Func<String>() {
+                @Override public String value() {
+                    return imu.getSystemStatus().toShortString();
+                    }
+                })
+            .addData("calib", new Func<String>() {
+                @Override public String value() {
+                    return imu.getCalibrationStatus().toString();
+                    }
+                });
 
         telemetry.addLine()
-            .addData("heading", () -> formatAngle(angles.angleUnit, angles.firstAngle))
-            .addData("roll", () -> formatAngle(angles.angleUnit, angles.secondAngle))
-            .addData("pitch", () -> formatAngle(angles.angleUnit, angles.thirdAngle));
+            .addData("heading", new Func<String>() {
+                @Override public String value() {
+                    return formatAngle(angles.angleUnit, angles.firstAngle);
+                    }
+                })
+            .addData("roll", new Func<String>() {
+                @Override public String value() {
+                    return formatAngle(angles.angleUnit, angles.secondAngle);
+                    }
+                })
+            .addData("pitch", new Func<String>() {
+                @Override public String value() {
+                    return formatAngle(angles.angleUnit, angles.thirdAngle);
+                    }
+                });
 
         telemetry.addLine()
-            .addData("grvty", () -> gravity.toString())
-            .addData("mag", () -> String.format(Locale.getDefault(), "%.3f",
-                    Math.sqrt(gravity.xAccel*gravity.xAccel
-                            + gravity.yAccel*gravity.yAccel
-                            + gravity.zAccel*gravity.zAccel)));
+            .addData("grvty", new Func<String>() {
+                @Override public String value() {
+                    return gravity.toString();
+                    }
+                })
+            .addData("mag", new Func<String>() {
+                @Override public String value() {
+                    return String.format(Locale.getDefault(), "%.3f",
+                            Math.sqrt(gravity.xAccel*gravity.xAccel
+                                    + gravity.yAccel*gravity.yAccel
+                                    + gravity.zAccel*gravity.zAccel));
+                    }
+                });
     }
 
     //----------------------------------------------------------------------------------------------

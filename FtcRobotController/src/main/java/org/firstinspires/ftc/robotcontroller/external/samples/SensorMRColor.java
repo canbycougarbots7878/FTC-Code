@@ -32,7 +32,7 @@ package org.firstinspires.ftc.robotcontroller.external.samples;
 import android.app.Activity;
 import android.graphics.Color;
 import android.view.View;
-
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.ColorSensor;
@@ -51,7 +51,7 @@ import com.qualcomm.robotcore.hardware.ColorSensor;
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
  */
 @TeleOp(name = "Sensor: MR Color", group = "Sensor")
-
+@Disabled
 public class SensorMRColor extends LinearOpMode {
 
   ColorSensor colorSensor;    // Hardware Device Object
@@ -61,10 +61,10 @@ public class SensorMRColor extends LinearOpMode {
   public void runOpMode() {
 
     // hsvValues is an array that will hold the hue, saturation, and value information.
-    float[] hsvValues = {0F,0F,0F};
+    float hsvValues[] = {0F,0F,0F};
 
     // values is a reference to the hsvValues array.
-    final float[] values = hsvValues;
+    final float values[] = hsvValues;
 
     // get a reference to the RelativeLayout so we can change the background
     // color of the Robot Controller app to match the hue detected by the RGB sensor.
@@ -73,16 +73,16 @@ public class SensorMRColor extends LinearOpMode {
 
     // bPrevState and bCurrState represent the previous and current state of the button.
     boolean bPrevState = false;
-    boolean bCurrState;
+    boolean bCurrState = false;
 
     // bLedOn represents the state of the LED.
     boolean bLedOn = true;
 
     // get a reference to our ColorSensor object.
-    colorSensor = hardwareMap.get(ColorSensor.class, "Color");
+    colorSensor = hardwareMap.get(ColorSensor.class, "sensor_color");
 
     // Set the LED in the beginning
-    colorSensor.enableLed(true);
+    colorSensor.enableLed(bLedOn);
 
     // wait for the start button to be pressed.
     waitForStart();
@@ -95,7 +95,7 @@ public class SensorMRColor extends LinearOpMode {
       bCurrState = gamepad1.x;
 
       // check for button state transitions.
-      if (bCurrState && !bPrevState)  {
+      if (bCurrState && (bCurrState != bPrevState))  {
 
         // button is transitioning to a pressed state. So Toggle LED
         bLedOn = !bLedOn;
@@ -119,12 +119,20 @@ public class SensorMRColor extends LinearOpMode {
       // change the background color to match the color detected by the RGB sensor.
       // pass a reference to the hue, saturation, and value array as an argument
       // to the HSVToColor method.
-      relativeLayout.post(() -> relativeLayout.setBackgroundColor(Color.HSVToColor(0xff, values)));
+      relativeLayout.post(new Runnable() {
+        public void run() {
+          relativeLayout.setBackgroundColor(Color.HSVToColor(0xff, values));
+        }
+      });
 
       telemetry.update();
     }
 
     // Set the panel back to the default color
-    relativeLayout.post(() -> relativeLayout.setBackgroundColor(Color.WHITE));
+    relativeLayout.post(new Runnable() {
+      public void run() {
+        relativeLayout.setBackgroundColor(Color.WHITE);
+      }
+    });
   }
 }

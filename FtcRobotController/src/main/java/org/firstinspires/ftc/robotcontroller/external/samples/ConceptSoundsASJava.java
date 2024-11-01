@@ -75,6 +75,9 @@ public class ConceptSoundsASJava extends LinearOpMode {
     private boolean goldFound;      // Sound file present flags
     private boolean silverFound;
 
+    private boolean isX = false;    // Gamepad button state variables
+    private boolean isB = false;
+
     private boolean wasX = false;   // Gamepad button history variables
     private boolean WasB = false;
 
@@ -97,7 +100,7 @@ public class ConceptSoundsASJava extends LinearOpMode {
         telemetry.addData("gold resource",   goldFound ?   "Found" : "NOT found\n Add gold.wav to /src/main/res/raw" );
         telemetry.addData("silver resource", silverFound ? "Found" : "Not found\n Add silver.wav to /src/main/res/raw" );
 
-        // Wait for the game to start (driver presses PLAY)
+        // Wait for the game to start (driver presses START)
         telemetry.addData(">", "Press Start to continue");
         telemetry.update();
         waitForStart();
@@ -109,8 +112,6 @@ public class ConceptSoundsASJava extends LinearOpMode {
         while (opModeIsActive()) {
 
             // say Silver each time gamepad X is pressed (This sound is a resource)
-            // Gamepad button state variables
-            boolean isX = false;
             if (silverFound && (isX = gamepad1.x) && !wasX) {
                 SoundPlayer.getInstance().startPlaying(hardwareMap.appContext, silverSoundID);
                 telemetry.addData("Playing", "Resource Silver");
@@ -118,7 +119,6 @@ public class ConceptSoundsASJava extends LinearOpMode {
             }
 
             // say Gold each time gamepad B is pressed  (This sound is a resource)
-            boolean isB = false;
             if (goldFound && (isB = gamepad1.b) && !WasB) {
                 SoundPlayer.getInstance().startPlaying(hardwareMap.appContext, goldSoundID);
                 telemetry.addData("Playing", "Resource Gold");

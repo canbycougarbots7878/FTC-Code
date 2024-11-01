@@ -69,8 +69,10 @@ public class ConceptAprilTagOptimizeExposure extends LinearOpMode
 {
     private VisionPortal visionPortal = null;        // Used to manage the video source.
     private AprilTagProcessor aprilTag;              // Used for managing the AprilTag detection process.
+    private int     myExposure  ;
     private int     minExposure ;
     private int     maxExposure ;
+    private int     myGain      ;
     private int     minGain ;
     private int     maxGain ;
 
@@ -90,13 +92,13 @@ public class ConceptAprilTagOptimizeExposure extends LinearOpMode
 
         // Establish Min and Max Gains and Exposure.  Then set a low exposure with high gain
         getCameraSetting();
-        int myExposure = Math.min(5, minExposure);
-        int myGain = maxGain;
+        myExposure = Math.min(5, minExposure);
+        myGain = maxGain;
         setManualExposure(myExposure, myGain);
 
         // Wait for the match to begin.
         telemetry.addData("Camera preview on/off", "3 dots, Camera Stream");
-        telemetry.addData(">", "Touch Play to start OpMode");
+        telemetry.addData(">", "Touch START to start OpMode");
         telemetry.update();
         waitForStart();
 
@@ -170,10 +172,10 @@ public class ConceptAprilTagOptimizeExposure extends LinearOpMode
         Can only be called AFTER calling initAprilTag();
         Returns true if controls are set.
      */
-    private void setManualExposure(int exposureMS, int gain) {
+    private boolean    setManualExposure(int exposureMS, int gain) {
         // Ensure Vision Portal has been setup.
         if (visionPortal == null) {
-            return;
+            return false;
         }
 
         // Wait for the camera to be open
@@ -196,13 +198,16 @@ public class ConceptAprilTagOptimizeExposure extends LinearOpMode
                 exposureControl.setMode(ExposureControl.Mode.Manual);
                 sleep(50);
             }
-            exposureControl.setExposure(exposureMS, TimeUnit.MILLISECONDS);
+            exposureControl.setExposure((long)exposureMS, TimeUnit.MILLISECONDS);
             sleep(20);
 
             // Set Gain.
             GainControl gainControl = visionPortal.getCameraControl(GainControl.class);
             gainControl.setGain(gain);
             sleep(20);
+            return (true);
+        } else {
+            return (false);
         }
     }
 

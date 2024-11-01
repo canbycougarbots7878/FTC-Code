@@ -58,7 +58,11 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 @Disabled
 public class RobotAutoDriveByTime_Linear extends LinearOpMode {
 
-    private final ElapsedTime     runtime = new ElapsedTime();
+    /* Declare OpMode members. */
+    private DcMotor         leftDrive   = null;
+    private DcMotor         rightDrive  = null;
+
+    private ElapsedTime     runtime = new ElapsedTime();
 
 
     static final double     FORWARD_SPEED = 0.6;
@@ -68,9 +72,8 @@ public class RobotAutoDriveByTime_Linear extends LinearOpMode {
     public void runOpMode() {
 
         // Initialize the drive system variables.
-        /* Declare OpMode members. */
-        DcMotor leftDrive = hardwareMap.get(DcMotor.class, "left_drive");
-        DcMotor rightDrive = hardwareMap.get(DcMotor.class, "right_drive");
+        leftDrive  = hardwareMap.get(DcMotor.class, "left_drive");
+        rightDrive = hardwareMap.get(DcMotor.class, "right_drive");
 
         // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
         // When run, this OpMode should start both motors driving forward. So adjust these two lines based on your first test drive.
@@ -82,10 +85,10 @@ public class RobotAutoDriveByTime_Linear extends LinearOpMode {
         telemetry.addData("Status", "Ready to run");    //
         telemetry.update();
 
-        // Wait for the game to start (driver presses PLAY)
+        // Wait for the game to start (driver presses START)
         waitForStart();
 
-        // Step through each leg of the path, ensuring that the Auto mode has not been stopped along the way
+        // Step through each leg of the path, ensuring that the OpMode has not been stopped along the way.
 
         // Step 1:  Drive forward for 3 seconds
         leftDrive.setPower(FORWARD_SPEED);

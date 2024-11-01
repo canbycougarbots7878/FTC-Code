@@ -29,8 +29,6 @@
 
 package org.firstinspires.ftc.robotcontroller.external.samples;
 
-import androidx.annotation.NonNull;
-
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
@@ -67,7 +65,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
  *  Notes:
  *
  *  All angles are referenced to the coordinate-frame that is set whenever resetHeading() is called.
- *  In this sample, the heading is reset when the Start button is touched on the Driver station.
+ *  In this sample, the heading is reset when the Start button is touched on the Driver Station.
  *  Note: It would be possible to reset the heading after each move, but this would accumulate steering errors.
  *
  *  The angle of movement/rotation is assumed to be a standardized rotation around the robot Z axis,
@@ -126,15 +124,15 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
     // These constants define the desired driving/control characteristics
     // They can/should be tweaked to suit the specific robot drive train.
     static final double     DRIVE_SPEED             = 0.4;     // Max driving speed for better distance accuracy.
-    static final double     TURN_SPEED              = 0.2;     // Max Turn speed to limit turn rate
+    static final double     TURN_SPEED              = 0.2;     // Max turn speed to limit turn rate.
     static final double     HEADING_THRESHOLD       = 1.0 ;    // How close must the heading get to the target before moving to next step.
                                                                // Requiring more accuracy (a smaller number) will often make the turn take longer to get into the final position.
     // Define the Proportional control coefficient (or GAIN) for "heading control".
     // We define one value when Turning (larger errors), and the other is used when Driving straight (smaller errors).
-    // Increase these numbers if the heading does not corrects strongly enough (eg: a heavy robot or using tracks)
+    // Increase these numbers if the heading does not correct strongly enough (eg: a heavy robot or using tracks)
     // Decrease these numbers if the heading does not settle on the correct value (eg: very agile robot with omni wheels)
-    static final double     P_TURN_GAIN            = 0.02;     // Larger is more responsive, but also less stable
-    static final double     P_DRIVE_GAIN           = 0.03;     // Larger is more responsive, but also less stable
+    static final double     P_TURN_GAIN            = 0.02;     // Larger is more responsive, but also less stable.
+    static final double     P_DRIVE_GAIN           = 0.03;     // Larger is more responsive, but also less stable.
 
 
     @Override
@@ -155,7 +153,9 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
          *
          * To Do:  EDIT these two lines to match YOUR mounting configuration.
          */
-        RevHubOrientationOnRobot orientationOnRobot = getRevHubOrientationOnRobot();
+        RevHubOrientationOnRobot.LogoFacingDirection logoDirection = RevHubOrientationOnRobot.LogoFacingDirection.UP;
+        RevHubOrientationOnRobot.UsbFacingDirection  usbDirection  = RevHubOrientationOnRobot.UsbFacingDirection.FORWARD;
+        RevHubOrientationOnRobot orientationOnRobot = new RevHubOrientationOnRobot(logoDirection, usbDirection);
 
         // Now initialize the IMU with this mounting orientation
         // This sample expects the IMU to be in a REV Hub and named "imu".
@@ -201,12 +201,6 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
         telemetry.addData("Path", "Complete");
         telemetry.update();
         sleep(1000);  // Pause to display last telemetry message.
-    }
-
-    private static @NonNull RevHubOrientationOnRobot getRevHubOrientationOnRobot() {
-        RevHubOrientationOnRobot.LogoFacingDirection logoDirection = RevHubOrientationOnRobot.LogoFacingDirection.UP;
-        RevHubOrientationOnRobot.UsbFacingDirection  usbDirection  = RevHubOrientationOnRobot.UsbFacingDirection.FORWARD;
-        return new RevHubOrientationOnRobot(logoDirection, usbDirection);
     }
 
     /*
@@ -323,7 +317,7 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
      *  <p>
      *  Move will stop once the requested time has elapsed
      *  <p>
-     *  This function is useful for giving the robot a moment to stabilize it's heading between movements.
+     *  This function is useful for giving the robot a moment to stabilize its heading between movements.
      *
      * @param maxTurnSpeed      Maximum differential turn speed (range 0 to +1.0)
      * @param heading    Absolute Heading Angle (in Degrees) relative to last gyro reset.

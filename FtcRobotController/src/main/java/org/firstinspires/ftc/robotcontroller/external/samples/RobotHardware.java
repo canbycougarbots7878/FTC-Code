@@ -56,7 +56,7 @@ import com.qualcomm.robotcore.util.Range;
 public class RobotHardware {
 
     /* Declare OpMode members. */
-    private final LinearOpMode myOpMode;   // gain access to methods in the calling OpMode.
+    private LinearOpMode myOpMode = null;   // gain access to methods in the calling OpMode.
 
     // Define Motor and Servo objects  (Make them private so they can't be accessed externally)
     private DcMotor leftDrive   = null;
@@ -107,18 +107,38 @@ public class RobotHardware {
         myOpMode.telemetry.addData(">", "Hardware Initialized");
         myOpMode.telemetry.update();
     }
+
+    /**
+     * Calculates the left/right motor powers required to achieve the requested
+     * robot motions: Drive (Axial motion) and Turn (Yaw motion).
+     * Then sends these power levels to the motors.
+     *
+     * @param Drive     Fwd/Rev driving power (-1.0 to 1.0) +ve is forward
+     * @param Turn      Right/Left turning power (-1.0 to 1.0) +ve is CW
+     */
     public void driveRobot(double Drive, double Turn) {
         // Combine drive and turn for blended motion.
         double left  = Drive + Turn;
         double right = Drive - Turn;
+
+        // Scale the values so neither exceed +/- 1.0
         double max = Math.max(Math.abs(left), Math.abs(right));
         if (max > 1.0)
         {
             left /= max;
             right /= max;
         }
+
+        // Use existing function to drive both wheels.
         setDrivePower(left, right);
     }
+
+    /**
+     * Pass the requested wheel motor powers to the appropriate hardware drive motors.
+     *
+     * @param leftWheel     Fwd/Rev driving power (-1.0 to 1.0) +ve is forward
+     * @param rightWheel    Fwd/Rev driving power (-1.0 to 1.0) +ve is forward
+     */
     public void setDrivePower(double leftWheel, double rightWheel) {
         // Output the values to the motor drives.
         leftDrive.setPower(leftWheel);
@@ -137,6 +157,7 @@ public class RobotHardware {
     /**
      * Send the two hand-servos to opposing (mirrored) positions, based on the passed offset.
      *
+     * @param offset
      */
     public void setHandPositions(double offset) {
         offset = Range.clip(offset, -0.5, 0.5);

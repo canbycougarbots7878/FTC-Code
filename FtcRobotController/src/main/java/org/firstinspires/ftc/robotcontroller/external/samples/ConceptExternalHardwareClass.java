@@ -74,16 +74,16 @@ public class ConceptExternalHardwareClass extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        double drive;
-        double turn;
-        double arm;
+        double drive        = 0;
+        double turn         = 0;
+        double arm          = 0;
         double handOffset   = 0;
 
         // initialize all the hardware, using the hardware class. See how clean and simple this is?
         robot.init();
 
         // Send telemetry message to signify robot waiting;
-        // Wait for the game to start (driver presses PLAY)
+        // Wait for the game to start (driver presses START)
         waitForStart();
 
         // run until the end of the match (driver presses STOP)
@@ -103,9 +103,9 @@ public class ConceptExternalHardwareClass extends LinearOpMode {
             // Each time around the loop, the servos will move by a small amount.
             // Limit the total offset to half of the full travel range
             if (gamepad1.right_bumper)
-                handOffset += RobotHardware.HAND_SPEED;
+                handOffset += robot.HAND_SPEED;
             else if (gamepad1.left_bumper)
-                handOffset -= RobotHardware.HAND_SPEED;
+                handOffset -= robot.HAND_SPEED;
             handOffset = Range.clip(handOffset, -0.5, 0.5);
 
             // Move both servos to new position.  Use RobotHardware class
@@ -114,9 +114,9 @@ public class ConceptExternalHardwareClass extends LinearOpMode {
             // Use gamepad buttons to move arm up (Y) and down (A)
             // Use the MOTOR constants defined in RobotHardware class.
             if (gamepad1.y)
-                arm = RobotHardware.ARM_UP_POWER;
+                arm = robot.ARM_UP_POWER;
             else if (gamepad1.a)
-                arm = RobotHardware.ARM_DOWN_POWER;
+                arm = robot.ARM_DOWN_POWER;
             else
                 arm = 0;
 

@@ -1,3 +1,4 @@
+/*
 package org.firstinspires.ftc.teamcode;
 
 import com.acmerobotics.dashboard.config.Config;
@@ -13,13 +14,13 @@ public class ConfigureSensor extends LinearOpMode {
         ColorRangefinder crf =
                 new ColorRangefinder(hardwareMap.get(RevColorSensorV3.class, "Color"));
 
-        /*
+
         Using this example configuration, you can detect all three sample colors based on which pin is reading true:
         both      --> yellow
         only pin0 --> red
         only pin1 --> blue
         neither   --> no object
-         */
+
         crf.setPin0Digital(ColorRangefinder.DigitalMode.HSV, 180 / 360.0 * 255, 250 / 360.0 * 255); // blue
         crf.setPin0Digital(ColorRangefinder.DigitalMode.HSV, 55 / 360.0 * 255, 75 / 360.0 * 255); // yellow
         crf.setPin0DigitalMaxDistance(ColorRangefinder.DigitalMode.HSV, 20); // 20mm or closer requirement
@@ -34,3 +35,4 @@ public class ConfigureSensor extends LinearOpMode {
         stop();
     }
 }
+*/

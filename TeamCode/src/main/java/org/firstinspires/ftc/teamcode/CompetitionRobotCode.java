@@ -14,15 +14,15 @@ public class CompetitionRobotCode extends LinearOpMode {
         DcMotor motorFR = hardwareMap.get(DcMotor.class, "FrontRight");
         DcMotor motorBR = hardwareMap.get(DcMotor.class, "BackRight");
 
+        DcMotor arm = hardwareMap.get(DcMotor.class, "Arm1");
+
         motorFR.setDirection(DcMotor.Direction.REVERSE);
         motorFL.setDirection(DcMotor.Direction.FORWARD);
         motorBR.setDirection(DcMotor.Direction.REVERSE);
         motorBL.setDirection(DcMotor.Direction.FORWARD);
 
-        CRServo CRServo0  = hardwareMap.get(CRServo.class,"arm");
-        Servo Servo1  = hardwareMap.get(Servo.class,"grabber");
-
-        DcMotor RevRoboticsCoreHexMotor0 = hardwareMap.get(DcMotor.class,"Lift");
+        arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         waitForStart();
 
@@ -48,17 +48,17 @@ public class CompetitionRobotCode extends LinearOpMode {
             motorFL.setPower(speed * rightFrontPower);
             motorBR.setPower(speed * leftBackPower);
             motorBL.setPower(speed * rightBackPower);
-
-            CRServo0.setPower(1);
-            if (gamepad1.x) {
-                CRServo0.setPower(gamepad1.right_trigger - gamepad1.left_trigger);
-            }
-            if (gamepad1.y) {
-                double position = 0.5 + ((gamepad1.right_trigger) - (gamepad1.left_trigger)) / 2;
-                Servo1.setPosition(position);
-            }
+            telemetry.addData("Arm Position", arm.getCurrentPosition());
+            telemetry.update();
             if (gamepad1.a) {
-                RevRoboticsCoreHexMotor0.setPower(gamepad1.right_trigger - gamepad1.left_trigger);
+                arm.setTargetPosition(0);
+                arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                arm.setPower(.5);
+            }
+            if (gamepad1.b) {
+                arm.setTargetPosition(-400);
+                arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                arm.setPower(.5);
             }
         }
     }
