@@ -35,6 +35,10 @@ public class CompetitionRobotCode extends LinearOpMode {
 
         waitForStart();
 
+        while (!gamepad1.start){
+
+        }
+
         while (opModeIsActive()) {
 
             double axial = -gamepad1.left_stick_y;
@@ -64,13 +68,15 @@ public class CompetitionRobotCode extends LinearOpMode {
                 // Home |\|#
                 Arm1.setTargetPosition(0);
                 Arm1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                Arm1.setPower(.5);
+                Arm1.setPower(.1);
+                Arm2.setPosition(0);
             }
             if (gamepad1.b) {
                 // Collect |\_#
                 Arm1.setTargetPosition(-400);
                 Arm1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                Arm1.setPower(.5);
+                Arm1.setPower(.1);
+                Arm2.setPosition(0.69);
             }
             if (gamepad1.x) {
                 //               _
@@ -78,7 +84,7 @@ public class CompetitionRobotCode extends LinearOpMode {
                 // Lower basket |
                 Arm1.setTargetPosition(-1092);
                 Arm1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                Arm1.setPower(.5);
+                Arm1.setPower(1);
             }
             if (gamepad1.y) {
                 //                   |#
@@ -86,10 +92,10 @@ public class CompetitionRobotCode extends LinearOpMode {
                 //Arm all the way up |
                 Arm1.setTargetPosition(-1092);
                 Arm1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                Arm1.setPower(.5);
+                Arm1.setPower(1);
             }
             if (gamepad1.left_bumper) {
-                Grabber.setPosition(-1);
+                Grabber.setPosition(0);
 
             }
             if (gamepad1.right_bumper) {
