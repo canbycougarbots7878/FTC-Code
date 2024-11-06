@@ -102,6 +102,8 @@ public class CompetitionRobotCode extends LinearOpMode {
                 claw.setPower(0);
             }
 
+
+
             telemetry.update();
         }
     }
