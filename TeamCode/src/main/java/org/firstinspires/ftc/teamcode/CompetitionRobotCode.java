@@ -19,7 +19,7 @@ public class CompetitionRobotCode extends LinearOpMode {
 
         DcMotor arm1 = hardwareMap.get(DcMotor.class, "Arm1");
         Servo arm2 = hardwareMap.get(Servo.class, "Arm2");
-        //CRServo clawRotation = hardwareMap.get(CRServo.class, "clawRotation");
+        CRServo clawRotation = hardwareMap.get(CRServo.class, "clawRotation");
         CRServo claw = hardwareMap.get(CRServo.class, "claw");
 
         motorFR.setDirection(DcMotor.Direction.FORWARD);
@@ -32,15 +32,13 @@ public class CompetitionRobotCode extends LinearOpMode {
 
         waitForStart();
 
-        while (!gamepad1.start){
-
-        }
 
         while (opModeIsActive()) {
 
             double axial = -gamepad1.left_stick_y;
             double lateral = gamepad1.left_stick_x;
             double yaw = gamepad1.right_stick_x;
+            double rotation = gamepad1.right_stick_y;
             double speed = .5;
             if (gamepad1.right_bumper) {
                 speed = 1;
@@ -52,11 +50,19 @@ public class CompetitionRobotCode extends LinearOpMode {
             double rightFrontPower = axial - lateral + yaw;
             double leftBackPower = axial - lateral - yaw;
             double rightBackPower = axial + lateral + yaw;
+            if (rotation > 0){
+                clawRotation.setPower(1);
+            }else if (rotation < 0){
+                clawRotation.setPower(-1);
+            }else {
+                clawRotation.setPower(0);
+            }
 
             motorFR.setPower(speed * leftFrontPower);
             motorFL.setPower(speed * rightFrontPower);
             motorBR.setPower(speed * leftBackPower);
             motorBL.setPower(speed * rightBackPower);
+
             double Arm2pos = 1 - gamepad1.right_trigger;
             telemetry.addData("Arm1 Position", arm1.getCurrentPosition());
             arm2.setPosition(Arm2pos);
