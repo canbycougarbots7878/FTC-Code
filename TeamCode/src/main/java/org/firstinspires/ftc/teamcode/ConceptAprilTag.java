@@ -14,7 +14,7 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-@TeleOp(name = "Concept: AprilTag", group = "Concept")
+@TeleOp(name = "Concept: AprilTag", group = "Competition")
 
 public class ConceptAprilTag extends LinearOpMode {
 
