@@ -61,10 +61,11 @@ public class auto extends LinearOpMode {
 
         TelemetryPosition();
         Forward(1000, 0.5);
+        TelemetryPosition();
+        Turn((int)(Math.PI/2), 0.5);
         while (motorFL.isBusy() && motorBL.isBusy() && motorBR.isBusy() && motorFR.isBusy()){
 
         }
-        TelemetryPosition();
         motorFL.setPower(0);
         motorBL.setPower(0);
         motorFR.setPower(0);
@@ -77,10 +78,13 @@ public class auto extends LinearOpMode {
     }
 
     private void Turn(int TR, double Power) {
-        motorFL.setTargetPosition(TR * 1440);
-        motorBL.setTargetPosition(TR * 1440);
-        motorFR.setTargetPosition(-TR * 1440);
-        motorBR.setTargetPosition(-TR * 1440);
+        double C = 104 * Math.PI;
+        double CountsPerMillimeter = 1440/C;
+        int Millimeter = (int)(CountsPerMillimeter);
+        motorFL.setTargetPosition(-TR * Millimeter);
+        motorBL.setTargetPosition(-TR * Millimeter);
+        motorFR.setTargetPosition(TR * Millimeter);
+        motorBR.setTargetPosition(TR * Millimeter);
 
         motorFL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         motorBL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -95,7 +99,7 @@ public class auto extends LinearOpMode {
     }
 
     private void Forward(int TD, double Power) {
-        double C = 104 * 3.14159;
+        double C = 104 * Math.PI;
         double CountsPerMillimeter = 1440/C;
         int Millimeter = (int)(CountsPerMillimeter);
         motorFL.setTargetPosition(TD * Millimeter);
@@ -113,6 +117,9 @@ public class auto extends LinearOpMode {
         motorFR.setPower(Power);
         motorBR.setPower(Power);
 
+        while (motorFL.isBusy() && motorBL.isBusy() && motorBR.isBusy() && motorFR.isBusy()){
+
+        }
     }
 
 
