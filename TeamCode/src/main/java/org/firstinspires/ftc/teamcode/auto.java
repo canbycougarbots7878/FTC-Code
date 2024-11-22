@@ -60,9 +60,9 @@ public class auto extends LinearOpMode {
         waitForStart();
 
         TelemetryPosition();
-        Forward(1000, 0.5);
+        Forward(500, 0.5);
         TelemetryPosition();
-        Turn((int)(Math.PI/2), 0.5);
+        //Turn((int)(Math.PI/2), 0.5);
         while (motorFL.isBusy() && motorBL.isBusy() && motorBR.isBusy() && motorFR.isBusy()){
 
         }
@@ -102,10 +102,14 @@ public class auto extends LinearOpMode {
         double C = 104 * Math.PI;
         double CountsPerMillimeter = 1440/C;
         int Millimeter = (int)(CountsPerMillimeter);
-        motorFL.setTargetPosition(TD * Millimeter);
-        motorBL.setTargetPosition(TD * Millimeter);
-        motorFR.setTargetPosition(TD * Millimeter);
-        motorBR.setTargetPosition(TD * Millimeter);
+        int FL = (int)(2.048*TD);
+        int FR = (int)(-0.062*TD);
+        int BL = (int)(0.022*TD);
+        int BR = (int)(-0.018*TD);
+        motorFL.setTargetPosition(((TD * Millimeter)-(FL)));
+        motorBL.setTargetPosition((TD * Millimeter)-(FR));
+        motorFR.setTargetPosition((TD * Millimeter)-(BL));
+        motorBR.setTargetPosition((TD * Millimeter)-(BR));
 
         motorFL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         motorBL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -124,7 +128,7 @@ public class auto extends LinearOpMode {
 
 
     private void TelemetryPosition() {
-        telemetry.addData("Front Right", motorFR.getCurrentPosition());
+        telemetry.addData("Front Right", -motorFR.getCurrentPosition());
         telemetry.addData("Front Left", motorFL.getCurrentPosition());
         telemetry.addData("Back Right", motorBR.getCurrentPosition());
         telemetry.addData("Back Left", motorBL.getCurrentPosition());
