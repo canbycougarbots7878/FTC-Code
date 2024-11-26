@@ -70,7 +70,6 @@ public class auto extends LinearOpMode {
         motorBL.setPower(0);
         motorFR.setPower(0);
         motorBR.setPower(0);
-        //12.762720155208534in forward?
         while (opModeIsActive()){
 
         }
