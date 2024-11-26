@@ -102,14 +102,10 @@ public class auto extends LinearOpMode {
         double C = 104 * Math.PI;
         double CountsPerMillimeter = 1440/C;
         int Millimeter = (int)(CountsPerMillimeter);
-        int FL = (int)(2.048*TD);
-        int FR = (int)(-0.062*TD);
-        int BL = (int)(0.022*TD);
-        int BR = (int)(-0.018*TD);
-        motorFL.setTargetPosition(((TD * Millimeter)-(FL)));
-        motorBL.setTargetPosition((TD * Millimeter)-(FR));
-        motorFR.setTargetPosition((TD * Millimeter)-(BL));
-        motorBR.setTargetPosition((TD * Millimeter)-(BR));
+        motorFL.setTargetPosition(TD * Millimeter);
+        motorBL.setTargetPosition(TD * Millimeter);
+        motorFR.setTargetPosition(TD * Millimeter);
+        motorBR.setTargetPosition(TD * Millimeter);
 
         motorFL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         motorBL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
