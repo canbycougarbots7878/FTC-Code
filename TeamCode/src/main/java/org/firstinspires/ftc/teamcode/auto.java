@@ -73,28 +73,6 @@ public class auto extends LinearOpMode {
         }
     }
 
-    private void Turn(int TargetRadius, double Power) {
-        double Circumference       = 104 * Math.PI;
-        double CountsPerMillimeter = 1440/Circumference;
-        int Millimeter             = (int)(CountsPerMillimeter);
-
-        motorFR.setTargetPosition(TargetRadius  * Millimeter);
-        motorBR.setTargetPosition(TargetRadius  * Millimeter);
-        motorBL.setTargetPosition(-TargetRadius * Millimeter);
-        motorFL.setTargetPosition(-TargetRadius * Millimeter);
-
-        motorFR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        motorBR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        motorBL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        motorFL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        motorFR.setPower(Power);
-        motorBR.setPower(Power);
-        motorBL.setPower(Power);
-        motorFL.setPower(Power);
-
-    }
-
     private void Forward(int TargetDistance, double Power) {
         double Circumference       = 104 * Math.PI;
         double CountsPerMillimeter = 1440/Circumference;
@@ -115,13 +93,34 @@ public class auto extends LinearOpMode {
         motorBL.setPower(Power);
         motorFL.setPower(Power);
     }
-
-
+    
     private void TelemetryPosition() {
         telemetry.addData("Front Right", motorFR.getCurrentPosition());
         telemetry.addData("Back Right", motorBR.getCurrentPosition());
         telemetry.addData("Back Left", motorBL.getCurrentPosition());
         telemetry.addData("Front Left", motorFL.getCurrentPosition());
         telemetry.update();
+    }
+    
+    private void Turn(int TargetRadius, double Power) {
+        double Circumference       = 104 * Math.PI;
+        double CountsPerMillimeter = 1440/Circumference;
+        int Millimeter             = (int)(CountsPerMillimeter);
+
+        motorFR.setTargetPosition(TargetRadius  * Millimeter);
+        motorBR.setTargetPosition(TargetRadius  * Millimeter);
+        motorBL.setTargetPosition(-TargetRadius * Millimeter);
+        motorFL.setTargetPosition(-TargetRadius * Millimeter);
+
+        motorFR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        motorBR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        motorBL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        motorFL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        motorFR.setPower(Power);
+        motorBR.setPower(Power);
+        motorBL.setPower(Power);
+        motorFL.setPower(Power);
+
     }
 }
