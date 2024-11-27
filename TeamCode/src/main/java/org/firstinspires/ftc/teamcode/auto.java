@@ -46,20 +46,30 @@ public class auto extends LinearOpMode {
         motorBL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorFL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-
         waitForStart();
 
+        // Print starting numbers and move forward
         TelemetryPosition();
         Forward(500, 0.5);
-        TelemetryPosition();
-        //Turn((int)(Math.PI/2), 0.5);
-        while (motorFL.isBusy() && motorBL.isBusy() && motorBR.isBusy() && motorFR.isBusy()){
+
+        // Wait until the motors are done spinning
+        while (motorFL.isBusy() && motorBL.isBusy() && motorBR.isBusy() && motorFR.isBusy()) {
+            // Do nothing, just wait
         }
+
+        // Print ending numbers
+        TelemetryPosition();
+
+        //Turn((int)(Math.PI/2), 0.5);
+
         motorFR.setPower(0);
         motorBR.setPower(0);
         motorBL.setPower(0);
         motorFL.setPower(0);
-        while (opModeIsActive()){
+
+        // Leave the data on the screen so we have time to write it down
+        while (opModeIsActive()) {
+            // Do nothing, just wait
         }
     }
 
