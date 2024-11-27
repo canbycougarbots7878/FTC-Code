@@ -123,7 +123,7 @@ public class auto extends LinearOpMode {
 
 
     private void TelemetryPosition() {
-        telemetry.addData("Front Right", -motorFR.getCurrentPosition());
+        telemetry.addData("Front Right", motorFR.getCurrentPosition());
         telemetry.addData("Front Left", motorFL.getCurrentPosition());
         telemetry.addData("Back Right", motorBR.getCurrentPosition());
         telemetry.addData("Back Left", motorBL.getCurrentPosition());
