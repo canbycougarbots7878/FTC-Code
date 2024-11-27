@@ -64,8 +64,8 @@ public class auto extends LinearOpMode {
     }
 
     private void Turn(int TR, double Power) {
-        double C = 104 * Math.PI;
-        double CountsPerMillimeter = 1440/C;
+        double Circumference = 104 * Math.PI;
+        double CountsPerMillimeter = 1440/Circumference;
         int Millimeter = (int)(CountsPerMillimeter);
         motorFR.setTargetPosition(TR * Millimeter);
         motorBR.setTargetPosition(TR * Millimeter);
@@ -84,14 +84,15 @@ public class auto extends LinearOpMode {
 
     }
 
-    private void Forward(int TD, double Power) {
-        double C = 104 * Math.PI;
-        double CountsPerMillimeter = 1440/C;
-        int Millimeter = (int)(CountsPerMillimeter);
-        motorFR.setTargetPosition(TD * Millimeter);
-        motorBR.setTargetPosition(TD * Millimeter);
-        motorBL.setTargetPosition(TD * Millimeter);
-        motorFL.setTargetPosition(TD * Millimeter);
+    private void Forward(int TargetDistance, double Power) {
+        double Circumference       = 104 * Math.PI;
+        double CountsPerMillimeter = 1440/Circumference;
+        int Millimeter             = (int)(CountsPerMillimeter);
+
+        motorFR.setTargetPosition(TargetDistance * Millimeter);
+        motorBR.setTargetPosition(TargetDistance * Millimeter);
+        motorBL.setTargetPosition(TargetDistance * Millimeter);
+        motorFL.setTargetPosition(TargetDistance * Millimeter);
 
         motorFR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         motorBR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -102,7 +103,6 @@ public class auto extends LinearOpMode {
         motorBR.setPower(Power);
         motorBL.setPower(Power);
         motorFL.setPower(Power);
-
     }
 
 
