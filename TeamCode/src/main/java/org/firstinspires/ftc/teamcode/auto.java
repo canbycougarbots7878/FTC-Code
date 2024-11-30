@@ -3,12 +3,11 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 //TODO
-// 1. find out why "motorFR.getCurrentPosition()" is negative not positive
-// 2. fix "motorFR.getCurrentPosition()" to be positive
 // 3. Create movement to all places on the field
 // 4. Create code for arm
 // 5. input code for arm
@@ -31,15 +30,10 @@ public class auto extends LinearOpMode {
         motorBL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         motorFL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        motorFR.setDirection(DcMotor.Direction.FORWARD);
+        motorFR.setDirection(DcMotor.Direction.REVERSE);
         motorBR.setDirection(DcMotor.Direction.FORWARD);
         motorBL.setDirection(DcMotor.Direction.REVERSE);
         motorFL.setDirection(DcMotor.Direction.REVERSE);
-
-        motorFR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motorBR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motorBL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motorFL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         motorFR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorBR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -57,10 +51,15 @@ public class auto extends LinearOpMode {
             // Do nothing, just wait
         }
 
+        Turn((int)(90), 0.5);
+
+        // Wait until the motors are done spinning
+        while (motorFL.isBusy() && motorBL.isBusy() && motorBR.isBusy() && motorFR.isBusy()) {
+            // Do nothing, just wait
+        }
+
         // Print ending numbers
         TelemetryPosition();
-
-        //Turn((int)(Math.PI/2), 0.5);
 
         motorFR.setPower(0);
         motorBR.setPower(0);
@@ -74,6 +73,11 @@ public class auto extends LinearOpMode {
     }
 
     private void Forward(int TargetDistance, double Power) {
+        motorFR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motorBR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motorBL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motorFL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
         double Circumference       = 104 * Math.PI;
         double CountsPerMillimeter = 1440/Circumference;
         int Millimeter             = (int)(CountsPerMillimeter);
@@ -92,6 +96,7 @@ public class auto extends LinearOpMode {
         motorBR.setPower(Power);
         motorBL.setPower(Power);
         motorFL.setPower(Power);
+
     }
     
     private void TelemetryPosition() {
@@ -103,6 +108,11 @@ public class auto extends LinearOpMode {
     }
     
     private void Turn(int TargetRadius, double Power) {
+        motorFR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motorBR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motorBL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motorFL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
         double Circumference       = 104 * Math.PI;
         double CountsPerMillimeter = 1440/Circumference;
         int Millimeter             = (int)(CountsPerMillimeter);
