@@ -54,7 +54,7 @@ public class Testing extends LinearOpMode {
                 arm2.setTargetPosition(-128);
                 arm2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 arm1.setPower(.5);
-                arm2.setPower(.5);
+                arm2.setPower(1);
             }
             else if(gamepad1.x) {
                 //Bucket
