@@ -62,38 +62,40 @@ public class CompetitionRobotCode extends LinearOpMode {
             telemetry.addData("Arm1 Position", arm1.getCurrentPosition());
             arm2.setPosition(Arm2pos);
             telemetry.addData("Arm2 Position", Arm2pos);
-            String mode = "Home";
+            String state = "Home";
 
-            if (gamepad1.a) { mode = "Home"; }
-            if (gamepad1.b) { mode = "Deploy"; }
-            if (gamepad1.x) { mode = "Basket"; }
-            if (gamepad1.y) { mode = "Reach"; }
-            if (gamepad1.dpad_up) { mode = "Manual"; }
-            if (mode.equals("Home")) {
-                arm1.setTargetPosition(0);
-                arm1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                arm1.setPower(.1);
-                arm2.setPosition(0);
-            }
-            if (mode.equals("Deploy")) {
-                arm1.setTargetPosition(-400);
-                arm1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                arm1.setPower(.1);
-                arm2.setPosition(0.69);
-            }
-            if (mode.equals("Basket")) {
-                arm1.setTargetPosition(-1092);
-                arm1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                arm1.setPower(1);
-            }
-            if (mode.equals("Reach")) {
-                arm1.setTargetPosition(-1092);
-                arm1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                arm1.setPower(1);
-            }
-            if (mode.equals("Manual")) {
-                arm1.setTargetPosition(arm1.getTargetPosition() + (int)gamepad1.left_trigger);
-                arm2.setPosition(gamepad1.right_trigger);
+            if (gamepad1.a) { state = "Home"; }
+            if (gamepad1.b) { state = "Deploy"; }
+            if (gamepad1.x) { state = "Basket"; }
+            if (gamepad1.y) { state = "Reach"; }
+            if (gamepad1.dpad_up) { state = "Manual"; }
+            switch(state) {
+                case("Home"):
+                    arm1.setTargetPosition(0);
+                    arm1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    arm1.setPower(.1);
+                    arm2.setPosition(0);
+                    break;
+                case("Deploy"):
+                    arm1.setTargetPosition(-400);
+                    arm1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    arm1.setPower(.1);
+                    arm2.setPosition(0.69);
+                    break;
+                case("Basket"):
+                    arm1.setTargetPosition(-1092);
+                    arm1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    arm1.setPower(1);
+                    break;
+                case("Reach"):
+                    arm1.setTargetPosition(-1092);
+                    arm1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    arm1.setPower(1);
+                    break;
+                case("Manual"):
+                    arm1.setTargetPosition(arm1.getTargetPosition() + (int)gamepad1.left_trigger);
+                    arm2.setPosition(gamepad1.right_trigger);
+                    break;
             }
             if (gamepad1.left_bumper) {
                 claw.setPower(1);
