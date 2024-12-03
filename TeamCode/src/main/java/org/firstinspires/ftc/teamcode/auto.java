@@ -14,6 +14,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 @Autonomous(name = "COMPETITION: Auto Drive", group = "Concept")
 public class auto extends LinearOpMode {
+    double Tau = Math.PI * 2;
     DcMotor motorFL = null;
     DcMotor motorBL = null;
     DcMotor motorFR = null;
@@ -51,7 +52,7 @@ public class auto extends LinearOpMode {
             // Do nothing, just wait
         }
 
-        Turn((int)(90), 0.5);
+        Turn(Tau, 0.5);
 
         // Wait until the motors are done spinning
         while (motorFL.isBusy() && motorBL.isBusy() && motorBR.isBusy() && motorFR.isBusy()) {
@@ -78,7 +79,7 @@ public class auto extends LinearOpMode {
         motorBL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motorFL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        double Circumference       = 104 * Math.PI;
+        double Circumference       = 52 * Tau;
         double CountsPerMillimeter = 1440/Circumference;
         int Millimeter             = (int)(CountsPerMillimeter);
 
@@ -101,26 +102,27 @@ public class auto extends LinearOpMode {
     
     private void TelemetryPosition() {
         telemetry.addData("Front Right", motorFR.getCurrentPosition());
-        telemetry.addData("Back Right", motorBR.getCurrentPosition());
-        telemetry.addData("Back Left", motorBL.getCurrentPosition());
-        telemetry.addData("Front Left", motorFL.getCurrentPosition());
+        telemetry.addData("Back Right",  motorBR.getCurrentPosition());
+        telemetry.addData("Back Left",   motorBL.getCurrentPosition());
+        telemetry.addData("Front Left",  motorFL.getCurrentPosition());
         telemetry.update();
     }
     
-    private void Turn(int TargetRadius, double Power) {
+    private void Turn(double TargetRadians, double Power) {
         motorFR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motorBR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motorBL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motorFL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        double Circumference       = 104 * Math.PI;
+        double Circumference       = 52 * Tau;
         double CountsPerMillimeter = 1440/Circumference;
         int Millimeter             = (int)(CountsPerMillimeter);
+        int trueTargetRadians       = (int)(52 * TargetRadians);
 
-        motorFR.setTargetPosition(TargetRadius  * Millimeter);
-        motorBR.setTargetPosition(TargetRadius  * Millimeter);
-        motorBL.setTargetPosition(-TargetRadius * Millimeter);
-        motorFL.setTargetPosition(-TargetRadius * Millimeter);
+        motorFR.setTargetPosition(trueTargetRadians  * Millimeter);
+        motorBR.setTargetPosition(trueTargetRadians  * Millimeter);
+        motorBL.setTargetPosition(-trueTargetRadians * Millimeter);
+        motorFL.setTargetPosition(-trueTargetRadians * Millimeter);
 
         motorFR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         motorBR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
