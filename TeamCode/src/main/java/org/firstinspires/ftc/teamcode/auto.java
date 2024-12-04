@@ -8,12 +8,11 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 //TODO
-// 3. Create movement to all places on the field
 // 4. Create code for arm
 // 5. input code for arm
 
 //Notes
-// 1. 90 degrees counterclockwise is 466 mm
+// 1. 90 degrees counterclockwise is 470 mm
 
 
 @Autonomous(name = "COMPETITION: Auto Drive", group = "Concept")
@@ -49,21 +48,204 @@ public class auto extends LinearOpMode {
 
         // Print starting numbers and move forward
         TelemetryPosition();
-        Forward(500, 0.5);
+        Forward(500, 1);
 
         // Wait until the motors are done spinning
         while (motorFL.isBusy() && motorBL.isBusy() && motorBR.isBusy() && motorFR.isBusy()) {
             // Do nothing, just wait
         }
 
-        sleep(100);
+        sleep(10);
 
-        Turn(466, 0.5);
+        Turn(466, 1);
 
         // Wait until the motors are done spinning
         while (motorFL.isBusy() && motorBL.isBusy() && motorBR.isBusy() && motorFR.isBusy()) {
             // Do nothing, just wait
         }
+
+        sleep(10);
+
+        Forward(800, 1);
+
+        // Wait until the motors are done spinning
+        while (motorFL.isBusy() && motorBL.isBusy() && motorBR.isBusy() && motorFR.isBusy()) {
+            // Do nothing, just wait
+        }
+
+        sleep(10);
+
+        Turn(-466, 1);
+
+        // Wait until the motors are done spinning
+        while (motorFL.isBusy() && motorBL.isBusy() && motorBR.isBusy() && motorFR.isBusy()) {
+            // Do nothing, just wait
+        }
+
+        sleep(10);
+
+        Forward(350, 1);
+
+        // Wait until the motors are done spinning
+        while (motorFL.isBusy() && motorBL.isBusy() && motorBR.isBusy() && motorFR.isBusy()) {
+            // Do nothing, just wait
+        }
+
+        sleep(10);
+
+        Forward(-350, 1);
+
+        // Wait until the motors are done spinning
+        while (motorFL.isBusy() && motorBL.isBusy() && motorBR.isBusy() && motorFR.isBusy()) {
+            // Do nothing, just wait
+        }
+
+        sleep(10);
+
+        Turn(-466, 1);
+
+        // Wait until the motors are done spinning
+        while (motorFL.isBusy() && motorBL.isBusy() && motorBR.isBusy() && motorFR.isBusy()) {
+            // Do nothing, just wait
+        }
+
+        sleep(10);
+
+        Forward(1500, 1);
+
+        // Wait until the motors are done spinning
+        while (motorFL.isBusy() && motorBL.isBusy() && motorBR.isBusy() && motorFR.isBusy()) {
+            // Do nothing, just wait
+        }
+
+        sleep(10);
+
+        Turn(-466, 1);
+
+        // Wait until the motors are done spinning
+        while (motorFL.isBusy() && motorBL.isBusy() && motorBR.isBusy() && motorFR.isBusy()) {
+            // Do nothing, just wait
+        }
+
+        sleep(10);
+
+        Forward(350, 1);
+
+        // Wait until the motors are done spinning
+        while (motorFL.isBusy() && motorBL.isBusy() && motorBR.isBusy() && motorFR.isBusy()) {
+            // Do nothing, just wait
+        }
+
+        sleep(10);
+
+        Forward(-350, 1);
+
+        // Wait until the motors are done spinning
+        while (motorFL.isBusy() && motorBL.isBusy() && motorBR.isBusy() && motorFR.isBusy()) {
+            // Do nothing, just wait
+        }
+
+        sleep(10);
+
+        Turn(-466, 1);
+
+        // Wait until the motors are done spinning
+        while (motorFL.isBusy() && motorBL.isBusy() && motorBR.isBusy() && motorFR.isBusy()) {
+            // Do nothing, just wait
+        }
+
+        sleep(10);
+
+        Forward(1150, 1);
+
+        // Wait until the motors are done spinning
+        while (motorFL.isBusy() && motorBL.isBusy() && motorBR.isBusy() && motorFR.isBusy()) {
+            // Do nothing, just wait
+        }
+
+        sleep(10);
+
+        Turn(-466, 1);
+
+        // Wait until the motors are done spinning
+        while (motorFL.isBusy() && motorBL.isBusy() && motorBR.isBusy() && motorFR.isBusy()) {
+            // Do nothing, just wait
+        }
+
+        sleep(10);
+
+        Forward(350, 1);
+
+        // Wait until the motors are done spinning
+        while (motorFL.isBusy() && motorBL.isBusy() && motorBR.isBusy() && motorFR.isBusy()) {
+            // Do nothing, just wait
+        }
+
+        sleep(10);
+
+        Forward(-350, 1);
+
+        // Wait until the motors are done spinning
+        while (motorFL.isBusy() && motorBL.isBusy() && motorBR.isBusy() && motorFR.isBusy()) {
+            // Do nothing, just wait
+        }
+
+        sleep(10);
+
+        Turn(466, 1);
+
+        // Wait until the motors are done spinning
+        while (motorFL.isBusy() && motorBL.isBusy() && motorBR.isBusy() && motorFR.isBusy()) {
+            // Do nothing, just wait
+        }
+
+        sleep(10);
+
+        Forward(1250, 1);
+
+        // Wait until the motors are done spinning
+        while (motorFL.isBusy() && motorBL.isBusy() && motorBR.isBusy() && motorFR.isBusy()) {
+            // Do nothing, just wait
+        }
+
+        sleep(10);
+
+        Turn(-466, 1);
+
+        // Wait until the motors are done spinning
+        while (motorFL.isBusy() && motorBL.isBusy() && motorBR.isBusy() && motorFR.isBusy()) {
+            // Do nothing, just wait
+        }
+
+        sleep(10);
+
+        Forward(900, 1);
+
+        // Wait until the motors are done spinning
+        while (motorFL.isBusy() && motorBL.isBusy() && motorBR.isBusy() && motorFR.isBusy()) {
+            // Do nothing, just wait
+        }
+
+        sleep(10);
+
+        Turn(-466, 1);
+
+        // Wait until the motors are done spinning
+        while (motorFL.isBusy() && motorBL.isBusy() && motorBR.isBusy() && motorFR.isBusy()) {
+            // Do nothing, just wait
+        }
+
+        sleep(10);
+
+        Forward(600, 1);
+
+        // Wait until the motors are done spinning
+        while (motorFL.isBusy() && motorBL.isBusy() && motorBR.isBusy() && motorFR.isBusy()) {
+            // Do nothing, just wait
+        }
+
+        sleep(10);
+
 
         // Print ending numbers
         TelemetryPosition();
