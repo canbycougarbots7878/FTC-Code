@@ -18,9 +18,10 @@ public class CompetitionRobotCode extends LinearOpMode {
         DcMotor motorBL = hardwareMap.get(DcMotor.class, "BackLeft");
         DcMotor motorFL = hardwareMap.get(DcMotor.class, "FrontLeft");
 
-        DcMotor arm1 = hardwareMap.get(DcMotor.class, "Arm1");
-        Servo arm2 = hardwareMap.get(Servo.class, "Arm2");
+        DcMotor slidearm = hardwareMap.get(DcMotor.class, "Slide Arm");
+        DcMotor arm = hardwareMap.get(DcMotor.class, "Extending Arm");
         //CRServo clawRotation = hardwareMap.get(CRServo.class, "clawRotation");
+        Servo wrist = hardwareMap.get(Servo.class, "wrist");
         CRServo claw = hardwareMap.get(CRServo.class, "claw");
 
 		// Set each motor's direction
@@ -29,16 +30,13 @@ public class CompetitionRobotCode extends LinearOpMode {
         motorBL.setDirection(DcMotor.Direction.REVERSE);
         motorFL.setDirection(DcMotor.Direction.REVERSE);
 
-        arm1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        arm1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
         waitForStart();
 
         while (opModeIsActive()) {
 
-            double axial   = -gamepad1.left_stick_y;
+            double axial   = gamepad1.left_stick_y;
             double lateral = gamepad1.left_stick_x;
-            double yaw     = gamepad1.right_stick_x;
+            double yaw     = -gamepad1.right_stick_x;
             double speed   = .5;
 
 			// Setup quick speed modifications for precision driving
@@ -59,8 +57,8 @@ public class CompetitionRobotCode extends LinearOpMode {
             motorFL.setPower(speed * rightFrontPower);
 
             double Arm2pos = 1 - gamepad1.right_trigger;
-            telemetry.addData("Arm1 Position", arm1.getCurrentPosition());
-            arm2.setPosition(Arm2pos);
+            telemetry.addData("Arm1 Position", slidearm.getCurrentPosition());
+            //arm.setPosition(Arm2pos);
             telemetry.addData("Arm2 Position", Arm2pos);
             String state = "Home";
 
@@ -68,33 +66,22 @@ public class CompetitionRobotCode extends LinearOpMode {
             if (gamepad1.b) { state = "Deploy"; }
             if (gamepad1.x) { state = "Basket"; }
             if (gamepad1.y) { state = "Reach"; }
-            if (gamepad1.dpad_up) { state = "Manual"; }
+            if (gamepad1.start) { state = "Manual"; }
+            if (gamepad1.dpad_up) { slidearm.setPower(-1); }
+            else if (gamepad1.dpad_down) { slidearm.setPower(1); }
+            else { slidearm.setPower(0); }
+            if (gamepad1.dpad_left) { wrist.setPosition(1); }
+            else { wrist.setPosition(0); }
             switch(state) {
                 case("Home"):
-                    arm1.setTargetPosition(0);
-                    arm1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    arm1.setPower(.1);
-                    arm2.setPosition(0);
                     break;
                 case("Deploy"):
-                    arm1.setTargetPosition(-400);
-                    arm1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    arm1.setPower(.1);
-                    arm2.setPosition(0.69);
                     break;
                 case("Basket"):
-                    arm1.setTargetPosition(-1092);
-                    arm1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    arm1.setPower(1);
                     break;
                 case("Reach"):
-                    arm1.setTargetPosition(-1092);
-                    arm1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    arm1.setPower(1);
                     break;
                 case("Manual"):
-                    arm1.setTargetPosition(arm1.getTargetPosition() + (int)gamepad1.left_trigger);
-                    arm2.setPosition(gamepad1.right_trigger);
                     break;
             }
             if (gamepad1.left_bumper) {
