@@ -12,6 +12,10 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 // 4. Create code for arm
 // 5. input code for arm
 
+//Notes
+// 1. 90 degrees counterclockwise is 466 mm
+
+
 @Autonomous(name = "COMPETITION: Auto Drive", group = "Concept")
 public class auto extends LinearOpMode {
     double Tau = Math.PI * 2;
@@ -52,7 +56,9 @@ public class auto extends LinearOpMode {
             // Do nothing, just wait
         }
 
-        Turn(Tau, 0.5);
+        sleep(100);
+
+        Turn(466, 0.5);
 
         // Wait until the motors are done spinning
         while (motorFL.isBusy() && motorBL.isBusy() && motorBR.isBusy() && motorFR.isBusy()) {
@@ -73,7 +79,7 @@ public class auto extends LinearOpMode {
         }
     }
 
-    private void Forward(int TargetDistance, double Power) {
+    private void Forward(double TargetDistance, double Power) {
         motorFR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motorBR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motorBL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -81,12 +87,11 @@ public class auto extends LinearOpMode {
 
         double Circumference       = 52 * Tau;
         double CountsPerMillimeter = 1440/Circumference;
-        int Millimeter             = (int)(CountsPerMillimeter);
 
-        motorFR.setTargetPosition(TargetDistance * Millimeter);
-        motorBR.setTargetPosition(TargetDistance * Millimeter);
-        motorBL.setTargetPosition(TargetDistance * Millimeter);
-        motorFL.setTargetPosition(TargetDistance * Millimeter);
+        motorFR.setTargetPosition((int)(TargetDistance * CountsPerMillimeter));
+        motorBR.setTargetPosition((int)(TargetDistance * CountsPerMillimeter));
+        motorBL.setTargetPosition((int)(TargetDistance * CountsPerMillimeter));
+        motorFL.setTargetPosition((int)(TargetDistance * CountsPerMillimeter));
 
         motorFR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         motorBR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -116,13 +121,11 @@ public class auto extends LinearOpMode {
 
         double Circumference       = 52 * Tau;
         double CountsPerMillimeter = 1440/Circumference;
-        int Millimeter             = (int)(CountsPerMillimeter);
-        int trueTargetRadians       = (int)(52 * TargetRadians);
 
-        motorFR.setTargetPosition(trueTargetRadians  * Millimeter);
-        motorBR.setTargetPosition(trueTargetRadians  * Millimeter);
-        motorBL.setTargetPosition(-trueTargetRadians * Millimeter);
-        motorFL.setTargetPosition(-trueTargetRadians * Millimeter);
+        motorFR.setTargetPosition((int)(TargetRadians  * CountsPerMillimeter));
+        motorBR.setTargetPosition((int)(TargetRadians  * CountsPerMillimeter));
+        motorBL.setTargetPosition((int)(-TargetRadians * CountsPerMillimeter));
+        motorFL.setTargetPosition((int)(-TargetRadians * CountsPerMillimeter));
 
         motorFR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         motorBR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
