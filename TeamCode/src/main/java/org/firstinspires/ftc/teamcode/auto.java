@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.CRServo;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
@@ -23,11 +22,23 @@ public class auto extends LinearOpMode {
     DcMotor motorFR = null;
     DcMotor motorBR = null;
 
+    /*
+    DcMotor arm1 = null;
+    Servo arm2 = null;
+    CRServo claw = null;
+     */
+
     public void runOpMode() {
         motorFR = hardwareMap.get(DcMotor.class, "FrontRight");
         motorBR = hardwareMap.get(DcMotor.class, "BackRight");
         motorBL = hardwareMap.get(DcMotor.class, "BackLeft");
         motorFL = hardwareMap.get(DcMotor.class, "FrontLeft");
+
+        /*
+        arm1 = hardwareMap.get(DcMotor.class, "Arm1");
+        arm2 = hardwareMap.get(Servo.class, "Arm2");
+        claw = hardwareMap.get(CRServo.class, "claw");
+         */
 
         motorFR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         motorBR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -44,208 +55,85 @@ public class auto extends LinearOpMode {
         motorBL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorFL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
+        //arm1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        //arm1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
         waitForStart();
 
         // Print starting numbers and move forward
         TelemetryPosition();
-        Forward(500, 1);
+        //Home();
 
-        // Wait until the motors are done spinning
-        while (motorFL.isBusy() && motorBL.isBusy() && motorBR.isBusy() && motorFR.isBusy()) {
-            // Do nothing, just wait
-        }
+        Forward(500, 0.75);
 
-        sleep(10);
+        sleep(1000);
 
-        Turn(466, 1);
+        Turn(-450, 0.75);
 
-        // Wait until the motors are done spinning
-        while (motorFL.isBusy() && motorBL.isBusy() && motorBR.isBusy() && motorFR.isBusy()) {
-            // Do nothing, just wait
-        }
+        sleep(1000);
 
-        sleep(10);
+        Forward(620, 0.75);
 
-        Forward(800, 1);
+        sleep(1000);
 
-        // Wait until the motors are done spinning
-        while (motorFL.isBusy() && motorBL.isBusy() && motorBR.isBusy() && motorFR.isBusy()) {
-            // Do nothing, just wait
-        }
+        Turn(-450, 0.75);
 
-        sleep(10);
+        sleep(1000);
 
-        Turn(-466, 1);
+        Forward(100, 0.75);
 
-        // Wait until the motors are done spinning
-        while (motorFL.isBusy() && motorBL.isBusy() && motorBR.isBusy() && motorFR.isBusy()) {
-            // Do nothing, just wait
-        }
+        sleep(1000);
 
-        sleep(10);
+        Telemetry(1);
 
-        Forward(350, 1);
+        sleep(1000);
 
-        // Wait until the motors are done spinning
-        while (motorFL.isBusy() && motorBL.isBusy() && motorBR.isBusy() && motorFR.isBusy()) {
-            // Do nothing, just wait
-        }
+        Telemetry(2);
 
-        sleep(10);
+        sleep(1000);
 
-        Forward(-350, 1);
+        Telemetry(1);
 
-        // Wait until the motors are done spinning
-        while (motorFL.isBusy() && motorBL.isBusy() && motorBR.isBusy() && motorFR.isBusy()) {
-            // Do nothing, just wait
-        }
+        sleep(1000);
 
-        sleep(10);
+        Forward(-100, 0.75);
 
-        Turn(-466, 1);
+        sleep(1000);
 
-        // Wait until the motors are done spinning
-        while (motorFL.isBusy() && motorBL.isBusy() && motorBR.isBusy() && motorFR.isBusy()) {
-            // Do nothing, just wait
-        }
+        Turn(-450, 0.75);
 
-        sleep(10);
+        sleep(1000);
 
-        Forward(1500, 1);
+        Forward(1100, 0.75);
 
-        // Wait until the motors are done spinning
-        while (motorFL.isBusy() && motorBL.isBusy() && motorBR.isBusy() && motorFR.isBusy()) {
-            // Do nothing, just wait
-        }
+        sleep(1000);
 
-        sleep(10);
+        Turn(-450, 0.75);
 
-        Turn(-466, 1);
+        sleep(1000);
 
-        // Wait until the motors are done spinning
-        while (motorFL.isBusy() && motorBL.isBusy() && motorBR.isBusy() && motorFR.isBusy()) {
-            // Do nothing, just wait
-        }
+        Telemetry(3);
 
-        sleep(10);
+        sleep(1000);
 
-        Forward(350, 1);
+        Forward(70, 0.75);
 
-        // Wait until the motors are done spinning
-        while (motorFL.isBusy() && motorBL.isBusy() && motorBR.isBusy() && motorFR.isBusy()) {
-            // Do nothing, just wait
-        }
+        sleep(1000);
 
-        sleep(10);
+        Telemetry(3);
 
-        Forward(-350, 1);
+        sleep(1000);
 
-        // Wait until the motors are done spinning
-        while (motorFL.isBusy() && motorBL.isBusy() && motorBR.isBusy() && motorFR.isBusy()) {
-            // Do nothing, just wait
-        }
+        Forward(-70, 0.75);
 
-        sleep(10);
+        sleep(1000);
 
-        Turn(-466, 1);
+        Turn(-450, 0.75);
 
-        // Wait until the motors are done spinning
-        while (motorFL.isBusy() && motorBL.isBusy() && motorBR.isBusy() && motorFR.isBusy()) {
-            // Do nothing, just wait
-        }
+        Forward(1100, 0.75);
 
-        sleep(10);
-
-        Forward(1150, 1);
-
-        // Wait until the motors are done spinning
-        while (motorFL.isBusy() && motorBL.isBusy() && motorBR.isBusy() && motorFR.isBusy()) {
-            // Do nothing, just wait
-        }
-
-        sleep(10);
-
-        Turn(-466, 1);
-
-        // Wait until the motors are done spinning
-        while (motorFL.isBusy() && motorBL.isBusy() && motorBR.isBusy() && motorFR.isBusy()) {
-            // Do nothing, just wait
-        }
-
-        sleep(10);
-
-        Forward(350, 1);
-
-        // Wait until the motors are done spinning
-        while (motorFL.isBusy() && motorBL.isBusy() && motorBR.isBusy() && motorFR.isBusy()) {
-            // Do nothing, just wait
-        }
-
-        sleep(10);
-
-        Forward(-350, 1);
-
-        // Wait until the motors are done spinning
-        while (motorFL.isBusy() && motorBL.isBusy() && motorBR.isBusy() && motorFR.isBusy()) {
-            // Do nothing, just wait
-        }
-
-        sleep(10);
-
-        Turn(466, 1);
-
-        // Wait until the motors are done spinning
-        while (motorFL.isBusy() && motorBL.isBusy() && motorBR.isBusy() && motorFR.isBusy()) {
-            // Do nothing, just wait
-        }
-
-        sleep(10);
-
-        Forward(1250, 1);
-
-        // Wait until the motors are done spinning
-        while (motorFL.isBusy() && motorBL.isBusy() && motorBR.isBusy() && motorFR.isBusy()) {
-            // Do nothing, just wait
-        }
-
-        sleep(10);
-
-        Turn(-466, 1);
-
-        // Wait until the motors are done spinning
-        while (motorFL.isBusy() && motorBL.isBusy() && motorBR.isBusy() && motorFR.isBusy()) {
-            // Do nothing, just wait
-        }
-
-        sleep(10);
-
-        Forward(900, 1);
-
-        // Wait until the motors are done spinning
-        while (motorFL.isBusy() && motorBL.isBusy() && motorBR.isBusy() && motorFR.isBusy()) {
-            // Do nothing, just wait
-        }
-
-        sleep(10);
-
-        Turn(-466, 1);
-
-        // Wait until the motors are done spinning
-        while (motorFL.isBusy() && motorBL.isBusy() && motorBR.isBusy() && motorFR.isBusy()) {
-            // Do nothing, just wait
-        }
-
-        sleep(10);
-
-        Forward(600, 1);
-
-        // Wait until the motors are done spinning
-        while (motorFL.isBusy() && motorBL.isBusy() && motorBR.isBusy() && motorFR.isBusy()) {
-            // Do nothing, just wait
-        }
-
-        sleep(10);
-
+        Turn(450, 0.75);
 
         // Print ending numbers
         TelemetryPosition();
@@ -267,13 +155,13 @@ public class auto extends LinearOpMode {
         motorBL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motorFL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        double Circumference       = 52 * Tau;
-        double CountsPerMillimeter = 1440/Circumference;
+        double Circumference = 52 * Tau;
+        double CountsPerMillimeter = 1440 / Circumference;
 
-        motorFR.setTargetPosition((int)(TargetDistance * CountsPerMillimeter));
-        motorBR.setTargetPosition((int)(TargetDistance * CountsPerMillimeter));
-        motorBL.setTargetPosition((int)(TargetDistance * CountsPerMillimeter));
-        motorFL.setTargetPosition((int)(TargetDistance * CountsPerMillimeter));
+        motorFR.setTargetPosition((int) (TargetDistance * CountsPerMillimeter));
+        motorBR.setTargetPosition((int) (TargetDistance * CountsPerMillimeter));
+        motorBL.setTargetPosition((int) (TargetDistance * CountsPerMillimeter));
+        motorFL.setTargetPosition((int) (TargetDistance * CountsPerMillimeter));
 
         motorFR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         motorBR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -285,29 +173,47 @@ public class auto extends LinearOpMode {
         motorBL.setPower(Power);
         motorFL.setPower(Power);
 
+        // Wait until the motors are done spinning
+        while (motorFL.isBusy() && motorBL.isBusy() && motorBR.isBusy() && motorFR.isBusy()) {
+            // Do nothing, just wait
+        }
+
     }
-    
+
     private void TelemetryPosition() {
         telemetry.addData("Front Right", motorFR.getCurrentPosition());
-        telemetry.addData("Back Right",  motorBR.getCurrentPosition());
-        telemetry.addData("Back Left",   motorBL.getCurrentPosition());
-        telemetry.addData("Front Left",  motorFL.getCurrentPosition());
+        telemetry.addData("Back Right", motorBR.getCurrentPosition());
+        telemetry.addData("Back Left", motorBL.getCurrentPosition());
+        telemetry.addData("Front Left", motorFL.getCurrentPosition());
         telemetry.update();
     }
-    
+
+    private void Telemetry(int Word) {
+        if (Word == 1) {
+            telemetry.addData("", "Arm");
+            telemetry.update();
+        } else if (Word == 2) {
+            telemetry.addData("", "Claw");
+            telemetry.update();
+        } else if (Word == 3) {
+            telemetry.addData("", "Lifter");
+            telemetry.update();
+        }
+    }
+
     private void Turn(double TargetRadians, double Power) {
         motorFR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motorBR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motorBL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motorFL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        double Circumference       = 52 * Tau;
-        double CountsPerMillimeter = 1440/Circumference;
+        double Circumference = 52 * Tau;
+        double CountsPerMillimeter = 1440 / Circumference;
 
-        motorFR.setTargetPosition((int)(TargetRadians  * CountsPerMillimeter));
-        motorBR.setTargetPosition((int)(TargetRadians  * CountsPerMillimeter));
-        motorBL.setTargetPosition((int)(-TargetRadians * CountsPerMillimeter));
-        motorFL.setTargetPosition((int)(-TargetRadians * CountsPerMillimeter));
+        motorFR.setTargetPosition((int) (TargetRadians * CountsPerMillimeter));
+        motorBR.setTargetPosition((int) (TargetRadians * CountsPerMillimeter));
+        motorBL.setTargetPosition((int) (-TargetRadians * CountsPerMillimeter));
+        motorFL.setTargetPosition((int) (-TargetRadians * CountsPerMillimeter));
 
         motorFR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         motorBR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -319,5 +225,19 @@ public class auto extends LinearOpMode {
         motorBL.setPower(Power);
         motorFL.setPower(Power);
 
+        // Wait until the motors are done spinning
+        while (motorFL.isBusy() && motorBL.isBusy() && motorBR.isBusy() && motorFR.isBusy()) {
+            // Do nothing, just wait
+        }
+
     }
+
+    /*
+    private void Home() {
+            arm1.setTargetPosition(0);
+            arm1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            arm1.setPower(.1);
+            arm2.setPosition(0);
+    }
+     */
 }
