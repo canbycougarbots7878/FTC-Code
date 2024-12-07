@@ -13,13 +13,16 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 @Autonomous(name="Encoder Check", group="Robot")
 public class SelfCheck extends LinearOpMode {
-    DcMotor motor = null;
+    DcMotor slider = null;
+    DcMotor arm = null;
     @Override
     public void runOpMode() {
-        motor = hardwareMap.get(DcMotor.class, "Arm1");
+        slider = hardwareMap.get(DcMotor.class, "Slide Arm");
+        arm = hardwareMap.get(DcMotor.class, "Extending Arm");
         waitForStart();
         while (opModeIsActive()) {
-            telemetry.addData("Arm 1 Position (Motor)", motor.getCurrentPosition());
+            telemetry.addData("Slider Position (Motor)", slider.getCurrentPosition());
+            telemetry.addData("Arm Position (Motor)", arm.getCurrentPosition());
             telemetry.update();
         }
     }
