@@ -11,7 +11,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 // 5. input code for arm
 
 //Notes
-// 1. 90 degrees counterclockwise is 470 mm
+// 1. 90 degrees counterclockwise is 450 mm
 
 
 @Autonomous(name = "COMPETITION: Auto Drive", group = "Concept")
@@ -22,23 +22,22 @@ public class auto extends LinearOpMode {
     DcMotor motorFR = null;
     DcMotor motorBR = null;
 
-    /*
-    DcMotor arm1 = null;
-    Servo arm2 = null;
-    CRServo claw = null;
-     */
+    DcMotor arm      = null;
+    DcMotor slidearm = null;
 
+    Servo claw  = null;
+    Servo wrist = null;
     public void runOpMode() {
         motorFR = hardwareMap.get(DcMotor.class, "FrontRight");
         motorBR = hardwareMap.get(DcMotor.class, "BackRight");
         motorBL = hardwareMap.get(DcMotor.class, "BackLeft");
         motorFL = hardwareMap.get(DcMotor.class, "FrontLeft");
 
-        /*
-        arm1 = hardwareMap.get(DcMotor.class, "Arm1");
-        arm2 = hardwareMap.get(Servo.class, "Arm2");
-        claw = hardwareMap.get(CRServo.class, "claw");
-         */
+        slidearm = hardwareMap.get(DcMotor.class, "Slide Arm");
+        arm = hardwareMap.get(DcMotor.class, "Extending Arm");
+
+        wrist = hardwareMap.get(Servo.class, "wrist");
+        claw = hardwareMap.get(Servo.class, "claw");
 
         motorFR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         motorBR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -49,6 +48,13 @@ public class auto extends LinearOpMode {
         motorBR.setDirection(DcMotor.Direction.FORWARD);
         motorBL.setDirection(DcMotor.Direction.REVERSE);
         motorFL.setDirection(DcMotor.Direction.REVERSE);
+
+        slidearm.setTargetPosition(100);
+        slidearm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        //slidearm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        slidearm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         motorFR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorBR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -63,75 +69,95 @@ public class auto extends LinearOpMode {
 
         // Print starting numbers and move forward
         TelemetryPosition();
-        //Home();
+        int rest = 1000;
+        Home();
 
         Forward(500, 0.75);
 
-        sleep(10000);
+        sleep(rest);
 
         Turn(-450, 0.75);
 
-        sleep(1000);
+        sleep(rest);
 
         Forward(620, 0.75);
 
-        sleep(1000);
+        sleep(rest);
 
         Turn(-450, 0.75);
 
-        sleep(1000);
+        sleep(rest);
 
         Forward(100, 0.75);
 
-        sleep(1000);
+        sleep(rest);
 
         Telemetry(1);
 
-        sleep(1000);
+        sleep(rest);
 
         Telemetry(2);
 
-        sleep(1000);
+        sleep(rest);
 
         Telemetry(1);
+        Deploy();
 
-        sleep(1000);
+        sleep(rest);
+
+        claw.setPosition(.4);
+
+        sleep(rest);
+
+        Home();
 
         Forward(-100, 0.75);
 
-        sleep(1000);
+        sleep(rest);
 
         Turn(-450, 0.75);
 
-        sleep(1000);
+        sleep(rest);
 
         Forward(1100, 0.75);
 
-        sleep(1000);
+        sleep(rest);
 
         Turn(-450, 0.75);
 
-        sleep(1000);
+        sleep(rest);
 
-        Telemetry(3);
+        Reach();
 
-        sleep(1000);
+        sleep(rest);
 
         Forward(70, 0.75);
 
-        sleep(1000);
+        sleep(rest);
 
-        Telemetry(3);
+        Basket();
 
-        sleep(1000);
+        sleep(rest);
+
+        claw.setPosition(.5);
+
+        sleep(rest);
+
+        Home();
+
+        sleep(rest);
 
         Forward(-70, 0.75);
 
-        sleep(1000);
+        sleep(rest);
 
         Turn(-450, 0.75);
 
+        sleep(rest);
+
         Forward(1100, 0.75);
+
+        sleep(rest);
 
         Turn(450, 0.75);
 
@@ -147,6 +173,39 @@ public class auto extends LinearOpMode {
         while (opModeIsActive()) {
             // Do nothing, just wait
         }
+    }
+
+    private void SetSliderPosition(int target) {
+        slidearm.setTargetPosition(target);
+        slidearm.setPower(.5);
+    }
+
+    private void SetSliderSegment(int segment) {
+        //slidearm.setPower(1);
+        switch(segment) {
+            case(0): SetSliderPosition(100); break;
+            case(1): SetSliderPosition(1437); break;
+            case(2): SetSliderPosition(2971); break;
+            case(3): SetSliderPosition(4498); break;
+            case(4): SetSliderPosition(6025); break;
+        }
+    }
+
+    private void SetArmPosition(int position) {
+        boolean direction = (arm.getCurrentPosition() < position);
+        int proximity = Math.abs(arm.getCurrentPosition() - position);
+        double speed = ProximityRunge(proximity);
+        if(direction) {
+            arm.setPower(speed);
+        }
+        else {
+            arm.setPower(-speed);
+        }
+    }
+
+    private double ProximityRunge(int position) {
+        double x = (double)position / 4;
+        return 1 - 1/(1+x*x);
     }
 
     private void Forward(double TargetDistance, double Power) {
@@ -232,12 +291,23 @@ public class auto extends LinearOpMode {
 
     }
 
-    /*
     private void Home() {
-            arm1.setTargetPosition(0);
-            arm1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            arm1.setPower(.1);
-            arm2.setPosition(0);
+        SetSliderSegment(0);
+        SetArmPosition(0);
     }
-     */
+
+    private void Deploy() {
+        SetSliderSegment(0);
+        SetArmPosition(-70);
+    }
+
+    private void Basket() {
+        SetSliderSegment(2);
+    }
+
+    private void Reach() {
+        SetSliderSegment(3);
+    }
+
+
 }
