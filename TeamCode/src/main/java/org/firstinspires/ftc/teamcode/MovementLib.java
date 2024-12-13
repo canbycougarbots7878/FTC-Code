@@ -34,8 +34,4 @@ public class MovementLib {
             this.Back_Left.setPower(Back_Left_Power);
         }
     }
-    public static final int REVERSE_FRONT_RIGHT = 1;
-    public static final int REVERSE_FRONT_LEFT = 2;
-    public static final int REVERSE_BACK_RIGHT = 4;
-    public static final int REVERSE_BACK_LEFT = 8;
 }
