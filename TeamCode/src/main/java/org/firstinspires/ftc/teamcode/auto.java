@@ -219,6 +219,8 @@ public class auto extends LinearOpMode {
         motorBL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         motorFL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
+        //I am going to do acceleration for the wheels
+
         motorFR.setPower(Power);
         motorBR.setPower(Power);
         motorBL.setPower(Power);
