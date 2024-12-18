@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
@@ -92,15 +91,6 @@ public class auto extends LinearOpMode {
 
         sleep(rest);
 
-        Telemetry(1);
-
-        sleep(rest);
-
-        Telemetry(2);
-
-        sleep(rest);
-
-        Telemetry(1);
         Deploy();
 
         sleep(rest);
@@ -110,6 +100,8 @@ public class auto extends LinearOpMode {
         sleep(rest);
 
         Home();
+
+        sleep(rest);
 
         Forward(-100, 0.75);
 
