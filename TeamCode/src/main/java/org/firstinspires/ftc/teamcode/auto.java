@@ -219,12 +219,23 @@ public class auto extends LinearOpMode {
         motorBL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         motorFL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
+        double FRCurrentPosition = motorFR.getCurrentPosition();
+        double BRCurrentPosition = motorBR.getCurrentPosition();
+        double BLCurrentPosition = motorBL.getCurrentPosition();
+        double FLCurrentPosition = motorFL.getCurrentPosition();
+
+        double averageCurrentPosition = (FRCurrentPosition + BRCurrentPosition + BLCurrentPosition + FLCurrentPosition)/4;
+
+        double Non_linear_squishificated_function = Math.sin(averageCurrentPosition);
+
+        double Non_linear_squishification_function_value = ((1-(-1))/(1+(((1-(-1))/((0-(-1))-1)))*(((1-(-1))/(((0.9999999999-(-1))-1)/((1-(-1))/(0-(-1)))-1)))**(Non_linear_squishificated_function/3.3)));
+
         //I am going to do acceleration for the wheels
 
-        motorFR.setPower(Power);
-        motorBR.setPower(Power);
-        motorBL.setPower(Power);
-        motorFL.setPower(Power);
+        motorFR.setPower(Non_linear_squishification_function_value);
+        motorBR.setPower(Non_linear_squishification_function_value);
+        motorBL.setPower(Non_linear_squishification_function_value);
+        motorFL.setPower(Non_linear_squishification_function_value);
 
         // Wait until the motors are done spinning
         while (motorFL.isBusy() && motorBL.isBusy() && motorBR.isBusy() && motorFR.isBusy()) {
