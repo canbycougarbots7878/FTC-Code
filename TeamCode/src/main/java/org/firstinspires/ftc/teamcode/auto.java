@@ -75,43 +75,11 @@ public class auto extends LinearOpMode {
 
         sleep(rest);
 
-        Turn(-450, 0.75);
+        Turn(450, 0.75);
 
         sleep(rest);
 
-        Forward(620, 0.75);
-
-        sleep(rest);
-
-        Turn(-450, 0.75);
-
-        sleep(rest);
-
-        Forward(100, 0.75);
-
-        sleep(rest);
-
-        Deploy();
-
-        sleep(rest);
-
-        claw.setPosition(.4);
-
-        sleep(rest);
-
-        Home();
-
-        sleep(rest);
-
-        Forward(-100, 0.75);
-
-        sleep(rest);
-
-        Turn(-450, 0.75);
-
-        sleep(rest);
-
-        Forward(1100, 0.75);
+        Forward(304.8, 0.75);
 
         sleep(rest);
 
