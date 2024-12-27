@@ -41,10 +41,10 @@ public class auto extends LinearOpMode {
         motorBL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         motorFL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        motorFR.setDirection(DcMotor.Direction.REVERSE);
-        motorBR.setDirection(DcMotor.Direction.FORWARD);
-        motorBL.setDirection(DcMotor.Direction.REVERSE);
-        motorFL.setDirection(DcMotor.Direction.REVERSE);
+        motorFR.setDirection(DcMotor.Direction.FORWARD);
+        motorBR.setDirection(DcMotor.Direction.REVERSE);
+        motorBL.setDirection(DcMotor.Direction.FORWARD);
+        motorFL.setDirection(DcMotor.Direction.FORWARD);
 
         slidearm.setTargetPosition(100);
         slidearm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
