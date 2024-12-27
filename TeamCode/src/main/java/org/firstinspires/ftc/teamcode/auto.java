@@ -33,8 +33,8 @@ public class auto extends LinearOpMode {
         slidearm = hardwareMap.get(DcMotor.class, "Slide Arm");
         arm = hardwareMap.get(DcMotor.class, "Extending Arm");
 
-        wrist = hardwareMap.get(Servo.class, "wrist");
-        claw = hardwareMap.get(Servo.class, "claw");
+        wrist = hardwareMap.get(Servo.class, "Wrist");
+        claw = hardwareMap.get(Servo.class, "Claw");
 
         motorFR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         motorBR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
