@@ -71,6 +71,11 @@ public class auto extends LinearOpMode {
 
         Forward(500, 0.75);
 
+        // Wait until the motors are done spinning
+        while (motorFL.isBusy() && motorBL.isBusy() && motorBR.isBusy() && motorFR.isBusy()) {
+            // Do nothing, just wait
+        }
+
         sleep(rest);
 
         Turn(450, 0.75);
@@ -191,11 +196,6 @@ public class auto extends LinearOpMode {
         motorBR.setPower(Power);
         motorBL.setPower(Power);
         motorFL.setPower(Power);
-
-        // Wait until the motors are done spinning
-        while (motorFL.isBusy() && motorBL.isBusy() && motorBR.isBusy() && motorFR.isBusy()) {
-            // Do nothing, just wait
-        }
 
     }
 
