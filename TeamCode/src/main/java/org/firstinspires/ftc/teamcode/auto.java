@@ -6,8 +6,6 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 //TODO
-// 4. Create code for arm
-// 5. input code for arm
 
 //Notes
 // 1. 90 degrees counterclockwise is 450 mm

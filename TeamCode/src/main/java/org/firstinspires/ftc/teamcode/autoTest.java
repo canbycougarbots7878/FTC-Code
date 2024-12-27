@@ -67,9 +67,23 @@ public class autoTest extends LinearOpMode {
         int rest = 1000;
         Home();
 
+        sleep(rest);
+
+        Reach();
+
+        sleep(rest);
+
+        Basket();
+
+        sleep(rest);
+
+        Home();
+
+        sleep(rest);
+
         TelemetryPosition();
 
-        Forward(1000, 0.5);
+        //Forward(1000, 0.5);
 
         // Print ending numbers
         TelemetryPosition();
