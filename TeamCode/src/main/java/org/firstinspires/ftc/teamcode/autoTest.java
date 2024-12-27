@@ -1,3 +1,5 @@
+//1S
+
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -64,7 +66,7 @@ public class autoTest extends LinearOpMode {
 
         // Print starting numbers and move forward
         TelemetryPosition();
-        int rest = 1000;
+        int rest = 5000;
         Home();
 
         sleep(rest);
@@ -228,11 +230,11 @@ public class autoTest extends LinearOpMode {
     }
 
     private void Basket() {
-        SetSliderSegment(2);
+        SetSliderSegment(1);
     }
 
     private void Reach() {
-        SetSliderSegment(3);
+        SetSliderSegment(2);
     }
 
 
