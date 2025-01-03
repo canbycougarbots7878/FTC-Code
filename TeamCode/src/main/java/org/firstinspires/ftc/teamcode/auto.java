@@ -73,7 +73,7 @@ public class auto extends LinearOpMode {
 
         // Wait until the motors are done spinning
         while (motorFL.isBusy() && motorBL.isBusy() && motorBR.isBusy() && motorFR.isBusy()) {
-            TelemetryPosition();
+
         }
 
         sleep(rest);
@@ -180,22 +180,22 @@ public class auto extends LinearOpMode {
         double Circumference = 52 * Tau;
         double CountsPerMillimeter = 1440 / Circumference;
 
-        motorFR.setTargetPosition((int) (TargetDistance * CountsPerMillimeter));
-        motorBR.setTargetPosition((int) (TargetDistance * CountsPerMillimeter));
-        motorBL.setTargetPosition((int) (TargetDistance * CountsPerMillimeter));
-        motorFL.setTargetPosition((int) (TargetDistance * CountsPerMillimeter));
+        motorFR.setTargetPosition((int)(TargetDistance * CountsPerMillimeter));
+        motorBR.setTargetPosition((int)(TargetDistance * CountsPerMillimeter));
+        motorBL.setTargetPosition((int)(TargetDistance * CountsPerMillimeter));
+        motorFL.setTargetPosition((int)(TargetDistance * CountsPerMillimeter));
 
         motorFR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         motorBR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         motorBL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         motorFL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        //I am going to do acceleration for the wheels
-
         motorFR.setPower(Power);
         motorBR.setPower(Power);
         motorBL.setPower(Power);
         motorFL.setPower(Power);
+
+        TelemetryPosition();
 
     }
 
