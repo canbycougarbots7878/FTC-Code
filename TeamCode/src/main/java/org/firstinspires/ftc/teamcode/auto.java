@@ -73,7 +73,7 @@ public class auto extends LinearOpMode {
 
         // Wait until the motors are done spinning
         while (motorFL.isBusy() && motorBL.isBusy() && motorBR.isBusy() && motorFR.isBusy()) {
-            // Do nothing, just wait
+            TelemetryPosition();
         }
 
         sleep(rest);
