@@ -41,10 +41,10 @@ public class auto extends LinearOpMode {
         motorBL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         motorFL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        motorFR.setDirection(DcMotor.Direction.FORWARD);
+        motorFR.setDirection(DcMotor.Direction.REVERSE);
         motorBR.setDirection(DcMotor.Direction.FORWARD);
-        motorBL.setDirection(DcMotor.Direction.FORWARD);
-        motorFL.setDirection(DcMotor.Direction.FORWARD);
+        motorBL.setDirection(DcMotor.Direction.REVERSE);
+        motorFL.setDirection(DcMotor.Direction.REVERSE);
 
         slidearm.setTargetPosition(100);
         slidearm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -71,9 +71,6 @@ public class auto extends LinearOpMode {
         Forward(500, 0.75);
 
         // Wait until the motors are done spinning
-        while (motorFL.isBusy() && motorBL.isBusy() && motorBR.isBusy() && motorFR.isBusy()) {
-
-        }
 
         sleep(rest);
 
@@ -194,8 +191,10 @@ public class auto extends LinearOpMode {
         motorBL.setPower(Power);
         motorFL.setPower(Power);
 
-        TelemetryPosition();
 
+        while (motorFL.isBusy() && motorBL.isBusy() && motorBR.isBusy() && motorFR.isBusy()) {
+            TelemetryPosition();
+        }
     }
 
     private void TelemetryPosition() {
@@ -245,7 +244,7 @@ public class auto extends LinearOpMode {
 
         // Wait until the motors are done spinning
         while (motorFL.isBusy() && motorBL.isBusy() && motorBR.isBusy() && motorFR.isBusy()) {
-            // Do nothing, just wait
+            TelemetryPosition();
         }
 
     }

@@ -30,28 +30,28 @@ public class autoTest extends LinearOpMode {
         motorBL = hardwareMap.get(DcMotor.class, "BackLeft");
         motorFL = hardwareMap.get(DcMotor.class, "FrontLeft");
 
-        slidearm = hardwareMap.get(DcMotor.class, "Slide Arm");
-        arm = hardwareMap.get(DcMotor.class, "Extending Arm");
+        //slidearm = hardwareMap.get(DcMotor.class, "Slide Arm");
+        //arm = hardwareMap.get(DcMotor.class, "Extending Arm");
 
-        wrist = hardwareMap.get(Servo.class, "wrist");
-        claw = hardwareMap.get(Servo.class, "claw");
+        //wrist = hardwareMap.get(Servo.class, "wrist");
+        //claw = hardwareMap.get(Servo.class, "claw");
 
         motorFR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         motorBR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         motorBL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         motorFL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        motorFR.setDirection(DcMotor.Direction.REVERSE);
+        motorFR.setDirection(DcMotor.Direction.FORWARD);
         motorBR.setDirection(DcMotor.Direction.FORWARD);
         motorBL.setDirection(DcMotor.Direction.REVERSE);
         motorFL.setDirection(DcMotor.Direction.REVERSE);
 
-        slidearm.setTargetPosition(100);
-        slidearm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        //slidearm.setTargetPosition(100);
+        //slidearm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        //arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         //slidearm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        slidearm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        //slidearm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        //arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         motorFR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorBR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -67,25 +67,17 @@ public class autoTest extends LinearOpMode {
         // Print starting numbers and move forward
         TelemetryPosition();
         int rest = 5000;
-        Home();
+        motorFR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motorBR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motorBL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motorFL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        //Home();
 
-        sleep(rest);
+        Forward(1000, 0.75);
 
-        Reach();
-
-        sleep(rest);
-
-        Basket();
-
-        sleep(rest);
-
-        Home();
-
-        sleep(rest);
-
-        TelemetryPosition();
-
-        //Forward(1000, 0.5);
+        while (motorFL.isBusy() || motorBL.isBusy() || motorBR.isBusy() || motorFR.isBusy()) {
+            TelemetryPosition();
+        }
 
         // Print ending numbers
         TelemetryPosition();
@@ -101,6 +93,7 @@ public class autoTest extends LinearOpMode {
         }
     }
 
+    /*
     private void SetSliderPosition(int target) {
         slidearm.setTargetPosition(target);
         slidearm.setPower(.5);
@@ -134,11 +127,13 @@ public class autoTest extends LinearOpMode {
         return 1 - 1/(1+x*x);
     }
 
+     */
+
     private void Forward(double TargetDistance, double Power) {
-        motorFR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motorBR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motorBL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motorFL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        //motorFR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        //motorBR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        //motorBL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        //motorFL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         double Circumference = 52 * Tau;
         double CountsPerMillimeter = 1440 / Circumference;
@@ -161,9 +156,6 @@ public class autoTest extends LinearOpMode {
         motorFL.setPower(Power);
 
         // Wait until the motors are done spinning
-        while (motorFL.isBusy() && motorBL.isBusy() && motorBR.isBusy() && motorFR.isBusy()) {
-            // Do nothing, just wait
-        }
 
     }
 
@@ -219,6 +211,7 @@ public class autoTest extends LinearOpMode {
 
     }
 
+    /*
     private void Home() {
         SetSliderSegment(0);
         SetArmPosition(0);
@@ -236,6 +229,8 @@ public class autoTest extends LinearOpMode {
     private void Reach() {
         SetSliderSegment(2);
     }
+
+     */
 
 
 }
