@@ -9,6 +9,7 @@ import org.firstinspires.ftc.teamcode.MovementLib.*;
 public class CompetitionTeleopV2 extends LinearOpMode {
     DcMotor Arm = null;
     DcMotor Slider = null;
+    Servo Arm_Lock = null;
     Servo Claw = null;
     Servo Wrist = null;
     @Override
@@ -25,70 +26,83 @@ public class CompetitionTeleopV2 extends LinearOpMode {
         DriveWheels Wheels = new DriveWheels(Front_Right, Front_Left, Back_Right, Back_Left);
         Front_Right.setDirection(DcMotorSimple.Direction.REVERSE);
         Back_Right.setDirection(DcMotorSimple.Direction.REVERSE);
-        // Initialize Arm
-        Arm = hardwareMap.get(DcMotor.class, "Extending Arm");
-        Arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        Arm.setTargetPosition(0);
-        Arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        Arm.setPower(0);
         // Initialize Slider
         Slider = hardwareMap.get(DcMotor.class, "Slide Arm");
         Slider.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         Slider.setTargetPosition(0);
         Slider.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         Slider.setPower(0);
+        // Initialize Arm
+        Arm = hardwareMap.get(DcMotor.class, "Extending Arm");
+        Arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        Arm.setTargetPosition(0);
+        Arm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        Arm.setPower(0);
+        // Initialize Arm Lock
+        Arm_Lock = hardwareMap.get(Servo.class, "Arm Lock");
         // Initialize Claw
         Claw = hardwareMap.get(Servo.class, "Claw");
         //Wrist = hardwareMap.get(Servo.class, "Wrist");
         // Variables
-        boolean debounce = true;
-        boolean extend = false;
-        boolean armdown = false;
+        int slider_position = 0;
+        int arm_position = 0;
+        int last = 0;
+        int armspeed = 0;
+        double armpwr = 0;
         waitForStart();
+        Arm_Lock.setPosition(.5);
         while(opModeIsActive()) {
             Wheels.Omni_Move(gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x, 1);
-            if (gamepad2.y) {
-                if(debounce) {
-                    debounce = false;
-                    extend = !extend;
-                }
+            if (gamepad2.dpad_down) {
+                slider_position = 0;
             }
-            else if (gamepad2.x) {
-                if(debounce) {
-                    debounce = false;
-                    armdown = !armdown;
-                }
+            if (gamepad2.dpad_up) {
+                slider_position = 1;
             }
-            else {
-                debounce = true;
-            }
-            if (extend) {
-                Slider.setTargetPosition(4500);
-                Slider.setPower(1);
-            }
-            else {
+            if (slider_position == 0) {
                 Slider.setTargetPosition(0);
                 if (Slider.getCurrentPosition() < 100) {
                     Slider.setPower(0);
                 }
                 else {
-                    Slider.setPower(-.5);
+                    Slider.setPower(1);
                 }
-            }
-            if (armdown) {
-                Arm.setTargetPosition(-50);
-                Arm.setPower(1);
             }
             else {
-                Arm.setTargetPosition(0);
-                if (Arm.getCurrentPosition() > 0) {
-                    Arm.setPower(0);
+                Slider.setTargetPosition(4500);
+                Slider.setPower(1);
+            }
+            if (gamepad2.a) {
+                if (Math.abs(armspeed) > 1) {
+                    armpwr += 0.01;
                 }
                 else {
-                    Arm.setPower(1);
+                    armpwr -= 0.01;
                 }
+                armpwr = Math.min(1, Math.max(-1, armpwr));
             }
+            else if (gamepad2.b) {
+                if (Math.abs(armspeed) > 1) {
+                    armpwr -= 0.01;
+                }
+                else {
+                    armpwr += 0.01;
+                }
+                armpwr = Math.min(1, Math.max(-1, armpwr));
+                Arm.setPower(armpwr);
+            }
+            else {
+                armpwr = 0;
+            }
+            Arm.setPower(armpwr);
+            armspeed = Arm.getCurrentPosition() - last;
+            last = Arm.getCurrentPosition();
             Claw.setPosition(1 - gamepad2.right_trigger);
+            telemetry.addData("arm position", Arm.getCurrentPosition());
+            telemetry.addData("arm speed", armspeed);
+            telemetry.addData("arm power", armpwr);
+            telemetry.addData("slider position", Slider.getCurrentPosition());
+            telemetry.update();
         }
     }
 }

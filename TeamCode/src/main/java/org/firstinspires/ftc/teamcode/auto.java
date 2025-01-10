@@ -49,7 +49,6 @@ public class auto extends LinearOpMode {
         slidearm.setTargetPosition(100);
         slidearm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        //slidearm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         slidearm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
