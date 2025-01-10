@@ -36,7 +36,7 @@ public class CompetitionTeleopV2 extends LinearOpMode {
         Arm = hardwareMap.get(DcMotor.class, "Extending Arm");
         Arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         Arm.setTargetPosition(0);
-        Arm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        Arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         Arm.setPower(0);
         // Initialize Arm Lock
         Arm_Lock = hardwareMap.get(Servo.class, "Arm Lock");
@@ -73,30 +73,21 @@ public class CompetitionTeleopV2 extends LinearOpMode {
                 Slider.setPower(1);
             }
             if (gamepad2.a) {
-                if (Math.abs(armspeed) > 1) {
-                    armpwr += 0.01;
+                Arm.setTargetPosition(0);
+                if (Arm.getCurrentPosition() > 0) {
+                    Arm.setPower(0);
                 }
                 else {
-                    armpwr -= 0.01;
+                    Arm.setPower(1);
                 }
-                armpwr = Math.min(1, Math.max(-1, armpwr));
             }
             else if (gamepad2.b) {
-                if (Math.abs(armspeed) > 1) {
-                    armpwr -= 0.01;
-                }
-                else {
-                    armpwr += 0.01;
-                }
-                armpwr = Math.min(1, Math.max(-1, armpwr));
-                Arm.setPower(armpwr);
+                Arm.setTargetPosition(-50);
+                Arm.setPower(1);
             }
             else {
                 armpwr = 0;
             }
-            Arm.setPower(armpwr);
-            armspeed = Arm.getCurrentPosition() - last;
-            last = Arm.getCurrentPosition();
             Claw.setPosition(1 - gamepad2.right_trigger);
             telemetry.addData("arm position", Arm.getCurrentPosition());
             telemetry.addData("arm speed", armspeed);
