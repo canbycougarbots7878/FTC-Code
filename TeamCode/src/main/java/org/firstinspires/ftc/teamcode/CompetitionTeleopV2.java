@@ -36,7 +36,7 @@ public class CompetitionTeleopV2 extends LinearOpMode {
         Arm = hardwareMap.get(DcMotor.class, "Extending Arm");
         Arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         Arm.setTargetPosition(0);
-        Arm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        Arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         Arm.setPower(0);
         // Initialize Arm Lock
         Arm_Lock = hardwareMap.get(Servo.class, "Arm Lock");
@@ -46,13 +46,11 @@ public class CompetitionTeleopV2 extends LinearOpMode {
         // Variables
         int slider_position = 0;
         int arm_position = 0;
-        int last = 0;
-        int armspeed = 0;
-        double armpwr = 0;
+        int arm_good = 0;
         waitForStart();
         Arm_Lock.setPosition(.5);
         while(opModeIsActive()) {
-            Wheels.Omni_Move(gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x, 1);
+            Wheels.Omni_Move(gamepad1.left_stick_y + gamepad2.left_stick_y, gamepad1.left_stick_x + gamepad2.left_stick_x, gamepad1.right_stick_x + gamepad2.right_stick_x, 1);
             if (gamepad2.dpad_down) {
                 slider_position = 0;
             }
@@ -72,35 +70,36 @@ public class CompetitionTeleopV2 extends LinearOpMode {
                 Slider.setTargetPosition(4500);
                 Slider.setPower(1);
             }
-            if (gamepad2.a) {
-                if (Math.abs(armspeed) > 1) {
-                    armpwr += 0.01;
+            if(gamepad2.a) { arm_position = 0; }
+            if(gamepad2.b) { arm_position = 1; }
+            if (arm_position == 0) {
+                arm_good = 0;
+                if (Arm.getCurrentPosition() > 0) {
+                    Arm.setPower(0);
                 }
                 else {
-                    armpwr -= 0.01;
+                    Arm.setPower(1);
                 }
-                armpwr = Math.min(1, Math.max(-1, armpwr));
             }
-            else if (gamepad2.b) {
-                if (Math.abs(armspeed) > 1) {
-                    armpwr -= 0.01;
+            else if (arm_position == 1) {
+                if (arm_good <= 20) {
+                    Arm.setPower(-1);
+                    arm_good++;
                 }
                 else {
-                    armpwr += 0.01;
+                    if (Arm.getCurrentPosition() > -50) {
+                        Arm.setPower(.2);
+                    }
+                    else if (Arm.getCurrentPosition() > -45) {
+                        Arm.setPower(-.5);
+                    }
+                    else {
+                        Arm.setPower(0);
+                    }
                 }
-                armpwr = Math.min(1, Math.max(-1, armpwr));
-                Arm.setPower(armpwr);
             }
-            else {
-                armpwr = 0;
-            }
-            Arm.setPower(armpwr);
-            armspeed = Arm.getCurrentPosition() - last;
-            last = Arm.getCurrentPosition();
-            Claw.setPosition(1 - gamepad2.right_trigger);
+            Claw.setPosition(1.5 - gamepad2.right_trigger);
             telemetry.addData("arm position", Arm.getCurrentPosition());
-            telemetry.addData("arm speed", armspeed);
-            telemetry.addData("arm power", armpwr);
             telemetry.addData("slider position", Slider.getCurrentPosition());
             telemetry.update();
         }

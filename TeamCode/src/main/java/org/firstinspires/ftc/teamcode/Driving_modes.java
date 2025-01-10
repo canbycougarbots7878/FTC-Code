@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import org.firstinspires.ftc.teamcode.MovementLib.*;
 
 @TeleOp(name = "Omni Drive", group = "Concept")
-public class RRM_Driving extends LinearOpMode {
+public class Driving_modes extends LinearOpMode {
     DcMotor motorFR = null;
     DcMotor motorFL = null;
     DcMotor motorBR = null;

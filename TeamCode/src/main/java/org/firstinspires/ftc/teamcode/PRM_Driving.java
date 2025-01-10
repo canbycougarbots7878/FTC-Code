@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.hardware.IMU;
 
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 import org.firstinspires.ftc.teamcode.MovementLib.*;
-@TeleOp(name = "Arm PRM_Driving", group = "Concept")
+@TeleOp(name = "Driving Modes", group = "Concept")
 public class PRM_Driving extends LinearOpMode {
     public IMU imu;
     public DcMotor Front_Right;
@@ -29,17 +29,32 @@ public class PRM_Driving extends LinearOpMode {
         );
         waitForStart();
         double PRM_OFFSET = imu.getRobotYawPitchRollAngles().getYaw();
+        int mode = 0;
         while (opModeIsActive()) {
-            YawPitchRollAngles angles = imu.getRobotYawPitchRollAngles();
-            double yaw = angles.getYaw() - PRM_OFFSET;
-            double forward = Math.cos(Math.toRadians(yaw)) * gamepad1.left_stick_y + Math.sin(Math.toRadians(yaw)) * gamepad1.left_stick_x;
-            double right = - Math.sin(Math.toRadians(yaw)) * gamepad1.left_stick_y + Math.cos(Math.toRadians(yaw)) * gamepad1.left_stick_x;
-            telemetry.addData("Angles", angles);
-            telemetry.update();
-            Drive_Wheels.Omni_Move(forward, right, gamepad1.right_stick_x, 1);
-            if(gamepad1.start) {
+            if(gamepad1.a) {
+                mode = 1;
                 PRM_OFFSET = imu.getRobotYawPitchRollAngles().getYaw();
             }
+            else if(gamepad1.b) {
+                mode = 0;
+            }
+            if(mode == 0) { // LM mode
+                telemetry.addLine("Local Movement Mode");
+                Drive_Wheels.Omni_Move(gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x, 1);
+            }
+            else { // GM mode
+                telemetry.addLine("Global Movement Mode");
+                YawPitchRollAngles angles = imu.getRobotYawPitchRollAngles();
+                double yaw = angles.getYaw() - PRM_OFFSET;
+                double forward = Math.cos(Math.toRadians(yaw)) * gamepad1.left_stick_y + Math.sin(Math.toRadians(yaw)) * gamepad1.left_stick_x;
+                double right = -Math.sin(Math.toRadians(yaw)) * gamepad1.left_stick_y + Math.cos(Math.toRadians(yaw)) * gamepad1.left_stick_x;
+                telemetry.addData("Angles", angles);
+                Drive_Wheels.Omni_Move(forward, right, gamepad1.right_stick_x, 1);
+                if (gamepad1.start) {
+                    PRM_OFFSET = imu.getRobotYawPitchRollAngles().getYaw();
+                }
+            }
+            telemetry.update();
         }
     }
 }
