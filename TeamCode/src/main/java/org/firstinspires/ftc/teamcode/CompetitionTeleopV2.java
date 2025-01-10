@@ -94,6 +94,7 @@ public class CompetitionTeleopV2 extends LinearOpMode {
             else {
                 armpwr = 0;
             }
+            // Stupid comment to fucking re commit because android studio is fucking stupid
             Arm.setPower(armpwr);
             armspeed = Arm.getCurrentPosition() - last;
             last = Arm.getCurrentPosition();
