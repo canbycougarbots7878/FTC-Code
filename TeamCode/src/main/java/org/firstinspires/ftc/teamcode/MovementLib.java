@@ -55,4 +55,8 @@ public class MovementLib {
             }
         }
     }
+    static class Slider {
+        public DcMotor Slider_Motor;
+
+    }
 }

@@ -26,7 +26,12 @@ public class CompetitionTeleopV2 extends LinearOpMode {
         Front_Right.setDirection(DcMotorSimple.Direction.REVERSE);
         Back_Right.setDirection(DcMotorSimple.Direction.REVERSE);
         // Initialize Arm
-        //Arm = hardwareMap.get(DcMotor.class, "Extending Arm");
+        Arm = hardwareMap.get(DcMotor.class, "Extending Arm");
+        Arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        Arm.setTargetPosition(0);
+        Arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        Arm.setPower(0);
+        // Initialize Slider
         Slider = hardwareMap.get(DcMotor.class, "Slide Arm");
         Slider.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         Slider.setTargetPosition(0);
@@ -38,13 +43,20 @@ public class CompetitionTeleopV2 extends LinearOpMode {
         // Variables
         boolean debounce = true;
         boolean extend = false;
+        boolean armdown = false;
         waitForStart();
         while(opModeIsActive()) {
             Wheels.Omni_Move(gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x, 1);
-            if (gamepad1.dpad_up) {
+            if (gamepad2.y) {
                 if(debounce) {
                     debounce = false;
                     extend = !extend;
+                }
+            }
+            else if (gamepad2.x) {
+                if(debounce) {
+                    debounce = false;
+                    armdown = !armdown;
                 }
             }
             else {
@@ -63,7 +75,20 @@ public class CompetitionTeleopV2 extends LinearOpMode {
                     Slider.setPower(-.5);
                 }
             }
-            Claw.setPosition(1 - gamepad1.right_trigger);
+            if (armdown) {
+                Arm.setTargetPosition(-50);
+                Arm.setPower(1);
+            }
+            else {
+                Arm.setTargetPosition(0);
+                if (Arm.getCurrentPosition() > 0) {
+                    Arm.setPower(0);
+                }
+                else {
+                    Arm.setPower(1);
+                }
+            }
+            Claw.setPosition(1 - gamepad2.right_trigger);
         }
     }
 }
