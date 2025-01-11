@@ -2,10 +2,9 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+
 //TODO:
 // - ARM1 Positions using SelfCheck.java
 // - ARM2 Positions
@@ -23,9 +22,9 @@ public class CompetitionRobotCode extends LinearOpMode {
 
         slidearm = hardwareMap.get(DcMotor.class, "Slide Arm");
         arm = hardwareMap.get(DcMotor.class, "Extending Arm");
-        Servo wrist = hardwareMap.get(Servo.class, "wrist");
-        Servo claw = hardwareMap.get(Servo.class, "claw");
-        Servo thingie = hardwareMap.get(Servo.class, "thingie");
+        Servo wrist = hardwareMap.get(Servo.class, "Wrist");
+        Servo claw = hardwareMap.get(Servo.class, "Claw");
+        Servo ArmLock = hardwareMap.get(Servo.class, "Arm Lock");
 		// Set each motor's direction
         motorFR.setDirection(DcMotor.Direction.FORWARD);
         motorBR.setDirection(DcMotor.Direction.FORWARD);
@@ -51,7 +50,7 @@ public class CompetitionRobotCode extends LinearOpMode {
         arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         //arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        thingie.setPosition(.5);
+        ArmLock.setPosition(.5);
         double speed   = .5;
         while (opModeIsActive()) {
 
@@ -121,6 +120,7 @@ public class CompetitionRobotCode extends LinearOpMode {
             telemetry.update();
         }
     }
+
     private double ProximityRunge(int position) {
         double x = (double)position / 4;
         return 1 - 1/(1+x*x);
