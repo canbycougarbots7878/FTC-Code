@@ -73,13 +73,13 @@ public class CompetitionRobotCode extends LinearOpMode {
             //telemetry.addData("Slide Position", slidearm.getCurrentPosition());
             telemetry.addData("Slide Position", slidearm.getCurrentPosition());
             telemetry.addData("Arm Position", arm.getCurrentPosition());
-            if (gamepad1.a) { state = "Home"; }
-            if (gamepad1.b) { state = "Deploy"; }
-            if (gamepad1.x) { state = "Basket"; }
-            if (gamepad1.y) { state = "Reach"; }
-            if (gamepad1.start) { state = "Manual"; }
-            if (gamepad1.dpad_left) { wrist.setPosition(0.3333333); }
-            else if(gamepad1.dpad_right) { wrist.setPosition(0); }
+            if (gamepad2.a) { state = "Home"; }
+            if (gamepad2.b) { state = "Deploy"; }
+            if (gamepad2.x) { state = "Basket"; }
+            if (gamepad2.y) { state = "Reach"; }
+            if (gamepad2.start) { state = "Manual"; }
+            if (gamepad2.dpad_left) { wrist.setPosition(0.3333333); }
+            else if(gamepad2.dpad_right) { wrist.setPosition(0); }
 
             //arm.setPower(.3);
             switch(state) {
@@ -107,10 +107,10 @@ public class CompetitionRobotCode extends LinearOpMode {
                     break;
             }
 
-            if (gamepad1.left_bumper) {
+            if (gamepad2.left_bumper) {
                 claw.setPosition(.4);
             }
-            else if (gamepad1.right_bumper) {
+            else if (gamepad2.right_bumper) {
                 claw.setPosition(.5);
             }
             else {
