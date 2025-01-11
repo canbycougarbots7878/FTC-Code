@@ -35,7 +35,7 @@ public class MovementLib {
             double Front_Right_Power = - Forward - Right - Rotate;
             double Back_Right_Power = - Forward + Right - Rotate;
             double Back_Left_Power = - Forward - Right + Rotate;
-            this.Set_Wheels(Front_Right_Power, Front_Left_Power, Back_Right_Power, Back_Left_Power);
+            this.Set_Wheels(speed * Front_Right_Power, speed * Front_Left_Power, speed * Back_Right_Power, speed * Back_Left_Power);
         }
         public void Reverse_these_wheels(boolean fr, boolean fl, boolean br, boolean bl) {
             if(fr) { this.Front_Right.setDirection(DcMotorSimple.Direction.REVERSE); } else { this.Front_Right.setDirection(DcMotorSimple.Direction.FORWARD); };
