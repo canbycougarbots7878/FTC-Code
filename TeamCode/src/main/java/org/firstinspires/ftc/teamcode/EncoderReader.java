@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.teamcode.MovementLib.*;
 @TeleOp(name = "Encoder Reader", group = "Testing")
 public class EncoderReader extends LinearOpMode {
-    DcMotor Arm = null;
+    Servo Arm = null;
     DcMotor Slider = null;
     Servo Arm_Lock = null;
     Servo Claw = null;
@@ -19,9 +19,7 @@ public class EncoderReader extends LinearOpMode {
         Slider.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         Slider.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         // Initialize Arm
-        Arm = hardwareMap.get(DcMotor.class, "Extending Arm");
-        Arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        Arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        Arm = hardwareMap.get(Servo.class, "Arm");
         // Initialize Arm Lock
         Arm_Lock = hardwareMap.get(Servo.class, "Arm Lock");
         // Initialize Claw
@@ -44,8 +42,10 @@ public class EncoderReader extends LinearOpMode {
             else if (gamepad1.x) {
                 Arm_Lock.setPosition(gamepad1.right_trigger);
             }
+            else if (gamepad1.y) {
+                Arm.setPosition(gamepad1.right_trigger);
+            }
             Slider.setPower(gamepad1.left_trigger);
-            telemetry.addData("Arm position", Arm.getCurrentPosition());
             telemetry.addData("Slider position", Slider.getCurrentPosition());
             telemetry.addData("Right trigger", gamepad1.right_trigger);
             telemetry.update();
