@@ -68,7 +68,7 @@ public class auto extends LinearOpMode {
         int rest = 1000;
         Home();
 
-        Forward(500, 0.75);
+        Forward(530, 0.75);
 
         // Wait until the motors are done spinning
 
