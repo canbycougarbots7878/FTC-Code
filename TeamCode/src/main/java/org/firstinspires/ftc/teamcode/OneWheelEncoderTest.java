@@ -15,24 +15,24 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 @TeleOp(name = "OneWheelEncoderTest", group = "Concept")
 public class OneWheelEncoderTest extends LinearOpMode {
 
-    DcMotor motorFR = null;
+    DcMotor motorFL = null;
 
     public void runOpMode() {
-        motorFR = hardwareMap.get(DcMotor.class, "FrontRight");
+        motorFL = hardwareMap.get(DcMotor.class, "FrontLeft");
 
-        motorFR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        motorFL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        motorFR.setDirection(DcMotor.Direction.FORWARD);
+        motorFL.setDirection(DcMotor.Direction.FORWARD);
 
-        motorFR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motorFL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        motorFR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorFL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         waitForStart();
         telemetry.addData("Start", 11);
         telemetry.update();
         while (opModeIsActive()) {
-            telemetry.addData("Front Right", motorFR.getCurrentPosition());
+            telemetry.addData("Front Left", motorFL.getCurrentPosition());
             telemetry.update();
         }
     }

@@ -57,6 +57,36 @@ public class MovementLib {
     }
     static class Slider {
         public DcMotor Slider_Motor;
+        public int Max_Height;
+        public int pos1;
+        public int pos2;
+        public int pos3;
+        public Slider() {}
 
+        public Slider(DcMotor attachedMotor) {
+            this.Slider_Motor = attachedMotor;
+        }
+        public Slider(DcMotor attachedMotor, int Max_Height) {
+            this.Slider_Motor = attachedMotor;
+            this.Max_Height = Max_Height;
+        }
+
+        public void init() {
+            this.Slider_Motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            this.Slider_Motor.setTargetPosition(0);
+            this.Slider_Motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            this.Slider_Motor.setPower(0);
+        }
+
+        public void goPercentage(int percentage) {
+            float decimal = percentage / 100;
+        }
+
+        public void goToPosition(int pos) {
+            if (pos < 0 || pos > Max_Height) return;
+            this.Slider_Motor.setTargetPosition(pos);
+        }
+
+        public void
     }
 }

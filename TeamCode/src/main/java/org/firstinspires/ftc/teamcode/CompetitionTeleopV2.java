@@ -39,7 +39,6 @@ public class CompetitionTeleopV2 extends LinearOpMode {
         // Initialize Claw
         Claw = hardwareMap.get(Servo.class, "Claw");
         Wrist = hardwareMap.get(Servo.class, "Wrist");
-        Wrist.setPosition(0);
         // Variables
         int slider_position = 0;
         boolean claw_open = false;
@@ -49,8 +48,9 @@ public class CompetitionTeleopV2 extends LinearOpMode {
         int Arm_speed = 0;
         double robot_speed = .8;
         waitForStart();
+        Unlock_Arm();
         while(opModeIsActive()) {
-            Wheels.Omni_Move(gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x, robot_speed);
+            Wheels.Omni_Move(gamepad1.left_stick_y + gamepad2.left_stick_y, gamepad1.left_stick_x + gamepad2.left_stick_x, gamepad1.right_stick_x + gamepad2.right_stick_x, robot_speed);
             if (gamepad2.dpad_down) {
                 slider_position = 0;
             }
@@ -64,6 +64,11 @@ public class CompetitionTeleopV2 extends LinearOpMode {
                 Slider.setTargetPosition(0);
                 if (Slider.getCurrentPosition() < 100) {
                     Slider.setPower(0);
+                    if (Slider.getCurrentPosition() < 30) {
+                        Slider.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                        Slider.setTargetPosition(0);
+                        Slider.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    }
                 }
                 else {
                     Slider.setPower(1);
@@ -71,7 +76,7 @@ public class CompetitionTeleopV2 extends LinearOpMode {
                 }
             }
             else if (slider_position == 1) {
-                Slider.setTargetPosition(2500);
+                Slider.setTargetPosition(2201);
                 Slider.setPower(1);
                 robot_speed = .125;
                 Arm_down = false;
@@ -83,10 +88,11 @@ public class CompetitionTeleopV2 extends LinearOpMode {
                 Arm_down = false;
             }
             if(gamepad2.right_bumper) {
-                Arm.setPosition(0);
+                robot_speed = .25;
+                Arm.setPosition(0.2 - gamepad2.right_trigger / 5.0f);
             }
             else {
-                Arm.setPosition(0.32);
+                Arm.setPosition(0.55);
             }
             if(gamepad2.a) { claw_open = false; }
             if(gamepad2.b) { claw_open = true; }
@@ -111,7 +117,10 @@ public class CompetitionTeleopV2 extends LinearOpMode {
                 Slider.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                 Slider.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             }
-            if (!gamepad2.right_bumper && Slider.getCurrentPosition() < 100) {
+            if (!gamepad2.right_bumper && Slider.getCurrentPosition() < 100 && !gamepad1.left_bumper) {
+                robot_speed = .5;
+            }
+            if (gamepad1.left_bumper) {
                 robot_speed = .8;
             }
             telemetry.addData("Arm speed", Arm_speed);
@@ -120,17 +129,17 @@ public class CompetitionTeleopV2 extends LinearOpMode {
         }
     }
     private void Lock_Arm() {
-        Arm_Lock.setPosition(0.15);
+        Arm_Lock.setPosition(0);
     }
     private void Unlock_Arm() {
         Arm_Lock.setPosition(0.5);
     }
     private void Open_Claw() {
-        Claw.setPosition(.5);
+        Claw.setPosition(0);
     }
     private void Close_Claw() {
-        Claw.setPosition(1);
+        Claw.setPosition(.5);
     }
-    private void Wrist_Vertical() { Wrist.setPosition(0.05); }
-    private void Wrist_Horizontal() { Wrist.setPosition((0.37)); }
+    private void Wrist_Vertical() { Wrist.setPosition(0); }
+    private void Wrist_Horizontal() { Wrist.setPosition((0.3)); }
 }
