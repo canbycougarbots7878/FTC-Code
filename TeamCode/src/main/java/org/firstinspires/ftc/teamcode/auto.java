@@ -1,3 +1,5 @@
+//February 4, 2025 - Simon N.
+
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -86,15 +88,15 @@ public class auto extends LinearOpMode {
 
         sleep(rest);
 
-        Reach();
+        SetSliderPosition(1939);
 
         sleep(rest);
 
-        Forward(70, 0.75);
+        Forward(70, 0.25);
 
         sleep(rest);
 
-        Basket();
+        SetSliderPosition(1231);
 
         sleep(rest);
 
