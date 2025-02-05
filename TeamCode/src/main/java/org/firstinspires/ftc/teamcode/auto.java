@@ -117,6 +117,26 @@ public class auto extends LinearOpMode {
 
         Turn(450, 0.75);
 
+        sleep(rest);
+
+        Forward(140, 0.25);
+
+        sleep(rest);
+
+        Turn(450, 0.75);
+
+        sleep(rest);
+
+        SetSliderPosition(1939);
+
+        sleep(rest);
+
+        Forward(70, 0.25);
+
+        sleep(rest);
+
+        SetSliderPosition(1157);
+
         // Print ending numbers
         TelemetryPosition();
 
