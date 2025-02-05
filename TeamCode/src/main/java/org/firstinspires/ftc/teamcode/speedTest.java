@@ -25,17 +25,20 @@ public class speedTest extends LinearOpMode {
         motorFL = hardwareMap.get(DcMotor.class, "FrontLeft");
 
         motorFR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        motorBR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        motorBL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        motorFL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        motorFR.setDirection(DcMotor.Direction.FORWARD);
-        motorBR.setDirection(DcMotor.Direction.FORWARD);
-        motorBL.setDirection(DcMotor.Direction.REVERSE);
-        motorFL.setDirection(DcMotor.Direction.REVERSE);
+        motorFR.setDirection(DcMotor.Direction.REVERSE);
+        motorBR.setDirection(DcMotor.Direction.REVERSE);
+        motorBL.setDirection(DcMotor.Direction.FORWARD);
+        motorFL.setDirection(DcMotor.Direction.FORWARD);
 
-        motorFR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-        motorFR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         waitForStart();
+
+        telemetry.addData("ID", gamepad1.id);
+        telemetry.update();
 
         while (opModeIsActive()) {
             if (gamepad1.a) {
