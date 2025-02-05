@@ -1,3 +1,5 @@
+//February 4, 2025 - Simon N.
+
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -52,11 +54,6 @@ public class auto extends LinearOpMode {
         slidearm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        motorFR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        motorBR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        motorBL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        motorFL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
         //arm1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         //arm1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -86,15 +83,15 @@ public class auto extends LinearOpMode {
 
         sleep(rest);
 
-        Reach();
+        SetSliderPosition(1939);
 
         sleep(rest);
 
-        Forward(70, 0.75);
+        Forward(70, 0.25);
 
         sleep(rest);
 
-        Basket();
+        SetSliderPosition(1231);
 
         sleep(rest);
 
@@ -168,33 +165,20 @@ public class auto extends LinearOpMode {
     }
 
     private void Forward(double TargetDistance, double Power) {
-        motorFR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motorBR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motorBL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motorFL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        double Circumference = 52 * Tau;
-        double CountsPerMillimeter = 1440 / Circumference;
-
-        motorFR.setTargetPosition((int)(TargetDistance * CountsPerMillimeter));
-        motorBR.setTargetPosition((int)(TargetDistance * CountsPerMillimeter));
-        motorBL.setTargetPosition((int)(TargetDistance * CountsPerMillimeter));
-        motorFL.setTargetPosition((int)(TargetDistance * CountsPerMillimeter));
-
-        motorFR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        motorBR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        motorBL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        motorFL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        time = (TargetDistance*(1/1.528)*(1/Power));
 
         motorFR.setPower(Power);
         motorBR.setPower(Power);
         motorBL.setPower(Power);
         motorFL.setPower(Power);
 
+        sleep((long) time);
 
-        while (motorFL.isBusy() && motorBL.isBusy() && motorBR.isBusy() && motorFR.isBusy()) {
-            TelemetryPosition();
-        }
+        motorFR.setPower(0);
+        motorBR.setPower(0);
+        motorBL.setPower(0);
+        motorFL.setPower(0);
     }
 
     private void TelemetryPosition() {
@@ -218,34 +202,21 @@ public class auto extends LinearOpMode {
         }
     }
 
-    private void Turn(double TargetRadians, double Power) {
-        motorFR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motorBR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motorBL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motorFL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    private void Turn(double TargetRadians, double TurnPower) {
 
-        double Circumference = 52 * Tau;
-        double CountsPerMillimeter = 1440 / Circumference;
+        time = (TargetRadians*(1/1.528)*(1/TurnPower));
 
-        motorFR.setTargetPosition((int) (TargetRadians * CountsPerMillimeter));
-        motorBR.setTargetPosition((int) (TargetRadians * CountsPerMillimeter));
-        motorBL.setTargetPosition((int) (-TargetRadians * CountsPerMillimeter));
-        motorFL.setTargetPosition((int) (-TargetRadians * CountsPerMillimeter));
+        motorFR.setPower(-TurnPower);
+        motorBR.setPower(-TurnPower);
+        motorBL.setPower(TurnPower);
+        motorFL.setPower(TurnPower);
 
-        motorFR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        motorBR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        motorBL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        motorFL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        sleep((long) time);
 
-        motorFR.setPower(Power);
-        motorBR.setPower(Power);
-        motorBL.setPower(Power);
-        motorFL.setPower(Power);
-
-        // Wait until the motors are done spinning
-        while (motorFL.isBusy() && motorBL.isBusy() && motorBR.isBusy() && motorFR.isBusy()) {
-            TelemetryPosition();
-        }
+        motorFR.setPower(0);
+        motorBR.setPower(0);
+        motorBL.setPower(0);
+        motorFL.setPower(0);
 
     }
 
