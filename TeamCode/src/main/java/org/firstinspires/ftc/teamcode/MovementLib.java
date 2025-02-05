@@ -86,7 +86,5 @@ public class MovementLib {
             if (pos < 0 || pos > Max_Height) return;
             this.Slider_Motor.setTargetPosition(pos);
         }
-
-        public void
     }
 }

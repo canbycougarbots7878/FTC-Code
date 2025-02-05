@@ -89,7 +89,7 @@ public class CompetitionTeleopV2 extends LinearOpMode {
             }
             if(gamepad2.right_bumper) {
                 robot_speed = .25;
-                Arm.setPosition(0.2 - gamepad2.right_trigger / 5.0f);
+                Arm.setPosition(0.3 - gamepad2.right_trigger / 5.0f);
             }
             else {
                 Arm.setPosition(0.55);
@@ -121,7 +121,7 @@ public class CompetitionTeleopV2 extends LinearOpMode {
                 robot_speed = .5;
             }
             if (gamepad1.left_bumper) {
-                robot_speed = .8;
+                robot_speed = 1;
             }
             telemetry.addData("Arm speed", Arm_speed);
             telemetry.addData("Slider position", Slider.getCurrentPosition());
@@ -135,7 +135,7 @@ public class CompetitionTeleopV2 extends LinearOpMode {
         Arm_Lock.setPosition(0.5);
     }
     private void Open_Claw() {
-        Claw.setPosition(0);
+        Claw.setPosition(.2);
     }
     private void Close_Claw() {
         Claw.setPosition(.5);
