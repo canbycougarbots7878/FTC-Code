@@ -220,7 +220,7 @@ public class auto extends LinearOpMode {
         }
     }
 
-    private void Turn(double TargetRadians, double Power) {
+    private void Turn(double TargetRadians, double TurnPower) {
         motorFR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motorBR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motorBL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -239,10 +239,10 @@ public class auto extends LinearOpMode {
         motorBL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         motorFL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        motorFR.setPower(Power);
-        motorBR.setPower(Power);
-        motorBL.setPower(Power);
-        motorFL.setPower(Power);
+        motorFR.setPower(TurnPower);
+        motorBR.setPower(TurnPower);
+        motorBL.setPower(TurnPower);
+        motorFL.setPower(TurnPower);
 
         // Wait until the motors are done spinning
         while (motorFL.isBusy() && motorBL.isBusy() && motorBR.isBusy() && motorFR.isBusy()) {
