@@ -64,7 +64,7 @@ public class auto extends LinearOpMode {
         // Start slider movement while turning
         SetSliderPosition(1939);
         Turn(90, 0.75);
-        sleep(rest);
+        sleep(rest * 6);
     
         Forward(700, 0.5);  // Increased speed from 0.25 to 0.5
         sleep(rest);
