@@ -228,6 +228,13 @@ public class CompetitionRobotCode extends LinearOpMode {
 
     // Stops the robot and the entire program
     private void stopProgram() {
+        // Move the arm to position 0 and lock it
+        Arm.setPosition(0);  // Move the arm to position 0
+        Lock_Arm();           // Lock the arm
+    
+        // Optional: Wait for a short period to allow the arm to reach the position
+        sleep(500);  // Adjust the sleep time if necessary to allow enough time for the arm to move
+    
         // Stop the motors
         Front_Right.setPower(0);
         Front_Left.setPower(0);
