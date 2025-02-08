@@ -19,7 +19,6 @@ public class CompetitionRobotCode extends LinearOpMode {
     private double currentSpeed = 0.0; // Smoothly adjusted speed
     private double accelerationRate = 0.05; // Adjust this for faster/slower acceleration
 
-    @Override
     public void runOpMode() {
         // Initialize Motors
         DcMotor Front_Right = hardwareMap.get(DcMotor.class, "FrontRight");
