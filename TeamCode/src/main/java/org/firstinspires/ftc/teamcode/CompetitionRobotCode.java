@@ -22,6 +22,13 @@ public class CompetitionRobotCode extends LinearOpMode {
     private boolean claw_open = false;
     private int slider_position = 0;
 
+    // Stop sequence tracking
+    private String controller1Sequence = "";
+    private String controller2Sequence = "";
+
+    private final String STOP_SEQUENCE_1 = "ABXY";  // Controller 1 button sequence (A, B, X, Y)
+    private final String STOP_SEQUENCE_2 = "UDLR";  // Controller 2 Dpad sequence (Up, Down, Left, Right)
+
     @Override
     public void runOpMode() {
         initHardware();
@@ -29,6 +36,12 @@ public class CompetitionRobotCode extends LinearOpMode {
         Unlock_Arm();
 
         while (opModeIsActive()) {
+            // Check for the stop sequence press
+            if (checkStopSequence()) {
+                stopProgram();
+                return; // Exit the loop and stop the program
+            }
+
             controlMovement();
             controlSlider();
             controlArm();
@@ -176,5 +189,57 @@ public class CompetitionRobotCode extends LinearOpMode {
             return 0;
         }
         return value;
+    }
+
+    // Checks if both controllers have pressed the correct sequence
+    private boolean checkStopSequence() {
+        // Update sequences for each controller
+        updateController1Sequence();
+        updateController2Sequence();
+
+        // If both sequences match the stop sequence, return true
+        if (controller1Sequence.equals(STOP_SEQUENCE_1) && controller2Sequence.equals(STOP_SEQUENCE_2)) {
+            return true;
+        }
+        return false;
+    }
+
+    // Update the sequence for Controller 1 (gamepad1)
+    private void updateController1Sequence() {
+        if (gamepad1.a) controller1Sequence += "A";
+        if (gamepad1.b) controller1Sequence += "B";
+        if (gamepad1.x) controller1Sequence += "X";
+        if (gamepad1.y) controller1Sequence += "Y";
+
+        // Limit the sequence to the length of 4 characters
+        if (controller1Sequence.length() > 4) controller1Sequence = controller1Sequence.substring(controller1Sequence.length() - 4);
+    }
+
+    // Update the sequence for Controller 2 (gamepad2)
+    private void updateController2Sequence() {
+        if (gamepad2.dpad_up) controller2Sequence += "U";
+        if (gamepad2.dpad_down) controller2Sequence += "D";
+        if (gamepad2.dpad_left) controller2Sequence += "L";
+        if (gamepad2.dpad_right) controller2Sequence += "R";
+
+        // Limit the sequence to the length of 4 characters
+        if (controller2Sequence.length() > 4) controller2Sequence = controller2Sequence.substring(controller2Sequence.length() - 4);
+    }
+
+    // Stops the robot and the entire program
+    private void stopProgram() {
+        // Stop the motors
+        Front_Right.setPower(0);
+        Front_Left.setPower(0);
+        Back_Right.setPower(0);
+        Back_Left.setPower(0);
+        Slider.setPower(0);
+
+        // Stop the program execution
+        telemetry.addData("Program Stopped", "Stop Sequence Activated");
+        telemetry.update();
+        
+        // End the OpMode (this stops the program)
+        requestOpModeStop();
     }
 }
