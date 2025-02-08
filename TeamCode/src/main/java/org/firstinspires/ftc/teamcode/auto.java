@@ -85,7 +85,7 @@ public class auto extends LinearOpMode {
         Turn(-90, 0.75);
         sleep(rest / 2);
 
-        Forward(11200, 0.75);
+        Forward(1200, 0.75);
         sleep(rest);
 
         Turn(90, 0.75);
