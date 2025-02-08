@@ -1,4 +1,4 @@
-//February 8, 2025, 10:18 - Simon N.
+// February 8, 2025, 10:48 - Simon N.
 
 package org.firstinspires.ftc.teamcode;
 
@@ -19,6 +19,7 @@ public class auto extends LinearOpMode {
 
     Servo claw  = null;
     Servo wrist = null;
+
     public void runOpMode() {
         motorFR = hardwareMap.get(DcMotor.class, "FrontRight");
         motorBR = hardwareMap.get(DcMotor.class, "BackRight");
@@ -54,66 +55,75 @@ public class auto extends LinearOpMode {
         Home();
         Forward(530, 0.75);
         sleep(rest);
-    
+
         Turn(-90, 0.75);  // Using degrees for clarity
         sleep(rest);
-    
+
         Forward(304.8, 0.75);
         sleep(rest);
-    
+
         // Start slider movement while turning
         SetSliderPosition(1939);
         Turn(90, 0.75);
         sleep(rest * 7);
-    
+
         Forward(700, 0.5);  // Increased speed from 0.25 to 0.5
         sleep(rest);
-    
+
         SetSliderPosition(1231);
         sleep(rest / 2);
-    
+
         claw.setPosition(0.75);
         sleep(rest);
-    
+
         Home();
         sleep(rest);
-    
+
         Forward(-70, 0.75);
         sleep(rest / 2);
-    
+
         Turn(-90, 0.75);
         sleep(rest / 2);
-    
+
         Forward(11200, 0.75);
         sleep(rest);
-    
+
         Turn(90, 0.75);
         sleep(rest);
-    
+
         Forward(140, 0.5);  // Increased speed from 0.25 to 0.5
         sleep(rest / 2);
-    
+
         Turn(90, 0.75);
         sleep(rest);
-    
+
         // Start slider movement while moving forward
         SetSliderPosition(1939);
         Forward(80, 0.5);  // Increased speed from 0.25 to 0.5
         sleep(rest);
-    
+
         SetSliderPosition(1157);
 
         while (opModeIsActive()) {} // Keep program alive
     }
 
-
     private void SetSliderPosition(int target) {
+        int currentPosition = slidearm.getCurrentPosition();
+        int distance = target - currentPosition;
+        double speed = SmoothSliderSpeed(Math.abs(distance));
+        slidearm.setPower(speed);
         slidearm.setTargetPosition(target);
-        slidearm.setPower(.5);
+    }
+
+    private double SmoothSliderSpeed(int distance) {
+        // Using exponential easing to smooth slider speed
+        double maxSpeed = 1.0;
+        double exponent = 2.0;  // Adjust the exponent to control the smoothness
+        return maxSpeed * Math.pow(distance / 1000.0, exponent);  // Normalize the distance
     }
 
     private void SetSliderSegment(int segment) {
-        //slidearm.setPower(1);
+        // Modularized function for selecting slider positions based on segments
         switch(segment) {
             case(0): SetSliderPosition(100); break;
             case(1): SetSliderPosition(1437); break;
@@ -235,5 +245,4 @@ public class auto extends LinearOpMode {
         motorFL.setPower(0);
         sleep(50);
     }
-
 }
