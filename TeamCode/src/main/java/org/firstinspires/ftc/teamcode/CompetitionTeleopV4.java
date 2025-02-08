@@ -10,13 +10,10 @@ import org.firstinspires.ftc.teamcode.MovementLib.*;
 
 @TeleOp(name = "Competition TeleOp", group = "Competition")
 public class CompetitionTeleopV2 extends LinearOpMode {
-    
+
     // Hardware components
-    private Servo Arm = null;
-    private DcMotor Slider = null;
-    private Servo Arm_Lock = null;
-    private Servo Claw = null;
-    private Servo Wrist = null;
+    private Servo Arm, Arm_Lock, Claw, Wrist;
+    private DcMotor Slider;
 
     // Constants for servo positions
     private static final double ARM_DOWN_POSITION = 0.55;
@@ -30,7 +27,12 @@ public class CompetitionTeleopV2 extends LinearOpMode {
     private int slider_position = 0;
     private boolean claw_open = false;
     private double robot_speed = 0.8;
-    
+    private double currentSpeed = 0.8; // Smooth speed transition
+
+    // Telemetry tracking
+    private int lastSliderPosition = -1;
+    private double lastArmPosition = -1;
+
     @Override
     public void runOpMode() {
         // Initialize Motors
@@ -67,114 +69,94 @@ public class CompetitionTeleopV2 extends LinearOpMode {
         Unlock_Arm();
 
         while (opModeIsActive()) {
-            // Drive control
-            Wheels.Omni_Move(gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x, robot_speed);
-            
+            // Drive control with dead zone and smooth acceleration
+            double moveY = applyDeadZone(gamepad1.left_stick_y, 0.1);
+            double moveX = applyDeadZone(gamepad1.left_stick_x, 0.1);
+            double rotate = applyDeadZone(gamepad1.right_stick_x, 0.1);
+            updateRobotSpeed();
+            Wheels.Omni_Move(moveY, moveX, rotate, currentSpeed);
+
             // Slider control
             updateSliderPosition();
-            
-            // Arm control with proportional adjustment
+
+            // Arm control
             controlArm();
 
             // Claw control
-            if (gamepad2.a) {
-                claw_open = false;
-            }
-            if (gamepad2.b) {
-                claw_open = true;
-            }
-            if (claw_open) {
-                Open_Claw();
-            } else {
-                Close_Claw();
-            }
+            if (gamepad2.a) claw_open = false;
+            if (gamepad2.b) claw_open = true;
+            if (claw_open) Open_Claw();
+            else Close_Claw();
 
             // Wrist control
-            if (gamepad2.x) {
-                Wrist_Vertical();
-            } else if (gamepad2.y) {
-                Wrist_Horizontal();
-            }
+            if (gamepad2.x) Wrist_Vertical();
+            else if (gamepad2.y) Wrist_Horizontal();
 
-            // Speed control
-            updateRobotSpeed();
-
-            // Reset slider encoder
-            if (gamepad2.start || (gamepad1.back && gamepad2.back)) {
-                Slider.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                Slider.setTargetPosition(0);
-                Slider.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            }
+            // Emergency stop
+            if (gamepad1.start && gamepad1.back) stopAllMotors();
 
             // Arm locking control
-            if (gamepad2.back) {
-                Lock_Arm();
-            }
+            if (gamepad2.back) Lock_Arm();
 
-            // Telemetry for debugging
-            telemetry.addData("Slider Position", Slider.getCurrentPosition());
-            telemetry.addData("Slider Target", Slider.getTargetPosition());
-            telemetry.addData("Arm Position", Arm.getPosition());
-            telemetry.addData("Robot Speed", robot_speed);
-            telemetry.update();
+            // Optimized telemetry update
+            updateTelemetry();
         }
     }
 
-    /** Adjusts the slider position based on gamepad input. */
+    /** Applies a dead zone to joystick inputs to prevent unintended movement. */
+    private double applyDeadZone(double value, double threshold) {
+        return (Math.abs(value) > threshold) ? value : 0;
+    }
+
+    /** Updates the robot's speed gradually for smooth acceleration and deceleration. */
+    private void updateRobotSpeed() {
+        double speedIncrement = 0.02;
+
+        if (gamepad1.left_bumper) robot_speed = 1;
+        else if (gamepad2.right_bumper) robot_speed = 0.25;
+        else if (Slider.getCurrentPosition() < 100 && !gamepad1.left_bumper) robot_speed = 0.5;
+        else robot_speed = 0.8;
+
+        if (currentSpeed < robot_speed) {
+            currentSpeed += speedIncrement;
+            if (currentSpeed > robot_speed) currentSpeed = robot_speed;
+        } else if (currentSpeed > robot_speed) {
+            currentSpeed -= speedIncrement;
+            if (currentSpeed < robot_speed) currentSpeed = robot_speed;
+        }
+    }
+
+    /** Updates the slider position dynamically and adjusts power based on distance. */
     private void updateSliderPosition() {
-        if (gamepad2.dpad_down) {
-            setSliderPosition(0);
-        }
-        if (gamepad2.dpad_left) {
-            setSliderPosition(2201);
-        }
-        if (gamepad2.dpad_up) {
-            setSliderPosition(5000);
-        }
-
-        if (slider_position == 0) {
-            if (Slider.getCurrentPosition() < 100) {
-                Slider.setPower(0);
-                if (Slider.getCurrentPosition() < 30) {
-                    Slider.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                    Slider.setTargetPosition(0);
-                    Slider.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                }
-            } else {
-                Slider.setPower(1);
-                robot_speed = 0.125;
-            }
-        }
+        if (gamepad2.dpad_down) setSliderPosition(0);
+        if (gamepad2.dpad_left) setSliderPosition(2201);
+        if (gamepad2.dpad_up) setSliderPosition(5000);
     }
 
-    /** Sets the slider target position and adjusts speed accordingly. */
+    /** Sets the slider position with dynamic power adjustment. */
     private void setSliderPosition(int position) {
+        int error = Math.abs(position - Slider.getCurrentPosition());
+        double power = (error > 500) ? 1.0 : (error > 200) ? 0.5 : 0.25;
         Slider.setTargetPosition(position);
-        Slider.setPower(1);
-        robot_speed = 0.125;
+        Slider.setPower(power);
     }
 
-    /** Updates the arm position using proportional control. */
+    /** Controls the arm movement using proportional adjustment. */
     private void controlArm() {
         if (gamepad2.right_bumper) {
-            robot_speed = 0.25;
             Arm.setPosition(ARM_UP_POSITION - gamepad2.right_trigger / 5.0);
         } else {
             Arm.setPosition(ARM_DOWN_POSITION);
         }
     }
 
-    /** Updates robot speed based on gamepad inputs and conditions. */
-    private void updateRobotSpeed() {
-        if (gamepad1.left_bumper) {
-            robot_speed = 1;
-        } else if (gamepad2.right_bumper) {
-            robot_speed = 0.25;
-        } else if (Slider.getCurrentPosition() < 100 && !gamepad1.left_bumper) {
-            robot_speed = 0.5;
-        } else {
-            robot_speed = 0.8;
-        }
+    /** Stops all motors immediately for an emergency stop. */
+    private void stopAllMotors() {
+        Slider.setPower(0);
+        Claw.setPosition(CLAW_CLOSED_POSITION);
+        Arm.setPosition(ARM_DOWN_POSITION);
+        Wrist.setPosition(WRIST_VERTICAL_POSITION);
+        robot_speed = 0;
     }
 
     /** Locks the arm in place. */
@@ -205,5 +187,20 @@ public class CompetitionTeleopV2 extends LinearOpMode {
     /** Positions the wrist horizontally. */
     private void Wrist_Horizontal() {
         Wrist.setPosition(WRIST_HORIZONTAL_POSITION);
+    }
+
+    /** Updates telemetry only when values change significantly. */
+    private void updateTelemetry() {
+        int sliderPos = Slider.getCurrentPosition();
+        double armPos = Arm.getPosition();
+
+        if (sliderPos != lastSliderPosition || armPos != lastArmPosition) {
+            telemetry.addData("Slider Position", sliderPos);
+            telemetry.addData("Arm Position", armPos);
+            telemetry.addData("Robot Speed", currentSpeed);
+            telemetry.update();
+            lastSliderPosition = sliderPos;
+            lastArmPosition = armPos;
+        }
     }
 }
