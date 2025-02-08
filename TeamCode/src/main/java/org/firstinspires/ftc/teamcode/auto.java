@@ -1,4 +1,4 @@
-//February 7, 2025 - Simon N.
+//February 8, 2025 - Simon N.
 
 package org.firstinspires.ftc.teamcode;
 
@@ -67,12 +67,11 @@ public class auto extends LinearOpMode {
         Forward(304.8, 0.75);
         sleep(rest);
 
+        // Start slider movement without waiting
+        SetSliderPosition(1939);
         Turn(450, 0.75);
         sleep(rest);
 
-        // Start slider movement without waiting
-        SetSliderPosition(1939);
-        sleep(rest*6);
         Forward(700, 0.5);  // Increased speed from 0.25 to 0.5
         sleep(rest);
 
