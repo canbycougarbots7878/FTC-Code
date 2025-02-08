@@ -1,4 +1,4 @@
-//February 8, 2025, 10:18 - Simon N.
+// February 8, 2025, 11:02 - Simon N.
 
 package org.firstinspires.ftc.teamcode;
 
@@ -19,6 +19,7 @@ public class auto extends LinearOpMode {
 
     Servo claw  = null;
     Servo wrist = null;
+
     public void runOpMode() {
         motorFR = hardwareMap.get(DcMotor.class, "FrontRight");
         motorBR = hardwareMap.get(DcMotor.class, "BackRight");
@@ -54,66 +55,75 @@ public class auto extends LinearOpMode {
         Home();
         Forward(530, 0.75);
         sleep(rest);
-    
+
         Turn(-90, 0.75);  // Using degrees for clarity
         sleep(rest);
-    
+
         Forward(304.8, 0.75);
         sleep(rest);
-    
+
         // Start slider movement while turning
         SetSliderPosition(1939);
         Turn(90, 0.75);
-        sleep(rest * 6);
-    
+        sleep(rest * 7);
+
         Forward(700, 0.5);  // Increased speed from 0.25 to 0.5
         sleep(rest);
-    
+
         SetSliderPosition(1231);
         sleep(rest / 2);
-    
+
         claw.setPosition(0.75);
         sleep(rest);
-    
+
         Home();
         sleep(rest);
-    
+
         Forward(-70, 0.75);
         sleep(rest / 2);
-    
+
         Turn(-90, 0.75);
         sleep(rest / 2);
-    
-        Forward(1100, 0.75);
+
+        Forward(11200, 0.75);
         sleep(rest);
-    
+
         Turn(90, 0.75);
         sleep(rest);
-    
+
         Forward(140, 0.5);  // Increased speed from 0.25 to 0.5
         sleep(rest / 2);
-    
+
         Turn(90, 0.75);
         sleep(rest);
-    
+
         // Start slider movement while moving forward
         SetSliderPosition(1939);
-        Forward(70, 0.5);  // Increased speed from 0.25 to 0.5
+        Forward(80, 0.5);  // Increased speed from 0.25 to 0.5
         sleep(rest);
-    
+
         SetSliderPosition(1157);
 
         while (opModeIsActive()) {} // Keep program alive
     }
 
-
     private void SetSliderPosition(int target) {
+        int currentPosition = slidearm.getCurrentPosition();
+        int distance = target - currentPosition;
+        double speed = SmoothSliderSpeed(Math.abs(distance));
+        slidearm.setPower(speed);
         slidearm.setTargetPosition(target);
-        slidearm.setPower(.5);
+    }
+
+    private double SmoothSliderSpeed(int distance) {
+        // Using exponential easing to smooth slider speed
+        double maxSpeed = 1.0;
+        double exponent = 2.0;  // Adjust the exponent to control the smoothness
+        return maxSpeed * Math.pow(distance / 1000.0, exponent);  // Normalize the distance
     }
 
     private void SetSliderSegment(int segment) {
-        //slidearm.setPower(1);
+        // Modularized function for selecting slider positions based on segments
         switch(segment) {
             case(0): SetSliderPosition(100); break;
             case(1): SetSliderPosition(1437); break;
@@ -141,36 +151,34 @@ public class auto extends LinearOpMode {
     }
 
     private void Forward(double TargetDistance, double MaxPower) {
-        double totalTime = Math.abs(TargetDistance / 1.528 / MaxPower);
+        MoveWithRamp(TargetDistance, MaxPower, true);  // Forward movement with ramping
+    }
 
-        // Ensure minimum movement time
-        if (totalTime < 500) totalTime = 500;
+    private void Turn(double TargetDegrees, double MaxTurnPower) {
+        MoveWithRamp(TargetDegrees, MaxTurnPower, false);  // Turning with ramping
+    }
 
+    private void MoveWithRamp(double targetDistance, double maxPower, boolean isForward) {
+        double totalTime = Math.abs(targetDistance / 1.528 / maxPower);
+        totalTime = Math.max(totalTime, 500);  // Ensure minimum movement time
         double accelTime = Math.min(totalTime * 0.3, 500);  // Cap acceleration to 500ms
-        double decelTime = accelTime; // Symmetric deceleration
+        double decelTime = accelTime;
         double cruiseTime = totalTime - (accelTime + decelTime);
 
-        // Acceleration phase (Quadratic ramp)
-        for (double t = 0; t < accelTime; t += 50) {
-            double power = (t / accelTime) * MaxPower;  // Smooth acceleration
-            setDrivePower(power * Math.signum(TargetDistance));
-            sleep(50);
-        }
-
-        // Constant speed phase
+        moveRamp(accelTime, maxPower, targetDistance, isForward);  // Separate function for ramp-up
         if (cruiseTime > 0) {
-            setDrivePower(MaxPower * Math.signum(TargetDistance));
+            setDrivePower(maxPower * Math.signum(targetDistance)); // Constant speed
             sleep((long) cruiseTime);
         }
+        moveRamp(decelTime, maxPower, targetDistance, isForward);  // Separate function for ramp-down
+    }
 
-        // Deceleration phase (Quadratic ramp down)
-        for (double t = decelTime; t >= 0; t -= 50) {
-            double power = (t / decelTime) * MaxPower;
-            setDrivePower(power * Math.signum(TargetDistance));
+    private void moveRamp(double rampTime, double maxPower, double targetDistance, boolean isForward) {
+        for (double t = 0; t < rampTime; t += 50) {
+            double power = (t / rampTime) * maxPower;
+            setDrivePower(isForward ? power : -power);  // Forward or backward
             sleep(50);
         }
-
-        StopMotors();
     }
 
     // Helper function for setting motor power
@@ -181,41 +189,6 @@ public class auto extends LinearOpMode {
         motorFL.setPower(power);
     }
 
-    private void Turn(double TargetDegrees, double MaxTurnPower) {
-        // Calculate the time needed for the turn based on the formula
-        double timeForTurn = Math.abs(TargetDegrees) / (0.28213333 * MaxTurnPower);
-        
-        // Ensure a minimum time for turns
-        if (timeForTurn < 400) timeForTurn = 400; // Minimum time for the turn
-    
-        double accelTime = Math.min(timeForTurn * 0.3, 400);
-        double decelTime = accelTime;
-        double cruiseTime = timeForTurn - (accelTime + decelTime);
-        
-        // Acceleration phase
-        for (double t = 0; t < accelTime; t += 50) {
-            double power = (t / accelTime) * MaxTurnPower;
-            setTurnPower(power * Math.signum(TargetDegrees));
-            sleep(50);
-        }
-        
-        // Constant turn phase
-        if (cruiseTime > 0) {
-            setTurnPower(MaxTurnPower * Math.signum(TargetDegrees));
-            sleep((long) cruiseTime);
-        }
-        
-        // Deceleration phase
-        for (double t = decelTime; t >= 0; t -= 50) {
-            double power = (t / decelTime) * MaxTurnPower;
-            setTurnPower(power * Math.signum(TargetDegrees));
-            sleep(50);
-        }
-        
-        StopMotors();
-    }
-
-    // Helper function for setting turn power
     private void setTurnPower(double power) {
         motorFR.setPower(-power);
         motorBR.setPower(-power);
@@ -228,6 +201,11 @@ public class auto extends LinearOpMode {
         SetArmPosition(0);
     }
 
+    private void MoveClawToPosition(double position) {
+        claw.setPosition(position);  // Set servo position gradually
+        sleep(100);  // Give time for the servo to reach the target position
+    }
+
     private void StopMotors() {
         motorFR.setPower(0);
         motorBR.setPower(0);
@@ -235,5 +213,4 @@ public class auto extends LinearOpMode {
         motorFL.setPower(0);
         sleep(50);
     }
-
 }

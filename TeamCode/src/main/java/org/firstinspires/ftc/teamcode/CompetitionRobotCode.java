@@ -9,34 +9,67 @@ import org.firstinspires.ftc.teamcode.MovementLib.*;
 
 @TeleOp(name = "Competition TeleOp V ChatGPT", group = "Competition")
 public class CompetitionRobotCode extends LinearOpMode {
-    Servo Arm = null;
-    DcMotor Slider = null;
-    Servo Arm_Lock = null;
-    Servo Claw = null;
-    Servo Wrist = null;
+    // Motors
+    DcMotor Front_Right, Front_Left, Back_Right, Back_Left, Slider;
 
+    // Servos
+    Servo Arm, Arm_Lock, Claw, Wrist;
+
+    // Control Variables
     private double robot_speed = 0.8;   // Target speed
     private double currentSpeed = 0.0;  // Smoothed speed
-    private double accelerationFactor = 0.07;  // Increase rate (adjustable)
-    private double decelerationFactor = 0.15;  // Faster stopping (adjustable)
-    private double joystickDeadzone = 0.1; // Joystick deadzone for smoother control
-    private double slideFactor = 1.0; // Slider position scaling factor
-    private int slider_position = 0; // Track the slider position
+    private double joystickDeadzone = 0.1; // Deadzone for joystick smoothing
+    private boolean claw_open = false;
+    private int slider_position = 0;
 
+    // Stop sequence tracking
+    private String controller1Sequence = "";
+    private String controller2Sequence = "";
+
+    private final String STOP_SEQUENCE_1 = "ABXY";  // Controller 1 button sequence (A, B, X, Y)
+    private final String STOP_SEQUENCE_2 = "UDLR";  // Controller 2 Dpad sequence (Up, Down, Left, Right)
+
+    @Override
     public void runOpMode() {
+        initHardware();
+        waitForStart();
+        Unlock_Arm();
+
+        while (opModeIsActive()) {
+            // Check for the stop sequence press
+            if (checkStopSequence()) {
+                stopProgram();
+                return; // Exit the loop and stop the program
+            }
+
+            controlMovement();
+            controlSlider();
+            controlArm();
+            toggleClaw();
+            controlWrist();
+            adjustSpeed();
+
+            // Telemetry Data
+            telemetry.addData("Slider Position", Slider.getCurrentPosition());
+            telemetry.addData("Target Speed", robot_speed);
+            telemetry.addData("Current Speed", currentSpeed);
+            telemetry.update();
+        }
+    }
+
+    private void initHardware() {
         // Initialize Motors
-        DcMotor Front_Right = hardwareMap.get(DcMotor.class, "FrontRight");
-        DcMotor Front_Left = hardwareMap.get(DcMotor.class, "FrontLeft");
-        DcMotor Back_Right = hardwareMap.get(DcMotor.class, "BackRight");
-        DcMotor Back_Left = hardwareMap.get(DcMotor.class, "BackLeft");
+        Front_Right = hardwareMap.get(DcMotor.class, "FrontRight");
+        Front_Left = hardwareMap.get(DcMotor.class, "FrontLeft");
+        Back_Right = hardwareMap.get(DcMotor.class, "BackRight");
+        Back_Left = hardwareMap.get(DcMotor.class, "BackLeft");
 
         Front_Right.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         Front_Left.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         Back_Right.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         Back_Left.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-        DriveWheels Wheels = new DriveWheels(Front_Right, Front_Left, Back_Right, Back_Left);
-
+        
+        // Reverse motor direction if needed
         Front_Right.setDirection(DcMotorSimple.Direction.REVERSE);
         Back_Right.setDirection(DcMotorSimple.Direction.REVERSE);
 
@@ -52,146 +85,176 @@ public class CompetitionRobotCode extends LinearOpMode {
         Arm_Lock = hardwareMap.get(Servo.class, "Arm Lock");
         Claw = hardwareMap.get(Servo.class, "Claw");
         Wrist = hardwareMap.get(Servo.class, "Wrist");
+    }
 
-        boolean claw_open = false;
-        boolean previousBState = false;
-
-        waitForStart();
-        Unlock_Arm();
-
-        while(opModeIsActive()) {
-            // **Refined Acceleration and Deceleration Control**
-            double speedDifference = robot_speed - currentSpeed;
-            if (Math.abs(speedDifference) > 0.01) { // If speed needs adjusting
-                if (speedDifference > 0) {  
-                    // Accelerating (increase speed smoothly)
-                    currentSpeed += accelerationFactor * speedDifference;  
-                } else {  
-                    // Decelerating (reduce speed faster)
-                    currentSpeed += decelerationFactor * speedDifference;
-                }
+    private void controlMovement() {
+        double speedDifference = robot_speed - currentSpeed;
+        if (Math.abs(speedDifference) > 0.01) { // If speed needs adjusting
+            if (speedDifference > 0) {  
+                // Accelerating (increase speed smoothly)
+                currentSpeed += 0.07 * speedDifference;  
+            } else {  
+                // Decelerating (reduce speed faster)
+                currentSpeed += 0.15 * speedDifference;
             }
+        }
 
-            // **Dynamic Speed Based on Joystick Input**
-            double joystickMagnitude = Math.hypot(gamepad1.left_stick_x, gamepad1.left_stick_y);
-            double dynamicAcceleration = joystickMagnitude * 0.1; // Scale acceleration based on joystick input
-            double dynamicDeceleration = joystickMagnitude * 0.2; // Faster deceleration for better control
+        // Dynamic movement with deadzone
+        Wheels.Omni_Move(
+            applyDeadzone(gamepad1.left_stick_y + gamepad2.left_stick_y), 
+            applyDeadzone(gamepad1.left_stick_x + gamepad2.left_stick_x), 
+            applyDeadzone(gamepad1.right_stick_x + gamepad2.right_stick_x), 
+            currentSpeed
+        );
+    }
 
-            // Apply smoothed speed to movement
-            Wheels.Omni_Move(
-                applyDeadzone(gamepad1.left_stick_y + gamepad2.left_stick_y), 
-                applyDeadzone(gamepad1.left_stick_x + gamepad2.left_stick_x), 
-                applyDeadzone(gamepad1.right_stick_x + gamepad2.right_stick_x), 
-                currentSpeed
-            );
+    private void controlSlider() {
+        if (gamepad2.dpad_down) slider_position = 0;
+        if (gamepad2.dpad_left) slider_position = 1;
+        if (gamepad2.dpad_up) slider_position = 2;
 
-            // **Slider Position Scaling**
-            slideFactor = 1.0 - (Slider.getCurrentPosition() / 5000.0); // Scale between 1 and 0 based on slider position
-            robot_speed = 0.5 + (0.5 * slideFactor); // Min speed of 0.5 when fully extended
-
-            // **Adjust Slider Position Based on D-Pad Inputs**
-            if (gamepad2.dpad_down) slider_position = 0;
-            if (gamepad2.dpad_left) slider_position = 1;
-            if (gamepad2.dpad_up) slider_position = 2;
-
-            // Control slider movement with gradual speed changes
-            if (slider_position == 0) {
+        switch (slider_position) {
+            case 0:
                 Slider.setTargetPosition(0);
-                if (Slider.getCurrentPosition() < 100) {
-                    Slider.setPower(0);
-                    if (Slider.getCurrentPosition() < 30) {
-                        Slider.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                        Slider.setTargetPosition(0);
-                        Slider.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    }
-                } else {
-                    Slider.setPower(1);
-                }
-            } else if (slider_position == 1) {
+                Slider.setPower(Slider.getCurrentPosition() < 100 ? 0 : 1);
+                break;
+            case 1:
                 Slider.setTargetPosition(2201);
                 Slider.setPower(1);
-            } else {
+                break;
+            case 2:
                 Slider.setTargetPosition(5000);
                 Slider.setPower(1);
-            }
+                break;
+        }
+    }
 
-            // **Arm Movement Control**
-            if(gamepad2.right_bumper) {
-                robot_speed = 0.25;
-                Arm.setPosition(0.31 - gamepad2.right_trigger / 5.0f);
-            } else {
-                Arm.setPosition(0.55);
-            }
+    private void controlArm() {
+        if (gamepad2.right_bumper) {
+            robot_speed = 0.25;
+            Arm.setPosition(0.31 - gamepad2.right_trigger / 5.0f);
+        } else {
+            Arm.setPosition(0.55);
+        }
+    }
 
-            // **Claw Toggle Mechanism**
-            if (gamepad2.b && !previousBState) {
-                claw_open = !claw_open;
-            }
-            previousBState = gamepad2.b;
+    private void toggleClaw() {
+        if (gamepad2.b) {
+            claw_open = !claw_open;
+        }
+        if (claw_open) Open_Claw();
+        else Close_Claw();
+    }
 
-            // **Wrist Control**
-            if (gamepad2.x) Wrist_Vertical();
-            else if (gamepad2.y) Wrist_Horizontal();
+    private void controlWrist() {
+        if (gamepad2.x) Wrist_Vertical();
+        else if (gamepad2.y) Wrist_Horizontal();
+    }
 
-            // Open or close claw based on state
-            if (claw_open) Open_Claw();
-            else Close_Claw();
-
-            // **Reset Slider Encoders if Needed**
-            if (gamepad2.start) {
-                Slider.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                Slider.setTargetPosition(0);
-                Slider.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            }
-            if (gamepad1.back && gamepad2.back) {
-                Slider.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                Slider.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            }
-
-            // **Adjust Robot Speed Limits Based on Inputs**
-            if (!gamepad2.right_bumper && Slider.getCurrentPosition() < 100 && !gamepad1.left_bumper) {
-                robot_speed = 0.5;
-            }
-            if (gamepad1.left_bumper) {
-                robot_speed = 1;
-            }
-
-            // **Arm Lock**
-            if (gamepad2.back) Lock_Arm();
-
-            // Telemetry Data
-            telemetry.addData("Slider Position", Slider.getCurrentPosition());
-            telemetry.addData("Target Speed", robot_speed);
-            telemetry.addData("Current Speed", currentSpeed);
-            telemetry.update();
+    private void adjustSpeed() {
+        if (!gamepad2.right_bumper && Slider.getCurrentPosition() < 100 && !gamepad1.left_bumper) {
+            robot_speed = 0.5;
+        }
+        if (gamepad1.left_bumper) {
+            robot_speed = 1;
         }
     }
 
     private void Lock_Arm() {
         Arm_Lock.setPosition(0);
     }
+
     private void Unlock_Arm() {
         Arm_Lock.setPosition(0.5);
     }
+
     private void Open_Claw() {
         Claw.setPosition(0.65);
     }
+
     private void Close_Claw() {
         Claw.setPosition(1);
     }
+
     private void Wrist_Vertical() {
         Wrist.setPosition(0);
     }
+
     private void Wrist_Horizontal() {
         Wrist.setPosition(0.3);
     }
 
-    // **Apply Deadzone to Joystick Inputs**
     private double applyDeadzone(double value) {
         if (Math.abs(value) < joystickDeadzone) {
             return 0;
-        } else {
-            return value;
         }
+        return value;
+    }
+
+    // Checks if both controllers have pressed the correct sequence
+    private boolean checkStopSequence() {
+        // Update sequences for each controller
+        updateController1Sequence();
+        updateController2Sequence();
+
+        // If both sequences match the stop sequence, return true
+        if (controller1Sequence.equals(STOP_SEQUENCE_1) && controller2Sequence.equals(STOP_SEQUENCE_2)) {
+            return true;
+        }
+        return false;
+    }
+
+    // Update the sequence for Controller 1 (gamepad1)
+    private void updateController1Sequence() {
+        if (gamepad1.a) controller1Sequence += "A";
+        if (gamepad1.b) controller1Sequence += "B";
+        if (gamepad1.x) controller1Sequence += "X";
+        if (gamepad1.y) controller1Sequence += "Y";
+
+        // Limit the sequence to the length of 4 characters
+        if (controller1Sequence.length() > 4) controller1Sequence = controller1Sequence.substring(controller1Sequence.length() - 4);
+    }
+
+    // Update the sequence for Controller 2 (gamepad2)
+    private void updateController2Sequence() {
+        if (gamepad2.dpad_up) controller2Sequence += "U";
+        if (gamepad2.dpad_down) controller2Sequence += "D";
+        if (gamepad2.dpad_left) controller2Sequence += "L";
+        if (gamepad2.dpad_right) controller2Sequence += "R";
+
+        // Limit the sequence to the length of 4 characters
+        if (controller2Sequence.length() > 4) controller2Sequence = controller2Sequence.substring(controller2Sequence.length() - 4);
+    }
+
+    // Stops the robot and the entire program
+    private void stopProgram() {
+        // Move the arm to position 0 and lock it
+        Arm.setPosition(0);  // Move the arm to position 0
+        Lock_Arm();           // Lock the arm
+        Slider.setTargetPosition(0);
+    
+        // Optional: Wait for a short period to allow the arm to reach the position
+        sleep(500);  // Adjust the sleep time if necessary to allow enough time for the arm to move
+    
+        // Stop the motors
+        Front_Right.setPower(0);
+        Front_Left.setPower(0);
+        Back_Right.setPower(0);
+        Back_Left.setPower(0);
+        Slider.setPower(0);
+    
+        // Provide telemetry feedback that the stop sequence was activated
+        telemetry.addData("Program Stopped", "Stop Sequence Activated");
+        telemetry.update();
+    
+        // Optionally add a brief delay for feedback visibility
+        sleep(500);  // Sleep for 500 milliseconds to allow feedback display
+    
+        // Clear the sequences to avoid triggering the stop on restart
+        controller1Sequence = "";
+        controller2Sequence = "";
+    
+        // End the OpMode (this stops the program)
+        requestOpModeStop();
     }
 }
