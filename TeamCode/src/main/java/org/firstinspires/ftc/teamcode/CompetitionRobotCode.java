@@ -1,152 +1,148 @@
 package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.DcMotor;
-
-//TODO:
-// - ARM1 Positions using SelfCheck.java
-// - ARM2 Positions
-// -
-@TeleOp(name = "COMPETITION: Manual Drive", group = "Competition")
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Servo;
+import org.firstinspires.ftc.teamcode.MovementLib.*;
+@TeleOp(name = "Competition TeleOp V ChatGPT", group = "Competition")
 public class CompetitionRobotCode extends LinearOpMode {
-    DcMotor arm = null;
-    DcMotor slidearm = null;
+    Servo Arm = null;
+    DcMotor Slider = null;
+    Servo Arm_Lock = null;
+    Servo Claw = null;
+    Servo Wrist = null;
+    @Override
     public void runOpMode() {
-		// Init all the motors
-        DcMotor motorFR = hardwareMap.get(DcMotor.class, "FrontRight");
-        DcMotor motorBR = hardwareMap.get(DcMotor.class, "BackRight");
-        DcMotor motorBL = hardwareMap.get(DcMotor.class, "BackLeft");
-        DcMotor motorFL = hardwareMap.get(DcMotor.class, "FrontLeft");
-
-        slidearm = hardwareMap.get(DcMotor.class, "Slide Arm");
-        arm = hardwareMap.get(DcMotor.class, "Extending Arm");
-        Servo wrist = hardwareMap.get(Servo.class, "Wrist");
-        Servo claw = hardwareMap.get(Servo.class, "Claw");
-        Servo ArmLock = hardwareMap.get(Servo.class, "Arm Lock");
-		// Set each motor's direction
-        motorFR.setDirection(DcMotor.Direction.FORWARD);
-        motorBR.setDirection(DcMotor.Direction.FORWARD);
-        motorBL.setDirection(DcMotor.Direction.REVERSE);
-        motorFL.setDirection(DcMotor.Direction.REVERSE);
-        motorFR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        motorFL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        motorBR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        motorBL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        //
-        slidearm.setTargetPosition(100);
-        slidearm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        slidearm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        arm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        int segment = 0;
-        String state = "Home";
+        // Initialize Motors
+        DcMotor Front_Right = hardwareMap.get(DcMotor.class, "FrontRight");
+        DcMotor Front_Left = hardwareMap.get(DcMotor.class, "FrontLeft");
+        DcMotor Back_Right = hardwareMap.get(DcMotor.class, "BackRight");
+        DcMotor Back_Left = hardwareMap.get(DcMotor.class, "BackLeft");
+        Front_Right.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        Front_Left.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        Back_Right.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        Back_Left.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        DriveWheels Wheels = new DriveWheels(Front_Right, Front_Left, Back_Right, Back_Left);
+        Front_Right.setDirection(DcMotorSimple.Direction.REVERSE);
+        Back_Right.setDirection(DcMotorSimple.Direction.REVERSE);
+        // Initialize Slider
+        Slider = hardwareMap.get(DcMotor.class, "Slide Arm");
+        Slider.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        Slider.setTargetPosition(0);
+        Slider.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        Slider.setPower(0);
+        // Initialize Arm
+        Arm = hardwareMap.get(Servo.class, "Arm");
+        // Initialize Arm Lock
+        Arm_Lock = hardwareMap.get(Servo.class, "Arm Lock");
+        // Initialize Claw
+        Claw = hardwareMap.get(Servo.class, "Claw");
+        Wrist = hardwareMap.get(Servo.class, "Wrist");
+        // Variables
+        int slider_position = 0;
+        boolean claw_open = false;
+        int arm_good = 0;
+        boolean Arm_down = false;
+        int Arm_pos = 0;
+        int Arm_speed = 0;
+        double robot_speed = .8;
         waitForStart();
-        /*arm.setPower(.5);
-        sleep(3000);
-        arm.setPower(0);*/
-        arm.setTargetPosition(10);
-        arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        //arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        ArmLock.setPosition(.5);
-        double speed   = .5;
-        while (opModeIsActive()) {
-
-            double axial   = gamepad1.left_stick_y;
-            double lateral = gamepad1.left_stick_x;
-            double yaw     = -gamepad1.right_stick_x;
-
-			// Setup quick speed modifications for precision driving
-
-            double rightFrontPower = axial - lateral + yaw;
-            double rightBackPower  = axial + lateral + yaw;
-            double leftBackPower   = axial - lateral - yaw;
-            double leftFrontPower  = axial + lateral - yaw;
-
-            motorFR.setPower(speed * leftFrontPower);
-            motorBR.setPower(speed * leftBackPower);
-            motorBL.setPower(speed * rightBackPower);
-            motorFL.setPower(speed * rightFrontPower);
-
-            //telemetry.addData("Slide Position", slidearm.getCurrentPosition());
-            telemetry.addData("Slide Position", slidearm.getCurrentPosition());
-            telemetry.addData("Arm Position", arm.getCurrentPosition());
-            if (gamepad2.a) { state = "Home"; }
-            if (gamepad2.b) { state = "Deploy"; }
-            if (gamepad2.x) { state = "Basket"; }
-            if (gamepad2.y) { state = "Reach"; }
-            if (gamepad2.start) { state = "Manual"; }
-            if (gamepad2.dpad_left) { wrist.setPosition(0.3333333); }
-            else if(gamepad2.dpad_right) { wrist.setPosition(0); }
-
-            //arm.setPower(.3);
-            switch(state) {
-                case("Home"):
-                    SetSliderSegment(0);
-                    SetArmPosition(10);
-                    if(arm.getCurrentPosition() < 50) speed = .5;
-                    break;
-                case("Deploy"):
-                    SetSliderSegment(0);
-                    SetArmPosition(-60);
-                    if(arm.getCurrentPosition() < 50) speed = .5;
-                    break;
-                case("Basket"):
-                    SetSliderSegment(2);
-                    speed = 0.25;
-                    break;
-                case("Reach"):
-                    SetSliderSegment(3);
-                    speed = 0.125;
-                    break;
-                case("Manual"):
-                    SetSliderSegment(4);
-                    speed = 0.125;
-                    break;
+        Unlock_Arm();
+        while(opModeIsActive()) {
+            Wheels.Omni_Move(gamepad1.left_stick_y + gamepad2.left_stick_y, gamepad1.left_stick_x + gamepad2.left_stick_x, gamepad1.right_stick_x + gamepad2.right_stick_x, robot_speed);
+            if (gamepad2.dpad_down) {
+                slider_position = 0;
             }
-
-            if (gamepad2.left_bumper) {
-                claw.setPosition(.4);
+            if (gamepad2.dpad_left) {
+                slider_position = 1;
             }
-            else if (gamepad2.right_bumper) {
-                claw.setPosition(.5);
+            if (gamepad2.dpad_up) {
+                slider_position = 2;
+            }
+            if (slider_position == 0) {
+                Slider.setTargetPosition(0);
+                if (Slider.getCurrentPosition() < 100) {
+                    Slider.setPower(0);
+                    if (Slider.getCurrentPosition() < 30) {
+                        Slider.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                        Slider.setTargetPosition(0);
+                        Slider.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    }
+                }
+                else {
+                    Slider.setPower(1);
+                    robot_speed = .125;
+                }
+            }
+            else if (slider_position == 1) {
+                Slider.setTargetPosition(2201);
+                Slider.setPower(1);
+                robot_speed = .125;
+                Arm_down = false;
             }
             else {
-                claw.setPosition(0);
+                Slider.setTargetPosition(5000);
+                Slider.setPower(1);
+                robot_speed = .125;
+                Arm_down = false;
             }
-
+            if(gamepad2.right_bumper) {
+                robot_speed = .25;
+                Arm.setPosition(0.31 - gamepad2.right_trigger / 5.0f);
+            }
+            else {
+                Arm.setPosition(0.55);
+            }
+            if(gamepad2.a) { claw_open = false; }
+            if(gamepad2.b) { claw_open = true; }
+            if (gamepad2.x) {
+                Wrist_Vertical();
+            }
+            else if (gamepad2.y){
+                Wrist_Horizontal();
+            }
+            if (claw_open) {
+                Open_Claw();
+            }
+            else {
+                Close_Claw();
+            }
+            if (gamepad2.start) {
+                Slider.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                Slider.setTargetPosition(0);
+                Slider.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            }
+            if (gamepad1.back && gamepad2.back) {
+                Slider.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                Slider.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            }
+            if (!gamepad2.right_bumper && Slider.getCurrentPosition() < 100 && !gamepad1.left_bumper) {
+                robot_speed = .5;
+            }
+            if (gamepad1.left_bumper) {
+                robot_speed = 1;
+            }
+            if (gamepad2.back) {
+                Lock_Arm();
+            }
+            telemetry.addData("Slider Position", Slider.getCurrentPosition());
+            telemetry.addData("Robot Speed", robot_speed);
             telemetry.update();
         }
     }
-
-    private double ProximityRunge(int position) {
-        double x = (double)position / 4;
-        return 1 - 1/(1+x*x);
+    private void Lock_Arm() {
+        Arm_Lock.setPosition(0);
     }
-    private void SetSliderSegment(int segment) {
-        //slidearm.setPower(1);
-        switch(segment) {
-            case(0): SetSliderPosition(0); break;
-            case(1): SetSliderPosition(1437); break;
-            case(2): SetSliderPosition(2971); break;
-            case(3): SetSliderPosition(4498); break;
-            case(4): SetSliderPosition(5900); break;
-        }
+    private void Unlock_Arm() {
+        Arm_Lock.setPosition(0.5);
     }
-    private void SetSliderPosition(int target) {
-        slidearm.setTargetPosition(target);
-        slidearm.setPower(.5);
-        if(target == 0 && slidearm.getCurrentPosition() < 100) {
-            slidearm.setPower(0);
-        }
+    private void Open_Claw() {
+        Claw.setPosition(0.65);
     }
-    private void SetArmPosition(int target) {
-        int x = arm.getCurrentPosition() - target;
-        double speed = 1 / (1 + Math.pow(30, x));
-
-        telemetry.addData("Speed", speed);
-        arm.setPower(speed);
+    private void Close_Claw() {
+        Claw.setPosition(1);
     }
+    private void Wrist_Vertical() { Wrist.setPosition(0); }
+    private void Wrist_Horizontal() { Wrist.setPosition((0.3)); }
 }
