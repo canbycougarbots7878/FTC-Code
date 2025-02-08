@@ -1,10 +1,12 @@
 package org.firstinspires.ftc.teamcode;
+
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.teamcode.MovementLib.*;
+
 @TeleOp(name = "Competition TeleOp V ChatGPT", group = "Competition")
 public class CompetitionRobotCode extends LinearOpMode {
     Servo Arm = null;
@@ -12,6 +14,11 @@ public class CompetitionRobotCode extends LinearOpMode {
     Servo Arm_Lock = null;
     Servo Claw = null;
     Servo Wrist = null;
+    
+    private double robot_speed = 0.8;  // Target speed
+    private double currentSpeed = 0.0; // Smoothly adjusted speed
+    private double accelerationRate = 0.05; // Adjust this for faster/slower acceleration
+
     @Override
     public void runOpMode() {
         // Initialize Motors
@@ -19,47 +26,60 @@ public class CompetitionRobotCode extends LinearOpMode {
         DcMotor Front_Left = hardwareMap.get(DcMotor.class, "FrontLeft");
         DcMotor Back_Right = hardwareMap.get(DcMotor.class, "BackRight");
         DcMotor Back_Left = hardwareMap.get(DcMotor.class, "BackLeft");
+
         Front_Right.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         Front_Left.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         Back_Right.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         Back_Left.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
         DriveWheels Wheels = new DriveWheels(Front_Right, Front_Left, Back_Right, Back_Left);
+
         Front_Right.setDirection(DcMotorSimple.Direction.REVERSE);
         Back_Right.setDirection(DcMotorSimple.Direction.REVERSE);
+
         // Initialize Slider
         Slider = hardwareMap.get(DcMotor.class, "Slide Arm");
         Slider.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         Slider.setTargetPosition(0);
         Slider.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         Slider.setPower(0);
-        // Initialize Arm
+
+        // Initialize Arm, Arm Lock, Claw, and Wrist
         Arm = hardwareMap.get(Servo.class, "Arm");
-        // Initialize Arm Lock
         Arm_Lock = hardwareMap.get(Servo.class, "Arm Lock");
-        // Initialize Claw
         Claw = hardwareMap.get(Servo.class, "Claw");
         Wrist = hardwareMap.get(Servo.class, "Wrist");
-        // Variables
-        int slider_position = 0;
+
         boolean claw_open = false;
-        int arm_good = 0;
-        boolean Arm_down = false;
-        int Arm_pos = 0;
-        int Arm_speed = 0;
-        double robot_speed = .8;
+        boolean previousBState = false;
+
         waitForStart();
         Unlock_Arm();
+
         while(opModeIsActive()) {
-            Wheels.Omni_Move(gamepad1.left_stick_y + gamepad2.left_stick_y, gamepad1.left_stick_x + gamepad2.left_stick_x, gamepad1.right_stick_x + gamepad2.right_stick_x, robot_speed);
-            if (gamepad2.dpad_down) {
-                slider_position = 0;
+            // Gradually adjust speed towards target robot_speed
+            if (currentSpeed < robot_speed) {
+                currentSpeed += accelerationRate;
+                if (currentSpeed > robot_speed) currentSpeed = robot_speed; // Prevent overshoot
+            } else if (currentSpeed > robot_speed) {
+                currentSpeed -= accelerationRate;
+                if (currentSpeed < robot_speed) currentSpeed = robot_speed; // Prevent undershoot
             }
-            if (gamepad2.dpad_left) {
-                slider_position = 1;
-            }
-            if (gamepad2.dpad_up) {
-                slider_position = 2;
-            }
+
+            // Apply smoothed speed to movement
+            Wheels.Omni_Move(
+                gamepad1.left_stick_y + gamepad2.left_stick_y, 
+                gamepad1.left_stick_x + gamepad2.left_stick_x, 
+                gamepad1.right_stick_x + gamepad2.right_stick_x, 
+                currentSpeed
+            );
+
+            // Adjust slider position based on D-Pad inputs
+            if (gamepad2.dpad_down) slider_position = 0;
+            if (gamepad2.dpad_left) slider_position = 1;
+            if (gamepad2.dpad_up) slider_position = 2;
+
+            // Control slider movement
             if (slider_position == 0) {
                 Slider.setTargetPosition(0);
                 if (Slider.getCurrentPosition() < 100) {
@@ -69,47 +89,43 @@ public class CompetitionRobotCode extends LinearOpMode {
                         Slider.setTargetPosition(0);
                         Slider.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                     }
-                }
-                else {
+                } else {
                     Slider.setPower(1);
-                    robot_speed = .125;
+                    robot_speed = 0.125;
                 }
-            }
-            else if (slider_position == 1) {
+            } else if (slider_position == 1) {
                 Slider.setTargetPosition(2201);
                 Slider.setPower(1);
-                robot_speed = .125;
-                Arm_down = false;
-            }
-            else {
+                robot_speed = 0.125;
+            } else {
                 Slider.setTargetPosition(5000);
                 Slider.setPower(1);
-                robot_speed = .125;
-                Arm_down = false;
+                robot_speed = 0.125;
             }
+
+            // Arm movement control
             if(gamepad2.right_bumper) {
-                robot_speed = .25;
+                robot_speed = 0.25;
                 Arm.setPosition(0.31 - gamepad2.right_trigger / 5.0f);
-            }
-            else {
+            } else {
                 Arm.setPosition(0.55);
             }
+
+            // Claw toggle mechanism
             if (gamepad2.b && !previousBState) {
                 claw_open = !claw_open;
             }
             previousBState = gamepad2.b;
-            if (gamepad2.x) {
-                Wrist_Vertical();
-            }
-            else if (gamepad2.y){
-                Wrist_Horizontal();
-            }
-            if (claw_open) {
-                Open_Claw();
-            }
-            else {
-                Close_Claw();
-            }
+
+            // Wrist control
+            if (gamepad2.x) Wrist_Vertical();
+            else if (gamepad2.y) Wrist_Horizontal();
+
+            // Open or close claw based on state
+            if (claw_open) Open_Claw();
+            else Close_Claw();
+
+            // Reset slider encoders if needed
             if (gamepad2.start) {
                 Slider.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                 Slider.setTargetPosition(0);
@@ -119,20 +135,26 @@ public class CompetitionRobotCode extends LinearOpMode {
                 Slider.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                 Slider.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             }
+
+            // Adjust robot speed limits
             if (!gamepad2.right_bumper && Slider.getCurrentPosition() < 100 && !gamepad1.left_bumper) {
-                robot_speed = .5;
+                robot_speed = 0.5;
             }
             if (gamepad1.left_bumper) {
                 robot_speed = 1;
             }
-            if (gamepad2.back) {
-                Lock_Arm();
-            }
+
+            // Arm lock
+            if (gamepad2.back) Lock_Arm();
+
+            // Telemetry data
             telemetry.addData("Slider Position", Slider.getCurrentPosition());
-            telemetry.addData("Robot Speed", robot_speed);
+            telemetry.addData("Target Speed", robot_speed);
+            telemetry.addData("Current Speed", currentSpeed);
             telemetry.update();
         }
     }
+
     private void Lock_Arm() {
         Arm_Lock.setPosition(0);
     }
@@ -145,6 +167,10 @@ public class CompetitionRobotCode extends LinearOpMode {
     private void Close_Claw() {
         Claw.setPosition(1);
     }
-    private void Wrist_Vertical() { Wrist.setPosition(0); }
-    private void Wrist_Horizontal() { Wrist.setPosition((0.3)); }
+    private void Wrist_Vertical() {
+        Wrist.setPosition(0);
+    }
+    private void Wrist_Horizontal() {
+        Wrist.setPosition(0.3);
+    }
 }
