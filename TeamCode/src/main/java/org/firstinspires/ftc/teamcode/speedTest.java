@@ -42,8 +42,8 @@ public class speedTest extends LinearOpMode {
 
         while (opModeIsActive()) {
             if (gamepad1.a) {
-                motorFR.setPower(1);
-                motorBR.setPower(1);
+                motorFR.setPower(-1);
+                motorBR.setPower(-1);
                 motorBL.setPower(1);
                 motorFL.setPower(1);
                 sleep(1000);
@@ -53,8 +53,8 @@ public class speedTest extends LinearOpMode {
                 motorFL.setPower(0);
             }
             if (gamepad1.b) {
-                motorFR.setPower(0.75);
-                motorBR.setPower(0.75);
+                motorFR.setPower(-0.75);
+                motorBR.setPower(-0.75);
                 motorBL.setPower(0.75);
                 motorFL.setPower(0.75);
                 sleep(1000);
@@ -64,8 +64,8 @@ public class speedTest extends LinearOpMode {
                 motorFL.setPower(0);
             }
             if (gamepad1.x) {
-                motorFR.setPower(0.5);
-                motorBR.setPower(0.5);
+                motorFR.setPower(-0.5);
+                motorBR.setPower(-0.5);
                 motorBL.setPower(0.5);
                 motorFL.setPower(0.5);
                 sleep(1000);
@@ -75,8 +75,8 @@ public class speedTest extends LinearOpMode {
                 motorFL.setPower(0);
             }
             if (gamepad1.y) {
-                motorFR.setPower(0.25);
-                motorBR.setPower(0.25);
+                motorFR.setPower(-0.25);
+                motorBR.setPower(-0.25);
                 motorBL.setPower(0.25);
                 motorFL.setPower(0.25);
                 sleep(1000);
