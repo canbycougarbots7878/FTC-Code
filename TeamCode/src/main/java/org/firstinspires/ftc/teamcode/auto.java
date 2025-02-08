@@ -7,12 +7,6 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-//TODO
-
-//Notes
-// 1. 90 degrees counterclockwise is 450 mm
-
-
 @Autonomous(name = "COMPETITION: Auto Drive", group = "Concept")
 public class auto extends LinearOpMode {
     DcMotor motorFL = null;
