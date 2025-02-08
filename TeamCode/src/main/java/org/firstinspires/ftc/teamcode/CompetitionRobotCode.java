@@ -19,6 +19,8 @@ public class CompetitionRobotCode extends LinearOpMode {
     private double currentSpeed = 0.0;  // Smoothed speed
     private double accelerationFactor = 0.07;  // Increase rate (adjustable)
     private double decelerationFactor = 0.15;  // Faster stopping (adjustable)
+    private double joystickDeadzone = 0.1; // Joystick deadzone for smoother control
+    private double slideFactor = 1.0; // Slider position scaling factor
     
     public void runOpMode() {
         // Initialize Motors
@@ -57,7 +59,7 @@ public class CompetitionRobotCode extends LinearOpMode {
         Unlock_Arm();
 
         while(opModeIsActive()) {
-            // **Refined Acceleration Control**
+            // **Refined Acceleration and Deceleration Control**
             double speedDifference = robot_speed - currentSpeed;
             if (Math.abs(speedDifference) > 0.01) { // If speed needs adjusting
                 if (speedDifference > 0) {  
@@ -69,20 +71,29 @@ public class CompetitionRobotCode extends LinearOpMode {
                 }
             }
 
+            // **Dynamic Speed Based on Joystick Input**
+            double joystickMagnitude = Math.hypot(gamepad1.left_stick_x, gamepad1.left_stick_y);
+            double dynamicAcceleration = joystickMagnitude * 0.1; // Scale acceleration based on joystick input
+            double dynamicDeceleration = joystickMagnitude * 0.2; // Faster deceleration for better control
+
             // Apply smoothed speed to movement
             Wheels.Omni_Move(
-                gamepad1.left_stick_y + gamepad2.left_stick_y, 
-                gamepad1.left_stick_x + gamepad2.left_stick_x, 
-                gamepad1.right_stick_x + gamepad2.right_stick_x, 
+                applyDeadzone(gamepad1.left_stick_y + gamepad2.left_stick_y), 
+                applyDeadzone(gamepad1.left_stick_x + gamepad2.left_stick_x), 
+                applyDeadzone(gamepad1.right_stick_x + gamepad2.right_stick_x), 
                 currentSpeed
             );
 
-            // Adjust slider position based on D-Pad inputs
+            // **Slider Position Scaling**
+            slideFactor = 1.0 - (Slider.getCurrentPosition() / 5000.0); // Scale between 1 and 0 based on slider position
+            robot_speed = 0.5 + (0.5 * slideFactor); // Min speed of 0.5 when fully extended
+
+            // **Adjust Slider Position Based on D-Pad Inputs**
             if (gamepad2.dpad_down) slider_position = 0;
             if (gamepad2.dpad_left) slider_position = 1;
             if (gamepad2.dpad_up) slider_position = 2;
 
-            // Control slider movement
+            // Control slider movement with gradual speed changes
             if (slider_position == 0) {
                 Slider.setTargetPosition(0);
                 if (Slider.getCurrentPosition() < 100) {
@@ -94,19 +105,16 @@ public class CompetitionRobotCode extends LinearOpMode {
                     }
                 } else {
                     Slider.setPower(1);
-                    robot_speed = 0.125;
                 }
             } else if (slider_position == 1) {
                 Slider.setTargetPosition(2201);
                 Slider.setPower(1);
-                robot_speed = 0.125;
             } else {
                 Slider.setTargetPosition(5000);
                 Slider.setPower(1);
-                robot_speed = 0.125;
             }
 
-            // Arm movement control
+            // **Arm Movement Control**
             if(gamepad2.right_bumper) {
                 robot_speed = 0.25;
                 Arm.setPosition(0.31 - gamepad2.right_trigger / 5.0f);
@@ -114,13 +122,13 @@ public class CompetitionRobotCode extends LinearOpMode {
                 Arm.setPosition(0.55);
             }
 
-            // Claw toggle mechanism
+            // **Claw Toggle Mechanism**
             if (gamepad2.b && !previousBState) {
                 claw_open = !claw_open;
             }
             previousBState = gamepad2.b;
 
-            // Wrist control
+            // **Wrist Control**
             if (gamepad2.x) Wrist_Vertical();
             else if (gamepad2.y) Wrist_Horizontal();
 
@@ -128,7 +136,7 @@ public class CompetitionRobotCode extends LinearOpMode {
             if (claw_open) Open_Claw();
             else Close_Claw();
 
-            // Reset slider encoders if needed
+            // **Reset Slider Encoders if Needed**
             if (gamepad2.start) {
                 Slider.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                 Slider.setTargetPosition(0);
@@ -139,7 +147,7 @@ public class CompetitionRobotCode extends LinearOpMode {
                 Slider.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             }
 
-            // Adjust robot speed limits
+            // **Adjust Robot Speed Limits Based on Inputs**
             if (!gamepad2.right_bumper && Slider.getCurrentPosition() < 100 && !gamepad1.left_bumper) {
                 robot_speed = 0.5;
             }
@@ -147,10 +155,10 @@ public class CompetitionRobotCode extends LinearOpMode {
                 robot_speed = 1;
             }
 
-            // Arm lock
+            // **Arm Lock**
             if (gamepad2.back) Lock_Arm();
 
-            // Telemetry data
+            // Telemetry Data
             telemetry.addData("Slider Position", Slider.getCurrentPosition());
             telemetry.addData("Target Speed", robot_speed);
             telemetry.addData("Current Speed", currentSpeed);
@@ -175,5 +183,14 @@ public class CompetitionRobotCode extends LinearOpMode {
     }
     private void Wrist_Horizontal() {
         Wrist.setPosition(0.3);
+    }
+
+    // **Apply Deadzone to Joystick Inputs**
+    private double applyDeadzone(double value) {
+        if (Math.abs(value) < joystickDeadzone) {
+            return 0;
+        } else {
+            return value;
+        }
     }
 }
