@@ -182,14 +182,15 @@ public class auto extends LinearOpMode {
     }
 
     private void Turn(double TargetDegrees, double MaxTurnPower) {
-        double turnSpeedFactor = 0.01; // Adjust this empirically based on robot testing
-        double totalTime = Math.abs(TargetDegrees * turnSpeedFactor / MaxTurnPower);
+        // Calculate the time needed for the turn based on the formula
+        double timeForTurn = Math.abs(TargetDegrees) / (0.28213333 * MaxTurnPower);
+        
+        // Ensure a minimum time for turns
+        if (timeForTurn < 400) timeForTurn = 400; // Minimum time for the turn
     
-        if (totalTime < 400) totalTime = 400; // Reduced minimum time
-    
-        double accelTime = Math.min(totalTime * 0.3, 400);
+        double accelTime = Math.min(timeForTurn * 0.3, 400);
         double decelTime = accelTime;
-        double cruiseTime = totalTime - (accelTime + decelTime);
+        double cruiseTime = timeForTurn - (accelTime + decelTime);
         
         // Acceleration phase
         for (double t = 0; t < accelTime; t += 50) {
