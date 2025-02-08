@@ -64,7 +64,7 @@ public class auto extends LinearOpMode {
         // Start slider movement while turning
         SetSliderPosition(1939);
         Turn(90, 0.75);
-        sleep(rest * 6);
+        sleep(rest * 7);
     
         Forward(700, 0.5);  // Increased speed from 0.25 to 0.5
         sleep(rest);
@@ -84,7 +84,7 @@ public class auto extends LinearOpMode {
         Turn(-90, 0.75);
         sleep(rest / 2);
     
-        Forward(1100, 0.75);
+        Forward(11200, 0.75);
         sleep(rest);
     
         Turn(90, 0.75);
@@ -98,7 +98,7 @@ public class auto extends LinearOpMode {
     
         // Start slider movement while moving forward
         SetSliderPosition(1939);
-        Forward(70, 0.5);  // Increased speed from 0.25 to 0.5
+        Forward(80, 0.5);  // Increased speed from 0.25 to 0.5
         sleep(rest);
     
         SetSliderPosition(1157);
