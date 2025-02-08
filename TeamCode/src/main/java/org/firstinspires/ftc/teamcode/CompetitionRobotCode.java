@@ -234,11 +234,18 @@ public class CompetitionRobotCode extends LinearOpMode {
         Back_Right.setPower(0);
         Back_Left.setPower(0);
         Slider.setPower(0);
-
-        // Stop the program execution
+    
+        // Provide telemetry feedback that the stop sequence was activated
         telemetry.addData("Program Stopped", "Stop Sequence Activated");
         telemetry.update();
-        
+    
+        // Optionally add a brief delay for feedback visibility
+        sleep(500);  // Sleep for 500 milliseconds to allow feedback display
+    
+        // Clear the sequences to avoid triggering the stop on restart
+        controller1Sequence = "";
+        controller2Sequence = "";
+    
         // End the OpMode (this stops the program)
         requestOpModeStop();
     }
