@@ -55,58 +55,58 @@ public class auto extends LinearOpMode {
 
         waitForStart();
 
-        int rest = 200;  // Reduced delay from 1000ms → 200ms
+        int rest = 100;  // Reduced unnecessary wait times
 
         Home();
         Forward(530, 0.75);
         sleep(rest);
-
-        Turn(-450, 0.75);
+    
+        Turn(-90, 0.75);  // Using degrees for clarity
         sleep(rest);
-
+    
         Forward(304.8, 0.75);
         sleep(rest);
-
-        // Start slider movement without waiting
+    
+        // Start slider movement while turning
         SetSliderPosition(1939);
-        Turn(450, 0.75);
+        Turn(90, 0.75);
         sleep(rest);
-
+    
         Forward(700, 0.5);  // Increased speed from 0.25 to 0.5
         sleep(rest);
-
+    
         SetSliderPosition(1231);
+        sleep(rest / 2);
+    
+        claw.setPosition(0.75);
         sleep(rest);
-
-        claw.setPosition(0.4);
-        sleep(rest);
-
+    
         Home();
         sleep(rest);
-
+    
         Forward(-70, 0.75);
-        sleep(rest);
-
-        Turn(-450, 0.75);
-        sleep(rest);
-
+        sleep(rest / 2);
+    
+        Turn(-90, 0.75);
+        sleep(rest / 2);
+    
         Forward(1100, 0.75);
         sleep(rest);
-
-        Turn(450, 0.75);
+    
+        Turn(90, 0.75);
         sleep(rest);
-
+    
         Forward(140, 0.5);  // Increased speed from 0.25 to 0.5
+        sleep(rest / 2);
+    
+        Turn(90, 0.75);
         sleep(rest);
-
-        Turn(450, 0.75);
-        sleep(rest);
-
+    
         // Start slider movement while moving forward
         SetSliderPosition(1939);
         Forward(70, 0.5);  // Increased speed from 0.25 to 0.5
         sleep(rest);
-
+    
         SetSliderPosition(1157);
 
         while (opModeIsActive()) {} // Keep program alive
@@ -187,35 +187,36 @@ public class auto extends LinearOpMode {
         motorFL.setPower(power);
     }
 
-    private void Turn(double TargetRadians, double MaxTurnPower) {
-        double totalTime = Math.abs(TargetRadians / 1.528 / MaxTurnPower);
-
-        if (totalTime < 500) totalTime = 500;
-
-        double accelTime = Math.min(totalTime * 0.3, 500);
+    private void Turn(double TargetDegrees, double MaxTurnPower) {
+        double turnSpeedFactor = 0.01; // Adjust this empirically based on robot testing
+        double totalTime = Math.abs(TargetDegrees * turnSpeedFactor / MaxTurnPower);
+    
+        if (totalTime < 400) totalTime = 400; // Reduced minimum time
+    
+        double accelTime = Math.min(totalTime * 0.3, 400);
         double decelTime = accelTime;
         double cruiseTime = totalTime - (accelTime + decelTime);
-
+        
         // Acceleration phase
         for (double t = 0; t < accelTime; t += 50) {
             double power = (t / accelTime) * MaxTurnPower;
-            setTurnPower(power * Math.signum(TargetRadians));
+            setTurnPower(power * Math.signum(TargetDegrees));
             sleep(50);
         }
-
+        
         // Constant turn phase
         if (cruiseTime > 0) {
-            setTurnPower(MaxTurnPower * Math.signum(TargetRadians));
+            setTurnPower(MaxTurnPower * Math.signum(TargetDegrees));
             sleep((long) cruiseTime);
         }
-
+        
         // Deceleration phase
         for (double t = decelTime; t >= 0; t -= 50) {
             double power = (t / decelTime) * MaxTurnPower;
-            setTurnPower(power * Math.signum(TargetRadians));
+            setTurnPower(power * Math.signum(TargetDegrees));
             sleep(50);
         }
-
+        
         StopMotors();
     }
 
@@ -233,13 +234,11 @@ public class auto extends LinearOpMode {
     }
 
     private void StopMotors() {
-        for (double i = 0.2; i >= 0; i -= 0.05) {
-            motorFR.setPower(i);
-            motorBR.setPower(i);
-            motorBL.setPower(i);
-            motorFL.setPower(i);
-            sleep(50);
-        }
+        motorFR.setPower(0);
+        motorBR.setPower(0);
+        motorBL.setPower(0);
+        motorFL.setPower(0);
+        sleep(50);
     }
 
 }
