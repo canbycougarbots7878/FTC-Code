@@ -21,7 +21,8 @@ public class CompetitionRobotCode extends LinearOpMode {
     private double decelerationFactor = 0.15;  // Faster stopping (adjustable)
     private double joystickDeadzone = 0.1; // Joystick deadzone for smoother control
     private double slideFactor = 1.0; // Slider position scaling factor
-    
+    private int slider_position = 0; // Track the slider position
+
     public void runOpMode() {
         // Initialize Motors
         DcMotor Front_Right = hardwareMap.get(DcMotor.class, "FrontRight");
