@@ -1,4 +1,4 @@
-//February 4, 2025 - Simon N.
+//February 8, 2025 - Simon N.
 
 package org.firstinspires.ftc.teamcode;
 
@@ -7,15 +7,8 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-//TODO
-
-//Notes
-// 1. 90 degrees counterclockwise is 450 mm
-
-
 @Autonomous(name = "COMPETITION: Auto Drive", group = "Concept")
 public class auto extends LinearOpMode {
-    double Tau = Math.PI * 2;
     DcMotor motorFL = null;
     DcMotor motorBL = null;
     DcMotor motorFR = null;
@@ -44,9 +37,9 @@ public class auto extends LinearOpMode {
         motorFL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         motorFR.setDirection(DcMotor.Direction.REVERSE);
-        motorBR.setDirection(DcMotor.Direction.FORWARD);
-        motorBL.setDirection(DcMotor.Direction.REVERSE);
-        motorFL.setDirection(DcMotor.Direction.REVERSE);
+        motorBR.setDirection(DcMotor.Direction.REVERSE);
+        motorBL.setDirection(DcMotor.Direction.FORWARD);
+        motorFL.setDirection(DcMotor.Direction.FORWARD);
 
         slidearm.setTargetPosition(100);
         slidearm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -54,82 +47,65 @@ public class auto extends LinearOpMode {
         slidearm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        //arm1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-        //arm1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
         waitForStart();
 
-        // Print starting numbers and move forward
-        TelemetryPosition();
-        int rest = 1000;
-        Home();
+        int rest = 100;  // Reduced unnecessary wait times
 
+        Home();
         Forward(530, 0.75);
-
-        // Wait until the motors are done spinning
-
         sleep(rest);
-
-        Turn(450, 0.75);
-
+    
+        Turn(-90, 0.75);  // Using degrees for clarity
         sleep(rest);
-
+    
         Forward(304.8, 0.75);
-
         sleep(rest);
-
-        Turn(-450, 0.75);
-
-        sleep(rest);
-
+    
+        // Start slider movement while turning
         SetSliderPosition(1939);
-
+        Turn(90, 0.75);
         sleep(rest);
-
-        Forward(70, 0.25);
-
+    
+        Forward(700, 0.5);  // Increased speed from 0.25 to 0.5
         sleep(rest);
-
+    
         SetSliderPosition(1231);
-
+        sleep(rest / 2);
+    
+        claw.setPosition(0.75);
         sleep(rest);
-
-        claw.setPosition(.5);
-
-        sleep(rest);
-
+    
         Home();
-
         sleep(rest);
-
+    
         Forward(-70, 0.75);
-
-        sleep(rest);
-
-        Turn(-450, 0.75);
-
-        sleep(rest);
-
+        sleep(rest / 2);
+    
+        Turn(-90, 0.75);
+        sleep(rest / 2);
+    
         Forward(1100, 0.75);
-
         sleep(rest);
+    
+        Turn(90, 0.75);
+        sleep(rest);
+    
+        Forward(140, 0.5);  // Increased speed from 0.25 to 0.5
+        sleep(rest / 2);
+    
+        Turn(90, 0.75);
+        sleep(rest);
+    
+        // Start slider movement while moving forward
+        SetSliderPosition(1939);
+        Forward(70, 0.5);  // Increased speed from 0.25 to 0.5
+        sleep(rest);
+    
+        SetSliderPosition(1157);
 
-        Turn(450, 0.75);
-
-        // Print ending numbers
-        TelemetryPosition();
-
-        motorFR.setPower(0);
-        motorBR.setPower(0);
-        motorBL.setPower(0);
-        motorFL.setPower(0);
-
-        // Leave the data on the screen so we have time to write it down
-        while (opModeIsActive()) {
-            // Do nothing, just wait
-        }
+        while (opModeIsActive()) {} // Keep program alive
     }
+
 
     private void SetSliderPosition(int target) {
         slidearm.setTargetPosition(target);
@@ -164,60 +140,86 @@ public class auto extends LinearOpMode {
         return 1 - 1/(1+x*x);
     }
 
-    private void Forward(double TargetDistance, double Power) {
+    private void Forward(double TargetDistance, double MaxPower) {
+        double totalTime = Math.abs(TargetDistance / 1.528 / MaxPower);
 
-        time = (TargetDistance*(1/1.528)*(1/Power));
+        // Ensure minimum movement time
+        if (totalTime < 500) totalTime = 500;
 
-        motorFR.setPower(Power);
-        motorBR.setPower(Power);
-        motorBL.setPower(Power);
-        motorFL.setPower(Power);
+        double accelTime = Math.min(totalTime * 0.3, 500);  // Cap acceleration to 500ms
+        double decelTime = accelTime; // Symmetric deceleration
+        double cruiseTime = totalTime - (accelTime + decelTime);
 
-        sleep((long) time);
-
-        motorFR.setPower(0);
-        motorBR.setPower(0);
-        motorBL.setPower(0);
-        motorFL.setPower(0);
-    }
-
-    private void TelemetryPosition() {
-        telemetry.addData("Front Right", motorFR.getCurrentPosition());
-        telemetry.addData("Back Right", motorBR.getCurrentPosition());
-        telemetry.addData("Back Left", motorBL.getCurrentPosition());
-        telemetry.addData("Front Left", motorFL.getCurrentPosition());
-        telemetry.update();
-    }
-
-    private void Telemetry(int Word) {
-        if (Word == 1) {
-            telemetry.addData("", "Arm");
-            telemetry.update();
-        } else if (Word == 2) {
-            telemetry.addData("", "Claw");
-            telemetry.update();
-        } else if (Word == 3) {
-            telemetry.addData("", "Lifter");
-            telemetry.update();
+        // Acceleration phase (Quadratic ramp)
+        for (double t = 0; t < accelTime; t += 50) {
+            double power = (t / accelTime) * MaxPower;  // Smooth acceleration
+            setDrivePower(power * Math.signum(TargetDistance));
+            sleep(50);
         }
+
+        // Constant speed phase
+        if (cruiseTime > 0) {
+            setDrivePower(MaxPower * Math.signum(TargetDistance));
+            sleep((long) cruiseTime);
+        }
+
+        // Deceleration phase (Quadratic ramp down)
+        for (double t = decelTime; t >= 0; t -= 50) {
+            double power = (t / decelTime) * MaxPower;
+            setDrivePower(power * Math.signum(TargetDistance));
+            sleep(50);
+        }
+
+        StopMotors();
     }
 
-    private void Turn(double TargetRadians, double TurnPower) {
+    // Helper function for setting motor power
+    private void setDrivePower(double power) {
+        motorFR.setPower(power);
+        motorBR.setPower(power);
+        motorBL.setPower(power);
+        motorFL.setPower(power);
+    }
 
-        time = (TargetRadians*(1/1.528)*(1/TurnPower));
+    private void Turn(double TargetDegrees, double MaxTurnPower) {
+        double turnSpeedFactor = 0.01; // Adjust this empirically based on robot testing
+        double totalTime = Math.abs(TargetDegrees * turnSpeedFactor / MaxTurnPower);
+    
+        if (totalTime < 400) totalTime = 400; // Reduced minimum time
+    
+        double accelTime = Math.min(totalTime * 0.3, 400);
+        double decelTime = accelTime;
+        double cruiseTime = totalTime - (accelTime + decelTime);
+        
+        // Acceleration phase
+        for (double t = 0; t < accelTime; t += 50) {
+            double power = (t / accelTime) * MaxTurnPower;
+            setTurnPower(power * Math.signum(TargetDegrees));
+            sleep(50);
+        }
+        
+        // Constant turn phase
+        if (cruiseTime > 0) {
+            setTurnPower(MaxTurnPower * Math.signum(TargetDegrees));
+            sleep((long) cruiseTime);
+        }
+        
+        // Deceleration phase
+        for (double t = decelTime; t >= 0; t -= 50) {
+            double power = (t / decelTime) * MaxTurnPower;
+            setTurnPower(power * Math.signum(TargetDegrees));
+            sleep(50);
+        }
+        
+        StopMotors();
+    }
 
-        motorFR.setPower(-TurnPower);
-        motorBR.setPower(-TurnPower);
-        motorBL.setPower(TurnPower);
-        motorFL.setPower(TurnPower);
-
-        sleep((long) time);
-
-        motorFR.setPower(0);
-        motorBR.setPower(0);
-        motorBL.setPower(0);
-        motorFL.setPower(0);
-
+    // Helper function for setting turn power
+    private void setTurnPower(double power) {
+        motorFR.setPower(-power);
+        motorBR.setPower(-power);
+        motorBL.setPower(power);
+        motorFL.setPower(power);
     }
 
     private void Home() {
@@ -225,18 +227,12 @@ public class auto extends LinearOpMode {
         SetArmPosition(0);
     }
 
-    private void Deploy() {
-        SetSliderSegment(0);
-        SetArmPosition(-70);
+    private void StopMotors() {
+        motorFR.setPower(0);
+        motorBR.setPower(0);
+        motorBL.setPower(0);
+        motorFL.setPower(0);
+        sleep(50);
     }
-
-    private void Basket() {
-        SetSliderSegment(2);
-    }
-
-    private void Reach() {
-        SetSliderSegment(3);
-    }
-
 
 }
