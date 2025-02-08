@@ -231,6 +231,7 @@ public class CompetitionRobotCode extends LinearOpMode {
         // Move the arm to position 0 and lock it
         Arm.setPosition(0);  // Move the arm to position 0
         Lock_Arm();           // Lock the arm
+        Slider.setTargetPosition(0);
     
         // Optional: Wait for a short period to allow the arm to reach the position
         sleep(500);  // Adjust the sleep time if necessary to allow enough time for the arm to move
