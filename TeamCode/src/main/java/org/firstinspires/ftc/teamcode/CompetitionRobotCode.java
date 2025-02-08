@@ -7,8 +7,8 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.teamcode.MovementLib.*;
 
-@TeleOp(name = "Competition TeleOp V ChatGPT", group = "Competition")
-public class CompetitionRobotCode extends LinearOpMode {
+@TeleOp(name = "Competition TeleOp V ChatGPT Combined", group = "Competition")
+public class CompetitionRobotCodeCombined extends LinearOpMode {
     Servo Arm = null;
     DcMotor Slider = null;
     Servo Arm_Lock = null;
@@ -23,6 +23,7 @@ public class CompetitionRobotCode extends LinearOpMode {
     private double slideFactor = 1.0; // Slider position scaling factor
     private int slider_position = 0; // Track the slider position
 
+    @Override
     public void runOpMode() {
         // Initialize Motors
         DcMotor Front_Right = hardwareMap.get(DcMotor.class, "FrontRight");
