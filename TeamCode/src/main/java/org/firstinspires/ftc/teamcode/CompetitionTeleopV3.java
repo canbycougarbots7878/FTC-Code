@@ -1,12 +1,16 @@
 package org.firstinspires.ftc.teamcode;
+
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
-import org.firstinspires.ftc.teamcode.MovementLib.*;
-@TeleOp(name = "Competition TeleOp", group = "Competition")
-public class CompetitionTeleopV2 extends LinearOpMode {
+
+import org.firstinspires.ftc.teamcode.MovementLib.DriveWheels;
+
+@TeleOp(name = "Competition TeleOp V3", group = "Competition")
+public class CompetitionTeleopV3 extends LinearOpMode {
+    int MAX_SLIDER_POS = 5000;
     Servo Arm = null;
     DcMotor Slider = null;
     Servo Arm_Lock = null;
@@ -41,91 +45,53 @@ public class CompetitionTeleopV2 extends LinearOpMode {
         Wrist = hardwareMap.get(Servo.class, "Wrist");
         // Variables
         int slider_position = 0;
+
         boolean claw_open = false;
-        int arm_good = 0;
-        boolean Arm_down = false;
-        int Arm_pos = 0;
-        int Arm_speed = 0;
+        boolean arm_down = false;
+        boolean wrist_rotated = false;
+
         double robot_speed = .8;
+
+
         waitForStart();
         Unlock_Arm();
         while(opModeIsActive()) {
-            Wheels.Omni_Move(gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x, robot_speed);
-            if (gamepad2.dpad_down) {
-                slider_position = 0;
-            }
-            if (gamepad2.dpad_left) {
-                slider_position = 1;
-            }
+            Wheels.Omni_Move(gamepad1.left_stick_y + gamepad2.left_stick_y, gamepad1.left_stick_x + gamepad2.left_stick_x, gamepad1.right_stick_x + gamepad2.right_stick_x, robot_speed);
+
             if (gamepad2.dpad_up) {
-                slider_position = 2;
+                slider_position += 1;
             }
-            if (slider_position == 0) {
-                Slider.setTargetPosition(0);
-                if (Slider.getCurrentPosition() < 100) {
-                    Slider.setPower(0);
-                    if (Slider.getCurrentPosition() < 30) {
-                        Slider.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                        Slider.setTargetPosition(0);
-                        Slider.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    }
-                }
-                else {
-                    Slider.setPower(1);
-                    robot_speed = .125;
-                }
+            else if (gamepad2.dpad_down) {
+                slider_position -= 1;
             }
-            else if (slider_position == 1) {
-                Slider.setTargetPosition(2201);
-                Slider.setPower(1);
-                robot_speed = .125;
-                Arm_down = false;
-            }
-            else {
-                Slider.setTargetPosition(5000);
-                Slider.setPower(1);
-                robot_speed = .125;
-                Arm_down = false;
-            }
-            if(gamepad2.right_bumper) {
-                robot_speed = .25;
-                Arm.setPosition(0.21 - gamepad2.right_trigger / 5.0f);
-            }
-            else {
-                Arm.setPosition(0.55);
-            }
+            slider_position = Math.min(MAX_SLIDER_POS, Math.max(0, slider_position)); // Keep sliderpos in an acceptable range
+
+            arm_down = gamepad2.right_bumper;
+
             if(gamepad2.a) { claw_open = false; }
             if(gamepad2.b) { claw_open = true; }
-            if (gamepad2.x) {
-                Wrist_Vertical();
-            }
-            else if (gamepad2.y){
-                Wrist_Horizontal();
-            }
-            if (claw_open) {
-                Open_Claw();
-            }
-            else {
-                Close_Claw();
-            }
+
+            if (gamepad2.x) { wrist_rotated = true; }
+            else if (gamepad2.y){ wrist_rotated = false; }
+
             if (gamepad2.start) {
                 Slider.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                 Slider.setTargetPosition(0);
                 Slider.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             }
-            if (gamepad1.back && gamepad2.back) {
-                Slider.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                Slider.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            }
             if (!gamepad2.right_bumper && Slider.getCurrentPosition() < 100 && !gamepad1.left_bumper) {
                 robot_speed = .5;
             }
-            if (gamepad1.left_bumper) {
-                robot_speed = 1;
-            }
-            if (gamepad2.back) {
-                Lock_Arm();
-            }
+            if (gamepad1.left_bumper) { robot_speed = 1; }
+            if (gamepad2.back) { Lock_Arm(); }
+
+
+            if (claw_open) { Open_Claw(); }
+                      else { Close_Claw(); }
+            if (wrist_rotated) { Wrist_Horizontal(); }
+                          else { Wrist_Vertical(); }
+            if (slider_position < 100) { Slider.setPower(0); }
+                                  else { Slider.setPower(1); }
             telemetry.addData("Slider Position", Slider.getCurrentPosition());
             telemetry.addData("Robot Speed", robot_speed);
             telemetry.update();
