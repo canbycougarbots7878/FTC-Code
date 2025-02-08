@@ -14,11 +14,12 @@ public class CompetitionRobotCode extends LinearOpMode {
     Servo Arm_Lock = null;
     Servo Claw = null;
     Servo Wrist = null;
-    
-    private double robot_speed = 0.8;  // Target speed
-    private double currentSpeed = 0.0; // Smoothly adjusted speed
-    private double accelerationRate = 0.05; // Adjust this for faster/slower acceleration
 
+    private double robot_speed = 0.8;   // Target speed
+    private double currentSpeed = 0.0;  // Smoothed speed
+    private double accelerationFactor = 0.07;  // Increase rate (adjustable)
+    private double decelerationFactor = 0.15;  // Faster stopping (adjustable)
+    
     public void runOpMode() {
         // Initialize Motors
         DcMotor Front_Right = hardwareMap.get(DcMotor.class, "FrontRight");
@@ -43,7 +44,7 @@ public class CompetitionRobotCode extends LinearOpMode {
         Slider.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         Slider.setPower(0);
 
-        // Initialize Arm, Arm Lock, Claw, and Wrist
+        // Initialize Servos
         Arm = hardwareMap.get(Servo.class, "Arm");
         Arm_Lock = hardwareMap.get(Servo.class, "Arm Lock");
         Claw = hardwareMap.get(Servo.class, "Claw");
@@ -56,13 +57,16 @@ public class CompetitionRobotCode extends LinearOpMode {
         Unlock_Arm();
 
         while(opModeIsActive()) {
-            // Gradually adjust speed towards target robot_speed
-            if (currentSpeed < robot_speed) {
-                currentSpeed += accelerationRate;
-                if (currentSpeed > robot_speed) currentSpeed = robot_speed; // Prevent overshoot
-            } else if (currentSpeed > robot_speed) {
-                currentSpeed -= accelerationRate;
-                if (currentSpeed < robot_speed) currentSpeed = robot_speed; // Prevent undershoot
+            // **Refined Acceleration Control**
+            double speedDifference = robot_speed - currentSpeed;
+            if (Math.abs(speedDifference) > 0.01) { // If speed needs adjusting
+                if (speedDifference > 0) {  
+                    // Accelerating (increase speed smoothly)
+                    currentSpeed += accelerationFactor * speedDifference;  
+                } else {  
+                    // Decelerating (reduce speed faster)
+                    currentSpeed += decelerationFactor * speedDifference;
+                }
             }
 
             // Apply smoothed speed to movement
