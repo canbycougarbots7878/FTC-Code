@@ -94,8 +94,10 @@ public class CompetitionRobotCode extends LinearOpMode {
             else {
                 Arm.setPosition(0.55);
             }
-            if(gamepad2.a) { claw_open = false; }
-            if(gamepad2.b) { claw_open = true; }
+            if (gamepad2.b && !previousBState) {
+                claw_open = !claw_open;
+            }
+            previousBState = gamepad2.b;
             if (gamepad2.x) {
                 Wrist_Vertical();
             }
