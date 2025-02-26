@@ -1,4 +1,4 @@
-// February 18, 2025, 5:40- Simon Nation
+// February 25, 2025, 5:32- Simon Nation
 
 package org.firstinspires.ftc.teamcode;
 
@@ -21,7 +21,7 @@ public class auto extends LinearOpMode {
     Servo wrist = null;
 
     double accelFactor = 0.02;  // Acceleration increment per loop
-    double decelFactor = 0.02;  // Deceleration decrement per loop
+    double decelFactor = accelFactor;  // Deceleration decrement per loop
 
     public void runOpMode() {
         motorFR = hardwareMap.get(DcMotor.class, "FrontRight");
@@ -45,6 +45,7 @@ public class auto extends LinearOpMode {
         motorBL.setDirection(DcMotor.Direction.FORWARD);
         motorFL.setDirection(DcMotor.Direction.FORWARD);
 
+        slidearm.setTargetPosition(0);
         slidearm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         slidearm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -54,7 +55,7 @@ public class auto extends LinearOpMode {
 
         int rest = 100;
         Home();
-        Forward(530, 0.75);
+        Forward(1000, 0.75);
         sleep(rest);
 
         while (opModeIsActive()) {
@@ -65,20 +66,30 @@ public class auto extends LinearOpMode {
 
     private void Forward(double TargetDistance, double MaxPower) {
         double time = TargetDistance / (1.528 * MaxPower);
-        double power = 0.1;  // Start at low power
+        double power = 0;  // Start at no power
+        long numberOfLoops = 0;
+        double distance = 0;
 
-        while (power < MaxPower) {
-            setDrivePower(power);
+        while (power < MaxPower && distance < TargetDistance/2) {
             power += accelFactor;
+            setDrivePower(power);
             sleep(50);
+            numberOfLoops += 1;
+            distance += (1.528 * 50 * power);
         }
 
-        sleep((long) (time - (time * 0.3)));  // Run at max speed for most of the time
+        if (!(distance >= TargetDistance/2)) {
+            double timeSinceStart = numberOfLoops * 50;
+            double constantPowerTime = Math.abs(time - (2 * timeSinceStart));
+            sleep((long) constantPowerTime);  // Run at max speed for most of the time
+            distance += (1.528 * constantPowerTime * power);
+        }
 
-        while (power > 0) {
-            setDrivePower(power);
+        while (power > 0 && distance < TargetDistance) {
             power -= decelFactor;
+            setDrivePower(power);
             sleep(50);
+            distance += (1.528 * 50 * power);
         }
         stopNow();
     }
@@ -86,14 +97,17 @@ public class auto extends LinearOpMode {
     private void Turn(double TargetDegrees, double MaxTurnPower) {
         double time = TargetDegrees / (0.3139 * MaxTurnPower);
         double power = 0.1;
+        long numberOfLoops = 0;
 
         while (power < MaxTurnPower) {
             setTurnPower(power);
             power += accelFactor;
             sleep(50);
+            numberOfLoops += 1;
         }
 
-        sleep((long) (time - (time * 0.3)));
+        setTurnPower(MaxTurnPower);
+        sleep(Math.abs((long) (time - (numberOfLoops * 2 * 50))));
 
         while (power > 0) {
             setTurnPower(power);
