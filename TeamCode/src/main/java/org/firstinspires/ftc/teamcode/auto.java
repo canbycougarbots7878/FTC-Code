@@ -14,12 +14,6 @@ public class auto extends LinearOpMode {
     DcMotor motorFR = null;
     DcMotor motorBR = null;
 
-    DcMotor arm = null;
-    DcMotor slidearm = null;
-
-    Servo claw = null;
-    Servo wrist = null;
-
     double accelFactor = 0.02;  // Acceleration increment per loop
     double decelFactor = accelFactor;  // Deceleration decrement per loop
 
@@ -28,12 +22,6 @@ public class auto extends LinearOpMode {
         motorBR = hardwareMap.get(DcMotor.class, "BackRight");
         motorBL = hardwareMap.get(DcMotor.class, "BackLeft");
         motorFL = hardwareMap.get(DcMotor.class, "FrontLeft");
-
-        slidearm = hardwareMap.get(DcMotor.class, "Slide Arm");
-        arm = hardwareMap.get(DcMotor.class, "Extending Arm");
-
-        wrist = hardwareMap.get(Servo.class, "Wrist");
-        claw = hardwareMap.get(Servo.class, "Claw");
 
         motorFR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         motorBR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -45,16 +33,9 @@ public class auto extends LinearOpMode {
         motorBL.setDirection(DcMotor.Direction.FORWARD);
         motorFL.setDirection(DcMotor.Direction.FORWARD);
 
-        slidearm.setTargetPosition(0);
-        slidearm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        slidearm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
         waitForStart();
 
         int rest = 100;
-        Home();
         Forward(1000, 0.75);
         sleep(rest);
 
@@ -76,6 +57,8 @@ public class auto extends LinearOpMode {
             sleep(50);
             numberOfLoops += 1;
             distance += (1.528 * 50 * power);
+            telemetry.addData("Number of loops:", numberOfLoops);
+            telemetry.update();
         }
 
         if (!(distance >= TargetDistance/2)) {
@@ -138,26 +121,5 @@ public class auto extends LinearOpMode {
         motorFL.setPower(power);
     }
 
-    private void Home() {
-        SetSliderPosition(100);
-        SetArmPosition(0);
-    }
 
-    private void SetSliderPosition(int target) {
-        slidearm.setTargetPosition(target);
-        if (slidearm.getCurrentPosition() != target) {
-            slidearm.setPower(1.0);
-        } else {
-            slidearm.setPower(0);
-        }
-    }
-
-    private void SetArmPosition(int position) {
-        arm.setTargetPosition(position);
-        if (arm.getCurrentPosition() != position) {
-            arm.setPower(1.0);
-        } else {
-            arm.setPower(0);
-        }
-    }
 }

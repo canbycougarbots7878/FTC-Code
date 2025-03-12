@@ -29,10 +29,10 @@ public class speedTest extends LinearOpMode {
         motorBL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         motorFL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        motorFR.setDirection(DcMotor.Direction.REVERSE);
-        motorBR.setDirection(DcMotor.Direction.REVERSE);
-        motorBL.setDirection(DcMotor.Direction.FORWARD);
-        motorFL.setDirection(DcMotor.Direction.FORWARD);
+        motorFR.setDirection(DcMotor.Direction.FORWARD);
+        motorBR.setDirection(DcMotor.Direction.FORWARD);
+        motorBL.setDirection(DcMotor.Direction.REVERSE);
+        motorFL.setDirection(DcMotor.Direction.REVERSE);
 
 
         waitForStart();
@@ -41,49 +41,96 @@ public class speedTest extends LinearOpMode {
         telemetry.update();
 
         while (opModeIsActive()) {
-            if (gamepad1.a) {
-                motorFR.setPower(-1);
-                motorBR.setPower(-1);
-                motorBL.setPower(1);
-                motorFL.setPower(1);
-                sleep(1000);
-                motorFR.setPower(0);
-                motorBR.setPower(0);
-                motorBL.setPower(0);
-                motorFL.setPower(0);
-            }
-            if (gamepad1.b) {
-                motorFR.setPower(-0.75);
-                motorBR.setPower(-0.75);
-                motorBL.setPower(0.75);
-                motorFL.setPower(0.75);
-                sleep(1000);
-                motorFR.setPower(0);
-                motorBR.setPower(0);
-                motorBL.setPower(0);
-                motorFL.setPower(0);
-            }
-            if (gamepad1.x) {
-                motorFR.setPower(-0.5);
-                motorBR.setPower(-0.5);
-                motorBL.setPower(0.5);
-                motorFL.setPower(0.5);
-                sleep(1000);
-                motorFR.setPower(0);
-                motorBR.setPower(0);
-                motorBL.setPower(0);
-                motorFL.setPower(0);
-            }
-            if (gamepad1.y) {
-                motorFR.setPower(-0.25);
-                motorBR.setPower(-0.25);
-                motorBL.setPower(0.25);
-                motorFL.setPower(0.25);
-                sleep(1000);
-                motorFR.setPower(0);
-                motorBR.setPower(0);
-                motorBL.setPower(0);
-                motorFL.setPower(0);
+            if (gamepad1.back) {
+                if (gamepad1.a) {
+                    motorFR.setPower(-1);
+                    motorBR.setPower(-1);
+                    motorBL.setPower(1);
+                    motorFL.setPower(1);
+                    sleep(1000);
+                    motorFR.setPower(0);
+                    motorBR.setPower(0);
+                    motorBL.setPower(0);
+                    motorFL.setPower(0);
+                }
+                if (gamepad1.b) {
+                    motorFR.setPower(-0.75);
+                    motorBR.setPower(-0.75);
+                    motorBL.setPower(0.75);
+                    motorFL.setPower(0.75);
+                    sleep(1000);
+                    motorFR.setPower(0);
+                    motorBR.setPower(0);
+                    motorBL.setPower(0);
+                    motorFL.setPower(0);
+                }
+                if (gamepad1.x) {
+                    motorFR.setPower(-0.5);
+                    motorBR.setPower(-0.5);
+                    motorBL.setPower(0.5);
+                    motorFL.setPower(0.5);
+                    sleep(1000);
+                    motorFR.setPower(0);
+                    motorBR.setPower(0);
+                    motorBL.setPower(0);
+                    motorFL.setPower(0);
+                }
+                if (gamepad1.y) {
+                    motorFR.setPower(-0.25);
+                    motorBR.setPower(-0.25);
+                    motorBL.setPower(0.25);
+                    motorFL.setPower(0.25);
+                    sleep(1000);
+                    motorFR.setPower(0);
+                    motorBR.setPower(0);
+                    motorBL.setPower(0);
+                    motorFL.setPower(0);
+                }
+            } else {
+                if (gamepad1.a) {
+                    motorFR.setPower(1);
+                    motorBR.setPower(1);
+                    motorBL.setPower(1);
+                    motorFL.setPower(1);
+                    sleep(1000);
+                    motorFR.setPower(0);
+                    motorBR.setPower(0);
+                    motorBL.setPower(0);
+                    motorFL.setPower(0);
+                }
+                if (gamepad1.b) {
+                    motorFR.setPower(0.75);
+                    motorBR.setPower(0.75);
+                    motorBL.setPower(0.75);
+                    motorFL.setPower(0.75);
+                    sleep(1000);
+                    motorFR.setPower(0);
+                    motorBR.setPower(0);
+                    motorBL.setPower(0);
+                    motorFL.setPower(0);
+                }
+                if (gamepad1.x) {
+                    motorFR.setPower(0.5);
+                    motorBR.setPower(0.5);
+                    motorBL.setPower(0.5);
+                    motorFL.setPower(0.5);
+                    sleep(1000);
+                    motorFR.setPower(0);
+                    motorBR.setPower(0);
+                    motorBL.setPower(0);
+                    motorFL.setPower(0);
+                }
+                if (gamepad1.y) {
+                    motorFR.setPower(0.25);
+                    motorBR.setPower(0.25);
+                    motorBL.setPower(0.25);
+                    motorFL.setPower(0.25);
+                    sleep(1000);
+                    motorFR.setPower(0);
+                    motorBR.setPower(0);
+                    motorBL.setPower(0);
+                    motorFL.setPower(0);
+                }
             }
         }
     }
