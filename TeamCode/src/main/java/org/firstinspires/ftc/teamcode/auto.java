@@ -28,6 +28,9 @@ public class auto extends LinearOpMode {
     double currentRobotMillimeterConstant = millimeterConstant * gearRatio * circumferenceOfWheel;
     double currentRobotDegreeConstant = degreeConstant * gearRatio * circumferenceOfWheel;
 
+    double i = 0;
+    int rest = 100;
+
     public void runOpMode() {
         motorFR = hardwareMap.get(DcMotor.class, "FrontRight");
         motorBR = hardwareMap.get(DcMotor.class, "BackRight");
@@ -46,49 +49,86 @@ public class auto extends LinearOpMode {
 
         waitForStart();
 
-        int rest = 100;
-        Forward(1000, 0.75);
-        sleep(rest);
+        Forward(403.5, 0.75, rest);
+        while (i < 4) {
+            Forward(400, 0.75, rest);
+            Backward(400, 0.75, rest);
+            Forward(2000, 0.75, rest);
+            i += 1;
+        }
+
 
         while (opModeIsActive()) {
             // Future tasks can be added here
         }
-        stopNow();
+        stopNow(rest);
     }
 
-    private void Forward(double TargetDistance, double MaxPower) {
+    private void Forward(double TargetDistance, double MaxPower, long rest) {
+        telemetry.addData("TargetDistance: ", TargetDistance);
+        telemetry.update();
         double time = TargetDistance / (currentRobotMillimeterConstant * MaxPower);
         double power = 0;  // Start at no power
         long numberOfLoops = 0;
         double distance = 0;
 
-        while (power < MaxPower && distance < TargetDistance/2) {
-            power += accelFactor;
-            setDrivePower(power);
-            sleep(50);
-            numberOfLoops += 1;
-            distance += (currentRobotMillimeterConstant * 50 * power);
-            telemetry.addData("Number of loops:", numberOfLoops);
-            telemetry.update();
-        }
+        if (TargetDistance >= 0) {
+            while (power < MaxPower && distance < TargetDistance / 2) {
+                power += accelFactor;
+                setDrivePower(power);
+                sleep(50);
+                numberOfLoops += 1;
+                distance += (currentRobotMillimeterConstant * 50 * power);
+            }
 
-        if (!(distance >= TargetDistance/2)) {
-            double timeSinceStart = numberOfLoops * 50;
-            double constantPowerTime = Math.abs(time - (2 * timeSinceStart));
-            sleep((long) constantPowerTime);  // Run at max speed for most of the time
-            distance += (currentRobotMillimeterConstant * constantPowerTime * power);
-        }
+            if (!(distance >= TargetDistance / 2)) {
+                double timeSinceStart = numberOfLoops * 50;
+                double constantPowerTime = Math.abs(time - (2 * timeSinceStart));
+                sleep((long) constantPowerTime);  // Run at max speed for most of the time
+                distance += (currentRobotMillimeterConstant * constantPowerTime * power);
+            }
 
-        while (power > 0 && distance < TargetDistance) {
+            while (power > 0 && distance < TargetDistance) {
+                power -= decelFactor;
+                setDrivePower(power);
+                sleep(50);
+                distance += (currentRobotMillimeterConstant * 50 * power);
+            }
+        }
+        stopNow(rest);
+    }
+    private void Backward(double TargetDistance, double MaxPower, long rest) {
+        telemetry.addData("TargetDistance: ", TargetDistance);
+        telemetry.update();
+        double time = TargetDistance / (currentRobotMillimeterConstant * MaxPower);
+        double power = 0;  // Start at no power
+        long numberOfLoops = 0;
+        double distance = 0;
+        while (power > -MaxPower && distance < TargetDistance / 2) {
             power -= decelFactor;
             setDrivePower(power);
             sleep(50);
-            distance += (currentRobotMillimeterConstant * 50 * power);
+            numberOfLoops += 1;
+            distance -= (currentRobotMillimeterConstant * 50 * power);
         }
-        stopNow();
+
+        if (!(distance >= TargetDistance / 2)) {
+            double timeSinceStart = numberOfLoops * 50;
+            double constantPowerTime = Math.abs(time - (2 * timeSinceStart));
+            sleep((long) constantPowerTime);  // Run at max speed for most of the time
+            distance -= (currentRobotMillimeterConstant * constantPowerTime * power);
+        }
+
+        while (power < 0 && distance < TargetDistance) {
+            power += accelFactor;
+            setDrivePower(power);
+            sleep(50);
+            distance -= (currentRobotMillimeterConstant * 50 * power);
+        }
+        stopNow(rest);
     }
 
-    private void Turn(double TargetDegrees, double MaxTurnPower) {
+    private void RightTurn(double TargetDegrees, double MaxTurnPower, long rest) {
         double time = TargetDegrees / (currentRobotDegreeConstant * MaxTurnPower);
         double power = 0;  // Start at no power
         long numberOfLoops = 0;
@@ -96,7 +136,7 @@ public class auto extends LinearOpMode {
 
         while (power < MaxTurnPower && degree < TargetDegrees/2) {
             power += accelFactor;
-            setDrivePower(power);
+            setTurnPower(power);
             sleep(50);
             numberOfLoops += 1;
             degree += (currentRobotDegreeConstant * 50 * power);
@@ -113,11 +153,42 @@ public class auto extends LinearOpMode {
 
         while (power > 0 && degree < TargetDegrees) {
             power -= decelFactor;
-            setDrivePower(power);
+            setTurnPower(power);
             sleep(50);
             degree += (currentRobotDegreeConstant * 50 * power);
         }
-        stopNow();
+        stopNow(rest);
+    }
+    private void LeftTurn(double TargetDegrees, double MaxTurnPower, long rest) {
+        double time = TargetDegrees / (currentRobotDegreeConstant * MaxTurnPower);
+        double power = 0;  // Start at no power
+        long numberOfLoops = 0;
+        double degree = 0;
+
+        while (power < MaxTurnPower && degree < TargetDegrees/2) {
+            power -= decelFactor;
+            setTurnPower(power);
+            sleep(50);
+            numberOfLoops += 1;
+            degree -= (currentRobotDegreeConstant * 50 * power);
+            telemetry.addData("Number of loops:", numberOfLoops);
+            telemetry.update();
+        }
+
+        if (!(degree >= TargetDegrees/2)) {
+            double timeSinceStart = numberOfLoops * 50;
+            double constantPowerTime = Math.abs(time - (2 * timeSinceStart));
+            sleep((long) constantPowerTime);  // Run at max speed for most of the time
+            degree -= (currentRobotDegreeConstant * constantPowerTime * power);
+        }
+
+        while (power > 0 && degree < TargetDegrees) {
+            power += accelFactor;
+            setTurnPower(power);
+            sleep(50);
+            degree -= (currentRobotDegreeConstant * 50 * power);
+        }
+        stopNow(rest);
     }
 
     private void setDrivePower(double power) {
@@ -127,11 +198,12 @@ public class auto extends LinearOpMode {
         motorFL.setPower(power);
     }
 
-    private void stopNow(){
+    private void stopNow(long rest){
         motorFR.setPower(0);
         motorBR.setPower(0);
         motorBL.setPower(0);
         motorFL.setPower(0);
+        sleep(rest);
     }
 
     private void setTurnPower(double power) {
