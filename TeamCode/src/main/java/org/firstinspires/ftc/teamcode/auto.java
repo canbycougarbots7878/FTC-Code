@@ -49,11 +49,14 @@ public class auto extends LinearOpMode {
 
         waitForStart();
 
-        Forward(403.5, 0.75, rest);
+        Forward(403.5, 0.43, rest);
         while (i < 4) {
-            Forward(400, 0.75, rest);
-            Backward(400, 0.75, rest);
-            Forward(2000, 0.75, rest);
+            Forward(965, 0.58, rest);
+            Backward(326, 0.43, rest);
+            Forward(1361, 0.73, rest);
+            LeftTurn(80, 1.00, rest);
+            RightTurn(142, 0.49, rest);
+            LeftTurn(152,0.81,rest);
             i += 1;
         }
 
@@ -144,7 +147,7 @@ public class auto extends LinearOpMode {
             telemetry.update();
         }
 
-        if (!(degree >= TargetDegrees/2)) {
+        if ((degree <= TargetDegrees/2)) {
             double timeSinceStart = numberOfLoops * 50;
             double constantPowerTime = Math.abs(time - (2 * timeSinceStart));
             sleep((long) constantPowerTime);  // Run at max speed for most of the time
@@ -175,14 +178,14 @@ public class auto extends LinearOpMode {
             telemetry.update();
         }
 
-        if (!(degree >= TargetDegrees/2)) {
+        if ((degree <= TargetDegrees/2)) {
             double timeSinceStart = numberOfLoops * 50;
             double constantPowerTime = Math.abs(time - (2 * timeSinceStart));
             sleep((long) constantPowerTime);  // Run at max speed for most of the time
             degree -= (currentRobotDegreeConstant * constantPowerTime * power);
         }
 
-        while (power > 0 && degree < TargetDegrees) {
+        while (power < 0 && degree < TargetDegrees) {
             power += accelFactor;
             setTurnPower(power);
             sleep(50);
