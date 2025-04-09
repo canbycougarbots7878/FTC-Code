@@ -2,6 +2,7 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -11,7 +12,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 //Notes
 // 1. 90 degrees counterclockwise is 450 mm
 
-
+@Disabled
 @TeleOp(name = "OneWheelEncoderTest", group = "Concept")
 public class OneWheelEncoderTest extends LinearOpMode {
 

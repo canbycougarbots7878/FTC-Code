@@ -50,7 +50,7 @@ public class CompetitionTeleopV2 extends LinearOpMode {
         waitForStart();
         Unlock_Arm();
         while(opModeIsActive()) {
-            Wheels.Omni_Move(gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x, robot_speed);
+            Wheels.Omni_Move(gamepad1.left_stick_y + gamepad2.left_stick_y, gamepad1.left_stick_x + gamepad2.left_stick_x, gamepad1.right_stick_x + gamepad2.right_stick_x, robot_speed);
             if (gamepad2.dpad_down) {
                 slider_position = 0;
             }

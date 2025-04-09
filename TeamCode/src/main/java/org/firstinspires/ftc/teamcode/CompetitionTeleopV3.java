@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -7,10 +8,12 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.MovementLib.DriveWheels;
-
+@Disabled
 @TeleOp(name = "Competition TeleOp V3", group = "Competition")
 public class CompetitionTeleopV3 extends LinearOpMode {
     int MAX_SLIDER_POS = 5000;
+    double ARM_DOWN_POSITION = 0.21;
+    double ARM_UP_POSITION = 0.55;
     Servo Arm = null;
     DcMotor Slider = null;
     Servo Arm_Lock = null;
@@ -85,15 +88,17 @@ public class CompetitionTeleopV3 extends LinearOpMode {
             if (gamepad1.left_bumper) { robot_speed = 1; }
             if (gamepad2.back) { Lock_Arm(); }
 
-
-            if (claw_open) { Open_Claw(); }
-                      else { Close_Claw(); }
+                 if (arm_down) { Arm.setPosition(ARM_DOWN_POSITION); } //
+                          else { Arm.setPosition(ARM_UP_POSITION); }
+                if (claw_open) { Open_Claw(); }
+                          else { Close_Claw(); }
             if (wrist_rotated) { Wrist_Horizontal(); }
                           else { Wrist_Vertical(); }
             if (slider_position < 100) { Slider.setPower(0); }
                                   else { Slider.setPower(1); }
             telemetry.addData("Slider Position", Slider.getCurrentPosition());
             telemetry.addData("Robot Speed", robot_speed);
+
             telemetry.update();
         }
     }

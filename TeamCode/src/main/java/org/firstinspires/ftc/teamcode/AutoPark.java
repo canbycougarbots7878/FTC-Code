@@ -1,11 +1,12 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import java.util.Set;
-
+@Disabled
 @Autonomous(name = "Autonomous Basic", group = "Concept")
 public class AutoPark extends LinearOpMode {
     private DcMotor motorFR = null;

@@ -2,6 +2,7 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -10,7 +11,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 //Notes
 // 1. 90 degrees counterclockwise is 450 mm
 
-
+@Disabled
 @Autonomous(name = "Auto Drive Test", group = "Concept")
 public class autoTest extends LinearOpMode {
     double Tau = Math.PI * 2;
