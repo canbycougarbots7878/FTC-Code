@@ -74,10 +74,10 @@ public class autoTest extends LinearOpMode {
                 double forward = 0;
                 double h_offset = 0;
                 if(pos.h < -5) { // To far right
-                    h_offset = .1;
+                    h_offset = .5;
                 }
                 else if(pos.h > 5) {
-                    h_offset = -.1;
+                    h_offset = -.5;
                 }
                 else {
                     h_offset = 0;
