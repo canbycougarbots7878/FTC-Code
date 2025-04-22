@@ -57,31 +57,34 @@ public class autoTest extends LinearOpMode {
             // heading angle
             SparkFunOTOS.Pose2D pos = myOtos.getPosition();
 
-            // Inform user of available controls
-            telemetry.addLine("Press Y (triangle) on Gamepad to reset tracking");
-            telemetry.addLine("Press X (square) on Gamepad to calibrate the IMU");
-            telemetry.addLine();
+            while (pos.y < 2){
+                // Inform user of available controls
+                telemetry.addLine("Press Y (triangle) on Gamepad to reset tracking");
+                telemetry.addLine("Press X (square) on Gamepad to calibrate the IMU");
+                telemetry.addLine();
 
-            // Log the position to the telemetry
-            telemetry.addData("X coordinate", pos.x);
-            telemetry.addData("Y coordinate", pos.y);
-            telemetry.addData("Heading angle", pos.h);
+                // Log the position to the telemetry
+                telemetry.addData("X coordinate", pos.x);
+                telemetry.addData("Y coordinate", pos.y);
+                telemetry.addData("Heading angle", pos.h);
 
-            // Update the telemetry on the driver station
-            telemetry.update();
+                // Update the telemetry on the driver station
+                telemetry.update();
 
-            if (pos.y < 2){
                 Wheels.Omni_Move(1,0,0,0.50);
-            }
-            if (pos.h < -0.01){
-                Wheels.Omni_Move(0,0,1,0.25);
-            } else if (pos.h > 0.01) {
-                Wheels.Omni_Move(0,0,-1,0.25);
-            }
-            if (pos.x < -0.01){
-                Wheels.Omni_Move(0,1,0,0.25);
-            } else if (pos.x > 0.01) {
-                Wheels.Omni_Move(0,-1,0,0.25);
+                if (pos.h < -0.01){
+                    Wheels.Omni_Move(0,0,1,0.25);
+                }
+                if (pos.h > 0.01) {
+                    Wheels.Omni_Move(0,0,-1,0.25);
+                }
+                if (pos.x < -0.01){
+                    Wheels.Omni_Move(0,1,0,0.25);
+                }
+                if (pos.x > 0.01) {
+                    Wheels.Omni_Move(0,-1,0,0.25);
+                }
+                pos = myOtos.getPosition();
             }
             Wheels.Omni_Move(0,0,0,0);
         }
