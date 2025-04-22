@@ -71,8 +71,16 @@ public class autoTest extends LinearOpMode {
                 // Update the telemetry on the driver station
                 telemetry.update();
 
-                Wheels.Omni_Move(1,0,0,0.50);
-                if (pos.h < -0.01){
+                double forward = 1;
+                double h_offset = 0;
+                if(pos.h < -5) { // To far right
+                    h_offset = .1;
+                }
+                else {
+                    h_offset = 0;
+                }
+                Wheels.Omni_Move(forward,0,h_offset,0.50);
+                /*if (pos.h < -0.01){
                     Wheels.Omni_Move(0,0,1,0.25);
                 }
                 if (pos.h > 0.01) {
@@ -83,7 +91,8 @@ public class autoTest extends LinearOpMode {
                 }
                 if (pos.x > 0.01) {
                     Wheels.Omni_Move(0,-1,0,0.25);
-                }
+                }*/
+
                 pos = myOtos.getPosition();
             }
             Wheels.Omni_Move(0,0,0,0);
