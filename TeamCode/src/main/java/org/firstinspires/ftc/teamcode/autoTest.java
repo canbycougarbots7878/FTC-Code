@@ -39,8 +39,9 @@ public class autoTest extends LinearOpMode {
         DcMotor Back_Right = hardwareMap.get(DcMotor.class, "BackRight");
         DcMotor Back_Left = hardwareMap.get(DcMotor.class, "BackLeft");
         MovementLib.DriveWheels Wheels = new MovementLib.DriveWheels(Front_Right, Front_Left, Back_Right, Back_Left);
-        Front_Right.setDirection(DcMotorSimple.Direction.REVERSE);
+        Front_Left.setDirection(DcMotorSimple.Direction.REVERSE);
         Back_Left.setDirection(DcMotorSimple.Direction.REVERSE);
+        boolean stop = false;
         myOtos = hardwareMap.get(SparkFunOTOS.class, "sensor_otos");
         double loops = 0;
 
@@ -57,7 +58,7 @@ public class autoTest extends LinearOpMode {
             // heading angle
             SparkFunOTOS.Pose2D pos = myOtos.getPosition();
 
-            while (pos.y < 2){
+            while (pos.y < 2 && !stop){
                 // Inform user of available controls
                 telemetry.addLine("Press Y (triangle) on Gamepad to reset tracking");
                 telemetry.addLine("Press X (square) on Gamepad to calibrate the IMU");
@@ -71,18 +72,25 @@ public class autoTest extends LinearOpMode {
                 // Update the telemetry on the driver station
                 telemetry.update();
 
-                double forward = 0;
+                double forward = 2 - pos.y;
                 double h_offset = 0;
-                if(pos.h < -5) { // To far right
-                    h_offset = .5;
+                double x_offset = 0;
+                if(pos.h < -1) { // To far right
+                    h_offset = 1;
                 }
-                else if(pos.h > 5) {
-                    h_offset = -.5;
+                else if(pos.h > 1) {
+                    h_offset = -1;
                 }
                 else {
                     h_offset = 0;
                 }
-                Wheels.Omni_Move(forward,0,h_offset,0.50);
+                if(pos.x < -.05) {
+                    x_offset = -1;
+                }
+                else if(pos.x > .05) {
+                    x_offset = 1;
+                }
+                Wheels.Omni_Move(forward,x_offset,h_offset,0.25);
                 /*if (pos.h < -0.01){
                     Wheels.Omni_Move(0,0,1,0.25);
                 }
@@ -97,6 +105,9 @@ public class autoTest extends LinearOpMode {
                 }*/
 
                 pos = myOtos.getPosition();
+                if(isStopRequested()) {
+                    stop = true;
+                }
             }
             Wheels.Omni_Move(0,0,0,0);
         }

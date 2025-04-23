@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import org.firstinspires.ftc.teamcode.MovementLib.*;
 @TeleOp(name = "Drive", group = "Competition")
-@Disabled
+
 public class drive extends LinearOpMode {
 
     @Override
