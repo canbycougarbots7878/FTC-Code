@@ -57,53 +57,41 @@ public class autoTest extends LinearOpMode {
             // Get the latest position, which includes the x and y coordinates, plus the
             // heading angle
             SparkFunOTOS.Pose2D pos = myOtos.getPosition();
+            move(0, 200, 45, 0.25); //(x in cm, y in cm, heding in degrees, power)
+        }
 
-            while (pos.y < 2 && !stop){
+        private void move(double x_end_cm, double y_end_cm, double h_end_d, double power) {
+            y_end_m = y_end_cm/100;
+            x_end_m = x_end_cm/100;
+            while ((pos.y < y_end_m - 0.5 || pos.y > y_end_m + 0.5) && !stop && (pos.x < x_end_m - 0.5 || pos.x > x_end_m + 0.5) && (pos.h < h_end_d - 0.5 || pos.h > h_end_d + 0.5)){
                 // Inform user of available controls
-                telemetry.addLine("Press Y (triangle) on Gamepad to reset tracking");
-                telemetry.addLine("Press X (square) on Gamepad to calibrate the IMU");
+                telemetry.addData("x end target:", x_end_m);
+                telemetry.addData("y end target:", y_end_m);
+                telemetry.addData("heading angle end target:", h_end_m);
                 telemetry.addLine();
 
                 // Log the position to the telemetry
-                telemetry.addData("X coordinate", pos.x);
-                telemetry.addData("Y coordinate", pos.y);
-                telemetry.addData("Heading angle", pos.h);
+                telemetry.addData("x coordinate:", pos.x);
+                telemetry.addData("y coordinate:", pos.y);
+                telemetry.addData("heading angle:", pos.h);
 
                 // Update the telemetry on the driver station
                 telemetry.update();
 
-                double forward = 2 - pos.y;
+                double end_magnatude = sqrt(pow((pos.x - x_end_m), 2) + pow((pos.x - y_end_m), 2));
+                double end_angle = Math.arccos((x_end_m/end_magnatude));
                 double h_offset = 0;
-                double x_offset = 0;
-                if(pos.h < -1) { // To far right
+                if(pos.h < h_end_d - 0.5) { // To far right
                     h_offset = 1;
                 }
-                else if(pos.h > 1) {
+                else if(pos.h > h_end_d + 0.5) {
                     h_offset = -1;
                 }
                 else {
                     h_offset = 0;
                 }
-                if(pos.x < -.05) {
-                    x_offset = -1;
-                }
-                else if(pos.x > .05) {
-                    x_offset = 1;
-                }
-                Wheels.Omni_Move(forward,x_offset,h_offset,0.25);
-                /*if (pos.h < -0.01){
-                    Wheels.Omni_Move(0,0,1,0.25);
-                }
-                if (pos.h > 0.01) {
-                    Wheels.Omni_Move(0,0,-1,0.25);
-                }
-                if (pos.x < -0.01){
-                    Wheels.Omni_Move(0,1,0,0.25);
-                }
-                if (pos.x > 0.01) {
-                    Wheels.Omni_Move(0,-1,0,0.25);
-                }*/
-
+                Wheels.Omni_Move(Math.sin(end_angle - pos.h), Math.cos(end_angle - pos.h), h_offset, power);
+              
                 pos = myOtos.getPosition();
                 if(isStopRequested()) {
                     stop = true;
