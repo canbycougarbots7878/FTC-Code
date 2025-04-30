@@ -8,14 +8,14 @@ import com.qualcomm.robotcore.hardware.IMU;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 
 public class MovementLib {
-    static class DriveWheels {
+    public static class DriveWheels {
         public DcMotor Front_Right;
         public DcMotor Front_Left;
         public DcMotor Back_Right;
         public DcMotor Back_Left;
 
-        public DriveWheels() {
-        }
+        //public DriveWheels() {
+        //}
 
         public DriveWheels(DcMotor Front_Right, DcMotor Front_Left, DcMotor Back_Right, DcMotor Back_Left) {
             this.Front_Right = Front_Right;
@@ -38,10 +38,10 @@ public class MovementLib {
             this.Set_Wheels(speed * Front_Right_Power, speed * Front_Left_Power, speed * Back_Right_Power, speed * Back_Left_Power);
         }
         public void Reverse_these_wheels(boolean fr, boolean fl, boolean br, boolean bl) {
-            if(fr) { this.Front_Right.setDirection(DcMotorSimple.Direction.REVERSE); } else { this.Front_Right.setDirection(DcMotorSimple.Direction.FORWARD); };
-            if(fl) { this.Front_Left.setDirection(DcMotorSimple.Direction.REVERSE); } else { this.Front_Left.setDirection(DcMotorSimple.Direction.FORWARD); };
-            if(br) { this.Back_Right.setDirection(DcMotorSimple.Direction.REVERSE); } else { this.Back_Right.setDirection(DcMotorSimple.Direction.FORWARD); };
-            if(bl) { this.Back_Left.setDirection(DcMotorSimple.Direction.REVERSE); } else { this.Back_Left.setDirection(DcMotorSimple.Direction.FORWARD); };
+            if(fr) { this.Front_Right.setDirection(DcMotorSimple.Direction.REVERSE); } else { this.Front_Right.setDirection(DcMotorSimple.Direction.FORWARD); }
+            if(fl) { this.Front_Left.setDirection(DcMotorSimple.Direction.REVERSE); } else { this.Front_Left.setDirection(DcMotorSimple.Direction.FORWARD); }
+            if(br) { this.Back_Right.setDirection(DcMotorSimple.Direction.REVERSE); } else { this.Back_Right.setDirection(DcMotorSimple.Direction.FORWARD); }
+            if(bl) { this.Back_Left.setDirection(DcMotorSimple.Direction.REVERSE); } else { this.Back_Left.setDirection(DcMotorSimple.Direction.FORWARD); }
         }
         public void Turn_Robot(double speed) {
             this.Set_Wheels(-speed, speed, -speed, speed);
@@ -55,7 +55,7 @@ public class MovementLib {
             }
         }
     }
-    static class Slider {
+    public static class Slider {
         public DcMotor Slider_Motor;
         public int Max_Height;
         public int pos1;

@@ -5,6 +5,8 @@
 */
 package org.firstinspires.ftc.teamcode;
 
+import android.annotation.SuppressLint;
+
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -14,6 +16,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.teamcode.MovementLib;
 
 /*
  * This OpMode illustrates how to use the SparkFun Qwiic Optical Tracking Odometry Sensor (OTOS)
@@ -33,20 +36,21 @@ public class autoTest extends LinearOpMode {
     DcMotor Front_Left = null;
     DcMotor Back_Right = null;
     DcMotor Back_Left = null;
+    MovementLib.DriveWheels Wheels;
 
     @Override
     public void runOpMode() throws InterruptedException {
         // Get a reference to the sensor
         Front_Right = hardwareMap.get(DcMotor.class, "FrontRight");
-        Front_Left = hardwareMap.get(DcMotor.class, "FrontLeft");
-        Back_Right = hardwareMap.get(DcMotor.class, "BackRight");
-        Back_Left = hardwareMap.get(DcMotor.class, "BackLeft");
-        MovementLib.DriveWheels Wheels = new MovementLib.DriveWheels(Front_Right, Front_Left, Back_Right, Back_Left);
+        Front_Left  = hardwareMap.get(DcMotor.class, "FrontLeft");
+        Back_Right  = hardwareMap.get(DcMotor.class, "BackRight");
+        Back_Left   = hardwareMap.get(DcMotor.class, "BackLeft");
+
+        Wheels = new MovementLib.DriveWheels(Front_Right, Front_Left, Back_Right, Back_Left);
+
         Front_Left.setDirection(DcMotorSimple.Direction.REVERSE);
         Back_Left.setDirection(DcMotorSimple.Direction.REVERSE);
-        boolean stop = false;
         myOtos = hardwareMap.get(SparkFunOTOS.class, "sensor_otos");
-        double loops = 0;
 
         // All the configuration for the OTOS is done in this helper method, check it out!
         // This also calibrates the sensor
@@ -65,41 +69,49 @@ public class autoTest extends LinearOpMode {
     }
 
     private void move(double x_end_cm, double y_end_cm, double h_end_d, double power){
-            SparkFunOTOS.Pose2D pos = myOtos.getPosition();
-            double y_end_m = y_end_cm / 100;
-            double x_end_m = x_end_cm / 100;
-            while ((pos.y < y_end_m - 0.5 || pos.y > y_end_m + 0.5) && (pos.x < x_end_m - 0.5 || pos.x > x_end_m + 0.5) && (pos.h < h_end_d - 0.5 || pos.h > h_end_d + 0.5)) {
-                // Inform user of available controls
-                telemetry.addData("x end target:", x_end_m);
-                telemetry.addData("y end target:", y_end_m);
-                telemetry.addData("heading angle end target:", h_end_d);
-                telemetry.addLine();
+        double y_end_m = y_end_cm / 100.0;
+        double x_end_m = x_end_cm / 100.0;
 
-                // Log the position to the telemetry
-                telemetry.addData("x coordinate:", pos.x);
-                telemetry.addData("y coordinate:", pos.y);
-                telemetry.addData("heading angle:", pos.h);
+        SparkFunOTOS.Pose2D pos = myOtos.getPosition();
 
-                // Update the telemetry on the driver station
-                telemetry.update();
+        while (opModeIsActive() && (
+                Math.abs(pos.y - y_end_m) > 0.05 || Math.abs(pos.x - x_end_m) > 0.05 || Math.abs(pos.h - h_end_d) > 0.5)) {
 
-                double end_magnatude = Math.sqrt(Math.pow((pos.x - x_end_m), 2) + Math.pow((pos.x - y_end_m), 2));
-                double end_angle = Math.toDegrees(Math.acos((x_end_m / end_magnatude)));
-                double h_offset = 0;
-                if (pos.h < h_end_d - 0.5) { // To far right
-                    h_offset = 1;
-                } else if (pos.h > h_end_d + 0.5) {
-                    h_offset = -1;
-                } else {
-                    h_offset = 0;
-                }
-                Wheels.Omni_Move(Math.sin(end_angle - pos.h), Math.cos(end_angle - pos.h), h_offset, power);
+            telemetry.addData("x target (m):", x_end_m);
+            telemetry.addData("y target (m):", y_end_m);
+            telemetry.addData("heading target (°):", h_end_d);
+            telemetry.addLine();
 
-                pos = myOtos.getPosition();
+            telemetry.addData("current x (m):", pos.x);
+            telemetry.addData("current y (m):", pos.y);
+            telemetry.addData("current heading (°):", pos.h);
+            telemetry.update();
+
+            double dx = x_end_m - pos.x;
+            double dy = y_end_m - pos.y;
+            double end_angle = Math.toDegrees(Math.atan2(dy, dx));
+
+            double h_offset;
+            if (pos.h < h_end_d - 0.5) {
+                h_offset = 1;
+            } else if (pos.h > h_end_d + 0.5) {
+                h_offset = -1;
+            } else {
+                h_offset = 0;
             }
-            Wheels.Omni_Move(0, 0, 0, 0);
+
+            double forward = Math.sin(Math.toRadians(end_angle - pos.h));
+            double strafe = Math.cos(Math.toRadians(end_angle - pos.h));
+
+            Wheels.Omni_Move(forward, strafe, h_offset, power);
+
+            pos = myOtos.getPosition();
         }
 
+        Wheels.Omni_Move(0, 0, 0, 0);
+    }
+
+    @SuppressLint("DefaultLocale")
     private void configureOtos() {
         telemetry.addLine("Configuring OTOS...");
         telemetry.update();
