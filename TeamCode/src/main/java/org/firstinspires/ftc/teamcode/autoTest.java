@@ -38,6 +38,7 @@ public class autoTest extends LinearOpMode {
     DcMotor Back_Left = null;
     MovementLib.DriveWheels Wheels;
     double buffer_cm = 50;
+    double heading_buffer_deg = 2.0;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -72,41 +73,36 @@ public class autoTest extends LinearOpMode {
     private void move(double x_end_cm, double y_end_cm, double h_end_d, double power){
         double y_end_m = y_end_cm / 100.0;
         double x_end_m = x_end_cm / 100.0;
-        double buffer_m= buffer_cm/ 100.0;
+        double buffer_m = buffer_cm / 100.0;
+        double heading_buffer_deg = 2.0;
 
         SparkFunOTOS.Pose2D pos = myOtos.getPosition();
 
         while (opModeIsActive() && (
-                Math.abs(pos.y - y_end_m) > buffer_m || Math.abs(pos.x - x_end_m) > buffer_m || Math.abs(pos.h - h_end_d) > buffer_m)) {
-
-            telemetry.addData("x target (m):", x_end_m);
-            telemetry.addData("y target (m):", y_end_m);
-            telemetry.addData("heading target (°):", h_end_d);
-            telemetry.addLine();
-
-            telemetry.addData("current x (m):", pos.x);
-            telemetry.addData("current y (m):", pos.y);
-            telemetry.addData("current heading (°):", pos.h);
-            telemetry.update();
+                Math.abs(pos.y - y_end_m) > buffer_m ||
+                        Math.abs(pos.x - x_end_m) > buffer_m ||
+                        Math.abs(pos.h - h_end_d) > heading_buffer_deg)) {
 
             double dx = x_end_m - pos.x;
             double dy = y_end_m - pos.y;
             double end_angle = Math.toDegrees(Math.atan2(dy, dx));
 
-            double h_offset;
-            if (pos.h < h_end_d - buffer_m) {
-                h_offset = 1;
-            } else if (pos.h > h_end_d + buffer_m) {
-                h_offset = -1;
-            } else {
-                h_offset = 0;
-            }
+            double heading_error = h_end_d - pos.h;
+            heading_error = (heading_error + 180) % 360 - 180;
+
+            double h_offset = Math.abs(heading_error) > heading_buffer_deg ? Math.signum(heading_error) : 0;
 
             double forward = Math.sin(Math.toRadians(end_angle - pos.h));
             double strafe = Math.cos(Math.toRadians(end_angle - pos.h));
 
-            Wheels.Omni_Move(forward, strafe, h_offset, power);
+            Wheels.Omni_Move(forward * power, strafe * power, h_offset * power, power);
 
+            telemetry.addData("Target", "x: %.2f m, y: %.2f m, h: %.2f°", x_end_m, y_end_m, h_end_d);
+            telemetry.addData("Current", "x: %.2f m, y: %.2f m, h: %.2f°", pos.x, pos.y, pos.h);
+            telemetry.addData("Heading error", "%.2f°", heading_error);
+            telemetry.update();
+
+            sleep(50);
             pos = myOtos.getPosition();
         }
 
