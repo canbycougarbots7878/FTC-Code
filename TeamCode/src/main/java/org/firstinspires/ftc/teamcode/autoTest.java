@@ -37,6 +37,7 @@ public class autoTest extends LinearOpMode {
     DcMotor Back_Right = null;
     DcMotor Back_Left = null;
     MovementLib.DriveWheels Wheels;
+    double buffer_cm = 50;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -71,11 +72,12 @@ public class autoTest extends LinearOpMode {
     private void move(double x_end_cm, double y_end_cm, double h_end_d, double power){
         double y_end_m = y_end_cm / 100.0;
         double x_end_m = x_end_cm / 100.0;
+        double buffer_m= buffer_cm/ 100.0;
 
         SparkFunOTOS.Pose2D pos = myOtos.getPosition();
 
         while (opModeIsActive() && (
-                Math.abs(pos.y - y_end_m) > 0.05 || Math.abs(pos.x - x_end_m) > 0.05 || Math.abs(pos.h - h_end_d) > 0.5)) {
+                Math.abs(pos.y - y_end_m) > buffer_m || Math.abs(pos.x - x_end_m) > buffer_m || Math.abs(pos.h - h_end_d) > buffer_m)) {
 
             telemetry.addData("x target (m):", x_end_m);
             telemetry.addData("y target (m):", y_end_m);
@@ -92,9 +94,9 @@ public class autoTest extends LinearOpMode {
             double end_angle = Math.toDegrees(Math.atan2(dy, dx));
 
             double h_offset;
-            if (pos.h < h_end_d - 0.5) {
+            if (pos.h < h_end_d - buffer_m) {
                 h_offset = 1;
-            } else if (pos.h > h_end_d + 0.5) {
+            } else if (pos.h > h_end_d + buffer_m) {
                 h_offset = -1;
             } else {
                 h_offset = 0;
