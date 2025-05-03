@@ -30,7 +30,7 @@ public class RolandOtos extends LinearOpMode {
         DcMotor Back_Left = hardwareMap.get(DcMotor.class, "BackLeft");
         MovementLib.DriveWheels Wheels = new MovementLib.DriveWheels(Front_Right, Front_Left, Back_Right, Back_Left);
         Front_Left.setDirection(DcMotorSimple.Direction.REVERSE);
-        Back_Right.setDirection(DcMotorSimple.Direction.REVERSE);
+        Back_Left.setDirection(DcMotorSimple.Direction.REVERSE);
         myOtos = hardwareMap.get(SparkFunOTOS.class, "sensor_otos");
         MovementLib.OTOSControl OC = new MovementLib.OTOSControl(Wheels, myOtos);
 
