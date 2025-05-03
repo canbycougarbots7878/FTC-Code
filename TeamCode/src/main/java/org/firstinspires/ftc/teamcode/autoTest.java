@@ -38,7 +38,6 @@ public class autoTest extends LinearOpMode {
     DcMotor Back_Left = null;
     MovementLib.DriveWheels Wheels;
     double buffer_cm = 50;
-    double heading_buffer_deg = 2.0;
 
     @Override
     public void runOpMode() throws InterruptedException {

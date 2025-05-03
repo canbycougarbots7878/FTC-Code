@@ -34,10 +34,10 @@ public class MovementLib {
             this.Back_Left.setPower(Back_Left_Power);
         }
         public void Omni_Move(double Forward, double Right, double Rotate, double speed) {
-            double Front_Left_Power = - Forward + Right + Rotate;
-            double Front_Right_Power = - Forward - Right - Rotate;
-            double Back_Right_Power = - Forward + Right - Rotate;
-            double Back_Left_Power = - Forward - Right + Rotate;
+            double Front_Left_Power = Math.min(Math.max(- Forward - Right + Rotate, -1), 1);
+            double Front_Right_Power = Math.min(Math.max(- Forward + Right - Rotate, -1), 1);
+            double Back_Right_Power = Math.min(Math.max(- Forward - Right - Rotate, -1), 1);
+            double Back_Left_Power = Math.min(Math.max(- Forward + Right + Rotate, -1), 1);
             this.Set_Wheels(speed * Front_Right_Power, speed * Front_Left_Power, speed * Back_Right_Power, speed * Back_Left_Power);
         }
         public void Reverse_these_wheels(boolean fr, boolean fl, boolean br, boolean bl) {
@@ -71,11 +71,15 @@ public class MovementLib {
             SparkFunOTOS.Pose2D pos = this.otos.getPosition();
             double x = pos.x;
             double y = pos.y;
-            if(destination_y - y > 0.025) {
-                this.dw.Omni_Move(1,0,0,1);
+            double h = pos.h;
+            if(Math.abs(destination_y - y) > 0.001) {
+                double forward = destination_y - y;
+                double strafe = - x;
+                double turn = - h * 1.5;
+                this.dw.Omni_Move(10*forward,10*strafe,turn,.2); // times ten so it doesn't slow down so fast, the value gets clamped anyway
             }
-            if(destination_y - y < -0.025) {
-                this.dw.Omni_Move(-1,0,0,1);
+            else {
+                this.dw.Stop_Wheels();
             }
         }
         public void calibrate() {
