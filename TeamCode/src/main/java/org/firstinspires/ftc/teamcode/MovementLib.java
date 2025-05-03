@@ -79,9 +79,6 @@ public class MovementLib {
             }
         }
         public void calibrate() {
-            telemetry.addLine("Configuring OTOS...");
-            telemetry.update();
-
             // Set the desired units for linear and angular measurements. Can be either
             // meters or inches for linear, and radians or degrees for angular. If not
             // set, the default is inches and degrees. Note that this setting is not
@@ -152,12 +149,6 @@ public class MovementLib {
             SparkFunOTOS.Version hwVersion = new SparkFunOTOS.Version();
             SparkFunOTOS.Version fwVersion = new SparkFunOTOS.Version();
             this.otos.getVersionInfo(hwVersion, fwVersion);
-
-            telemetry.addLine("OTOS configured! Press start to get position data!");
-            telemetry.addLine();
-            telemetry.addLine(String.format("OTOS Hardware Version: v%d.%d", hwVersion.major, hwVersion.minor));
-            telemetry.addLine(String.format("OTOS Firmware Version: v%d.%d", fwVersion.major, fwVersion.minor));
-            telemetry.update();
         }
     }
     public static class Slider {
