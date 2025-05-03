@@ -72,10 +72,10 @@ public class MovementLib {
             double x = pos.x;
             double y = pos.y;
             if(destination_y - y > 0.025) {
-                this.dw.Omni_Move(1,0,0,.2);
+                this.dw.Omni_Move(1,0,0,.4);
             }
             if(destination_y - y < -0.025) {
-                this.dw.Omni_Move(-1,0,0,.2);
+                this.dw.Omni_Move(-1,0,0,.4);
             }
         }
         public void calibrate() {
