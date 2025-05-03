@@ -40,6 +40,11 @@ public class RolandOtos extends LinearOpMode {
                 OC.calibrate();
             }
             OC.OTOS_Move(1);
+            SparkFunOTOS.Pose2D pos = OC.otos.getPosition();
+            telemetry.addData("X:", pos.x);
+            telemetry.addData("Y:", pos.y);
+            telemetry.addData("H:", pos.h);
+            telemetry.update();
         }
     }
 }
