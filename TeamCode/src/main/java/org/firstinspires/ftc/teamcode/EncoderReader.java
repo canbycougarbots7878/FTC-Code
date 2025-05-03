@@ -3,9 +3,8 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
-import org.firstinspires.ftc.teamcode.MovementLib.*;
+
 @Disabled
 @TeleOp(name = "Encoder Reader", group = "Testing")
 public class EncoderReader extends LinearOpMode {
@@ -29,9 +28,6 @@ public class EncoderReader extends LinearOpMode {
         Wrist = hardwareMap.get(Servo.class, "Wrist");
         Wrist.setPosition(0);
         // Variables
-        int slider_position = 0;
-        int arm_position = 0;
-        int arm_good = 0;
         waitForStart();
         Arm_Lock.setPosition(.5);
         while(opModeIsActive()) {

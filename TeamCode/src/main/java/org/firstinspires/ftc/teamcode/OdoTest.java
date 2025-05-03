@@ -5,7 +5,8 @@
 */
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+import android.annotation.SuppressLint;
+
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -82,6 +83,7 @@ public class OdoTest extends LinearOpMode {
         }
     }
 
+    @SuppressLint("DefaultLocale")
     private void configureOtos() {
         telemetry.addLine("Configuring OTOS...");
         telemetry.update();
@@ -92,8 +94,6 @@ public class OdoTest extends LinearOpMode {
         // persisted in the sensor, so you need to set at the start of all your
         // OpModes if using the non-default value.
         myOtos.setLinearUnit(DistanceUnit.METER);
-        // myOtos.setLinearUnit(DistanceUnit.INCH);
-        // myOtos.setAngularUnit(AnguleUnit.RADIANS);
         myOtos.setAngularUnit(AngleUnit.DEGREES);
 
         // Assuming you've mounted your sensor to a robot and it's not centered,

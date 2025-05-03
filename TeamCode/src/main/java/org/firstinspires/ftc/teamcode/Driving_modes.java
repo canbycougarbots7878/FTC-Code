@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import org.firstinspires.ftc.teamcode.MovementLib.*;
+
 @Disabled
 @TeleOp(name = "Omni Drive", group = "Concept")
 public class Driving_modes extends LinearOpMode {
@@ -12,7 +12,7 @@ public class Driving_modes extends LinearOpMode {
     DcMotor motorFL = null;
     DcMotor motorBR = null;
     DcMotor motorBL = null;
-    DriveWheels wheels = null;
+
     public void runOpMode() {
         motorFR = hardwareMap.get(DcMotor.class, "FrontRight");
         motorFL = hardwareMap.get(DcMotor.class, "FrontLeft");
@@ -20,8 +20,6 @@ public class Driving_modes extends LinearOpMode {
         motorBL = hardwareMap.get(DcMotor.class, "BackLeft");
 
         waitForStart();
-        while (opModeIsActive()) {
 
-        }
     }
 }

@@ -50,7 +50,7 @@ public class CompetitionTeleopV3 extends LinearOpMode {
         int slider_position = 0;
 
         boolean claw_open = false;
-        boolean arm_down = false;
+        boolean arm_down;
         boolean wrist_rotated = false;
 
         double robot_speed = .8;

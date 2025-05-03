@@ -40,14 +40,6 @@ public class WheelTest extends LinearOpMode {
         SetWheels(0,0,0,0);
     } private void StopWheels(long wait) { sleep(wait); StopWheels(); }
 
-    private void TurnRobot(double amount) {
-        SetWheels(-amount, amount, -amount, amount);
-    } private void TurnRobot(double amount, long time) { TurnRobot(amount); StopWheels(time); }
-
-    private void MoveRobot(double forward, double right, double turn) {
-        SetWheels(forward + right - turn, forward - right + turn, forward - right - turn, forward + right + turn);
-    } private void MoveRobot(double forward, double right) { MoveRobot(forward, right, 0);}
-
     private void Display(String Message) {
         telemetry.addLine(Message);
         telemetry.update();

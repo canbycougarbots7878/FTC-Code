@@ -16,7 +16,6 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.teamcode.MovementLib;
 
 /*
  * This OpMode illustrates how to use the SparkFun Qwiic Optical Tracking Odometry Sensor (OTOS)
@@ -94,7 +93,7 @@ public class autoTest extends LinearOpMode {
             double forward = Math.sin(Math.toRadians(end_angle - pos.h));
             double strafe = Math.cos(Math.toRadians(end_angle - pos.h));
 
-            Wheels.Omni_Move(forward * power, strafe * power, h_offset * power, power);
+            Wheels.Omni_Move(forward, strafe, h_offset, power);
 
             telemetry.addData("Target", "x: %.2f m, y: %.2f m, h: %.2f°", x_end_m, y_end_m, h_end_d);
             telemetry.addData("Current", "x: %.2f m, y: %.2f m, h: %.2f°", pos.x, pos.y, pos.h);
@@ -119,8 +118,6 @@ public class autoTest extends LinearOpMode {
         // persisted in the sensor, so you need to set at the start of all your
         // OpModes if using the non-default value.
         myOtos.setLinearUnit(DistanceUnit.METER);
-        // myOtos.setLinearUnit(DistanceUnit.INCH);
-        // myOtos.setAngularUnit(AnguleUnit.RADIANS);
         myOtos.setAngularUnit(AngleUnit.DEGREES);
 
         // Assuming you've mounted your sensor to a robot and it's not centered,

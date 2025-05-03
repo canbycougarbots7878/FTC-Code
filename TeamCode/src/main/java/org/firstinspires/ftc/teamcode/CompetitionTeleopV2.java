@@ -42,10 +42,6 @@ public class CompetitionTeleopV2 extends LinearOpMode {
         // Variables
         int slider_position = 0;
         boolean claw_open = false;
-        int arm_good = 0;
-        boolean Arm_down = false;
-        int Arm_pos = 0;
-        int Arm_speed = 0;
         double robot_speed = .8;
         waitForStart();
         Unlock_Arm();
@@ -79,13 +75,11 @@ public class CompetitionTeleopV2 extends LinearOpMode {
                 Slider.setTargetPosition(2201);
                 Slider.setPower(1);
                 robot_speed = .125;
-                Arm_down = false;
             }
             else {
                 Slider.setTargetPosition(5000);
                 Slider.setPower(1);
                 robot_speed = .125;
-                Arm_down = false;
             }
             if(gamepad2.right_bumper) {
                 robot_speed = .25;
