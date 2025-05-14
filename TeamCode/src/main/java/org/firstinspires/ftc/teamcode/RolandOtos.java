@@ -12,35 +12,59 @@ import com.qualcomm.hardware.sparkfun.SparkFunOTOS;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
-@TeleOp(name = "Roland: OTOS Testing", group = "Sensor")
+@TeleOp(name = "Roland: OTOS Testing", group = "OTOS")
 public class RolandOtos extends LinearOpMode {
     // Create an instance of the sensor
     SparkFunOTOS myOtos;
-
+    public DcMotor Front_Right;
+    public DcMotor Front_Left;
+    public DcMotor Back_Right;
+    public DcMotor Back_Left;
+    public MovementLib.DriveWheels Wheels;
+    public MovementLib.OTOSControl OC;
     @Override
     public void runOpMode() throws InterruptedException {
         // Get a reference to the sensor
-        DcMotor Front_Right = hardwareMap.get(DcMotor.class, "FrontRight");
-        DcMotor Front_Left = hardwareMap.get(DcMotor.class, "FrontLeft");
-        DcMotor Back_Right = hardwareMap.get(DcMotor.class, "BackRight");
-        DcMotor Back_Left = hardwareMap.get(DcMotor.class, "BackLeft");
-        MovementLib.DriveWheels Wheels = new MovementLib.DriveWheels(Front_Right, Front_Left, Back_Right, Back_Left);
+        Front_Right = hardwareMap.get(DcMotor.class, "FrontRight");
+        Front_Left = hardwareMap.get(DcMotor.class, "FrontLeft");
+        Back_Right = hardwareMap.get(DcMotor.class, "BackRight");
+        Back_Left = hardwareMap.get(DcMotor.class, "BackLeft");
+        Wheels = new MovementLib.DriveWheels(Front_Right, Front_Left, Back_Right, Back_Left);
         Front_Left.setDirection(DcMotorSimple.Direction.REVERSE);
         Back_Left.setDirection(DcMotorSimple.Direction.REVERSE);
         myOtos = hardwareMap.get(SparkFunOTOS.class, "sensor_otos");
-        MovementLib.OTOSControl OC = new MovementLib.OTOSControl(Wheels, myOtos);
-
+        OC = new MovementLib.OTOSControl(Wheels, myOtos);
+        int corner = 0;
+        int ticks = 0;
         waitForStart();
         while (opModeIsActive()) {
             if(gamepad1.start) {
                 OC.calibrate();
             }
-            OC.OTOS_Move(1, 0, 90, 0.2);
+
+            OC.OTOS_Move(0,0,gamepad1.right_stick_x,.5);
+
             SparkFunOTOS.Pose2D pos = OC.otos.getPosition();
             telemetry.addData("X:", pos.x);
             telemetry.addData("Y:", pos.y);
             telemetry.addData("H:", pos.h);
+            telemetry.addData("Corner:", corner);
             telemetry.update();
         }
+    }
+    private double distance(double x1, double y1, double x2, double y2) {
+        double x = x2 - x1;
+        double y = y2 - y1;
+        return Math.sqrt(x*x+y*y);
+    }
+    private boolean Corner(int number) {
+        switch(number) {
+            case 0: return OC.OTOS_Move(0,0,0,.5);
+            case 1: return OC.OTOS_Move(1,1,0,.5);
+            case 2: return OC.OTOS_Move(1,-1,0,.5);
+            case 3: return OC.OTOS_Move(-1,-1,0,.5);
+            case 4: return OC.OTOS_Move(-1,1,0,.5);
+        }
+        return false;
     }
 }

@@ -48,19 +48,27 @@ public class MovementLib {
             this.otos = OTOS_attach;
             calibrate();
         }
-        public void OTOS_Move(double destination_y, double destination_x, double destination_h, double power) {
+        public boolean OTOS_Move(double destination_y, double destination_x, double destination_h, double power) {
             SparkFunOTOS.Pose2D pos = this.otos.getPosition();
             double x = pos.x;
             double y = pos.y;
             double h = pos.h;
-            if(Math.abs(destination_y - y) > 0.001 || Math.abs(destination_x - x) > 0.001 || Math.abs(destination_h - h) > 0.001) {
+            if(Math.abs(destination_y - y) > 0.0015 || Math.abs(destination_x - x) > 0.0015 || Math.abs(destination_h - h) > 0.0015) {
                 double forward = destination_y - y;
                 double strafe = destination_x - x;
-                double turn = (destination_h - h) * 1.5;
+                double turn = (destination_h - h) * 0.25;
                 this.dw.Omni_Move(10*forward,10*strafe,turn, power); // times ten so it doesn't slow down so fast, the value gets clamped anyway
             }
             else {
                 this.dw.Stop_Wheels();
+            }
+            double xx = destination_x - x;
+            double yy = destination_y - y;
+            if(Math.sqrt(xx*xx+yy*yy) < 0.003) {
+                return false;
+            }
+            else {
+                return true;
             }
         }
         public void calibrate() {
