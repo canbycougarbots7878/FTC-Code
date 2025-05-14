@@ -37,7 +37,7 @@ public class TeleOpOtosMovement extends LinearOpMode {
                 OC.calibrate();
             }
             SparkFunOTOS.Pose2D pos = myOtos.getPosition();
-            OC.OTOS_Move(pos.x + gamepad1.left_stick_x, pos.y + -gamepad1.left_stick_y, pos.h + (-180 * gamepad1.right_stick_x), 0.2);
+            OC.OTOS_Move(pos.x + gamepad1.left_stick_y, pos.y + -gamepad1.left_stick_x, pos.h + (-180 * gamepad1.right_stick_x), 0.2);
             telemetry.addData("X:", pos.x);
             telemetry.addData("Y:", pos.y);
             telemetry.addData("H:", pos.h);
