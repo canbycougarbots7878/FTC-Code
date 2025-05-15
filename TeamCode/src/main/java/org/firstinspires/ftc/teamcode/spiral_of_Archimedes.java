@@ -46,7 +46,7 @@ public class spiral_of_Archimedes extends LinearOpMode {
             telemetry.addData("Y:", pos.y);
             telemetry.addData("H:", pos.h);
             telemetry.update();
-            if (theta < (360 * number_of_rotations)){
+            if (theta <= (360 * number_of_rotations)){
                 theta += delta_theta;
             }
         }
