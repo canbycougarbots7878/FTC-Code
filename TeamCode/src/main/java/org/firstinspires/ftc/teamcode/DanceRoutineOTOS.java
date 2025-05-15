@@ -12,43 +12,41 @@ import com.qualcomm.hardware.sparkfun.SparkFunOTOS;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
-@TeleOp(name = "spiral of Archimedes", group = "Sensor")
-public class spiral_of_Archimedes extends LinearOpMode {
+@TeleOp(name = "OTOS: Dance Routine", group = "OTOS")
+public class DanceRoutineOTOS extends LinearOpMode {
     // Create an instance of the sensor
     SparkFunOTOS myOtos;
-
+    public DcMotor Front_Right;
+    public DcMotor Front_Left;
+    public DcMotor Back_Right;
+    public DcMotor Back_Left;
+    public MovementLib.DriveWheels Wheels;
+    public MovementLib.OTOSControl OC;
     @Override
     public void runOpMode() throws InterruptedException {
         // Get a reference to the sensor
-        DcMotor Front_Right = hardwareMap.get(DcMotor.class, "FrontRight");
-        DcMotor Front_Left = hardwareMap.get(DcMotor.class, "FrontLeft");
-        DcMotor Back_Right = hardwareMap.get(DcMotor.class, "BackRight");
-        DcMotor Back_Left = hardwareMap.get(DcMotor.class, "BackLeft");
-        MovementLib.DriveWheels Wheels = new MovementLib.DriveWheels(Front_Right, Front_Left, Back_Right, Back_Left);
+        Front_Right = hardwareMap.get(DcMotor.class, "FrontRight");
+        Front_Left = hardwareMap.get(DcMotor.class, "FrontLeft");
+        Back_Right = hardwareMap.get(DcMotor.class, "BackRight");
+        Back_Left = hardwareMap.get(DcMotor.class, "BackLeft");
+        Wheels = new MovementLib.DriveWheels(Front_Right, Front_Left, Back_Right, Back_Left);
         Front_Left.setDirection(DcMotorSimple.Direction.REVERSE);
         Back_Left.setDirection(DcMotorSimple.Direction.REVERSE);
         myOtos = hardwareMap.get(SparkFunOTOS.class, "sensor_otos");
-        MovementLib.OTOSControl OC = new MovementLib.OTOSControl(Wheels, myOtos);
-        double theta = 0;
-        double delta_theta = 1;
-        int number_of_rotations = 4;
-
+        OC = new MovementLib.OTOSControl(Wheels, myOtos);
+        int corner = 0;
+        int ticks = 0;
         waitForStart();
         while (opModeIsActive()) {
             if(gamepad1.start) {
                 OC.calibrate();
             }
-            double x = theta * Math.cos(Math.toRadians(theta));
-            double y = theta * Math.sin(Math.toRadians(theta));
-            OC.OTOS_Move( x/100.0f, y/100.0f, theta, 0.2);
+            OC.OTOS_Move(1,0,0,.5);
             SparkFunOTOS.Pose2D pos = OC.otos.getPosition();
             telemetry.addData("X:", pos.x);
             telemetry.addData("Y:", pos.y);
             telemetry.addData("H:", pos.h);
             telemetry.update();
-            if (theta < (360 * number_of_rotations)){
-                theta += delta_theta;
-            }
         }
     }
 }

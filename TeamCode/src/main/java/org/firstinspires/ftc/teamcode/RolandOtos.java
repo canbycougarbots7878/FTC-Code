@@ -42,13 +42,14 @@ public class RolandOtos extends LinearOpMode {
                 OC.calibrate();
             }
 
-            OC.OTOS_Move(0,0,gamepad1.right_stick_x,.5);
+            double seconds = getRuntime() / 3;
+            OC.OTOS_Move(Math.sin(seconds)/2,Math.cos(seconds)/2,Math.toDegrees(seconds),.5);
 
             SparkFunOTOS.Pose2D pos = OC.otos.getPosition();
             telemetry.addData("X:", pos.x);
             telemetry.addData("Y:", pos.y);
             telemetry.addData("H:", pos.h);
-            telemetry.addData("Corner:", corner);
+            telemetry.addData("Distance:", Math.sqrt(pos.x*pos.x+pos.y*pos.y));
             telemetry.update();
         }
     }

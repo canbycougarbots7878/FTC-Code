@@ -42,6 +42,10 @@ public class MovementLib {
     public static class OTOSControl {
         public DriveWheels dw;
         public SparkFunOTOS otos;
+        public double heading = 0;
+
+        private double last_heading = 0;
+        private double dh = 0;
 
         public OTOSControl(DriveWheels DriveWheels_attach, SparkFunOTOS OTOS_attach) {
             this.dw = DriveWheels_attach;
@@ -52,12 +56,23 @@ public class MovementLib {
             SparkFunOTOS.Pose2D pos = this.otos.getPosition();
             double x = pos.x;
             double y = pos.y;
-            double h = pos.h;
-            if(Math.abs(destination_y - y) > 0.0015 || Math.abs(destination_x - x) > 0.0015 || Math.abs(destination_h - h) > 0.0015) {
-                double forward = destination_x - x;
-                double strafe = destination_y - y;
-                double turn = (destination_h - h) * 0.25;
-                this.dw.Omni_Move(10*forward,10*strafe,turn, power); // times ten so it doesn't slow down so fast, the value gets clamped anyway
+            this.dh = pos.h - this.last_heading;
+            this.last_heading = pos.h;
+            if(this.dh > 90) {
+                this.dh = this.dh - 360;
+            }
+            else if(this.dh < -90) {
+                this.dh = this.dh + 360;
+            }
+            this.heading += this.dh;
+            if(Math.abs(destination_y - y) > 0.0015 || Math.abs(- destination_x - x) > 0.0015 || Math.abs(destination_h - this.heading) > 0.0015) {
+                double f = - destination_x - x;
+                double s = - (destination_y - y);
+                double radians = Math.toRadians(this.heading);
+                double forward = Math.cos(radians) * f - Math.sin(radians) * s;
+                double strafe = Math.sin(radians) * f + Math.cos(radians) * s;
+                double turn = (destination_h - this.heading) * 0.25;
+                this.dw.Omni_Move(this.speed_clamp_roland(forward),this.speed_clamp_roland(strafe),this.speed_clamp_roland(turn / 45), power); // times ten so it doesn't slow down so fast, the value gets clamped anyway
             }
             else {
                 this.dw.Stop_Wheels();
@@ -69,6 +84,19 @@ public class MovementLib {
             }
             else {
                 return true;
+            }
+        }
+
+        public void OTOS_Forward(double destination_x) {
+            SparkFunOTOS.Pose2D pos = this.otos.getPosition();
+            double x = pos.x;
+            double y_offset = pos.y;
+            double turn_offset = - pos.h;
+            if(Math.abs(destination_x - x) > 0.05) {
+                this.dw.Omni_Move(destination_x - x,y_offset,turn_offset / 90.0f,1);
+            }
+            else {
+                this.dw.Stop_Wheels();
             }
         }
         public void calibrate() {
@@ -140,6 +168,10 @@ public class MovementLib {
             SparkFunOTOS.Version hwVersion = new SparkFunOTOS.Version();
             SparkFunOTOS.Version fwVersion = new SparkFunOTOS.Version();
             this.otos.getVersionInfo(hwVersion, fwVersion);
+        }
+        private double speed_clamp_roland(double speed) {
+            double roland_split = Math.atan(2*speed);
+            return roland_split;
         }
     }
 }

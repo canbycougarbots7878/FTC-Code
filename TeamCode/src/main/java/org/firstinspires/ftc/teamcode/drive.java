@@ -42,6 +42,11 @@ public class drive extends LinearOpMode {
             } else if (gamepad1.left_trigger == 1) {
                 Wheels.Omni_Move(-1, 0, 0, 1);
             }
+            telemetry.addData("Left Stick X", gamepad1.left_stick_x);
+            telemetry.addData("Left Stick Y", gamepad1.left_stick_y);
+            telemetry.addData("Right Stick X", gamepad1.right_stick_x);
+            telemetry.addData("Right Stick Y", gamepad1.right_stick_y);
+            telemetry.update();
         }
         Wheels.Omni_Move(0,0,0,0);
     }
