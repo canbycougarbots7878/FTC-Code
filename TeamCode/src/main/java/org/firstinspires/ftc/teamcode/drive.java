@@ -15,6 +15,7 @@ public class drive extends LinearOpMode {
         DcMotor Front_Left = hardwareMap.get(DcMotor.class, "FrontLeft");
         DcMotor Back_Right = hardwareMap.get(DcMotor.class, "BackRight");
         DcMotor Back_Left = hardwareMap.get(DcMotor.class, "BackLeft");
+        DcMotor Doodad = hardwareMap.get(DcMotor.class, "Doodad");
         Front_Right.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         Front_Left.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         Back_Right.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -27,7 +28,7 @@ public class drive extends LinearOpMode {
         waitForStart();
 
         while(opModeIsActive()) {
-            Wheels.Omni_Move(-gamepad1.left_stick_y, -gamepad1.left_stick_x, -gamepad1.right_stick_x, robot_speed);
+            Wheels.Omni_Move(gamepad1.left_stick_y, -gamepad1.left_stick_x, gamepad1.right_stick_x, robot_speed);
             telemetry.addData("Robot Speed", robot_speed);
             telemetry.update();
             if (gamepad1.right_bumper) {
@@ -37,11 +38,7 @@ public class drive extends LinearOpMode {
             }else {
                 robot_speed = 0.5;
             }
-            if (gamepad1.right_trigger == 1){
-                Wheels.Omni_Move(1, 0, 0, 1);
-            } else if (gamepad1.left_trigger == 1) {
-                Wheels.Omni_Move(-1, 0, 0, 1);
-            }
+            Doodad.setPower(gamepad1.right_trigger - gamepad1.left_trigger);
             telemetry.addData("Left Stick X", gamepad1.left_stick_x);
             telemetry.addData("Left Stick Y", gamepad1.left_stick_y);
             telemetry.addData("Right Stick X", gamepad1.right_stick_x);

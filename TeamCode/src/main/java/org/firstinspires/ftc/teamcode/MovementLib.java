@@ -86,7 +86,6 @@ public class MovementLib {
                 return true;
             }
         }
-
         public void OTOS_Forward(double destination_x) {
             SparkFunOTOS.Pose2D pos = this.otos.getPosition();
             double x = pos.x;
