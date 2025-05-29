@@ -12,7 +12,7 @@ import com.qualcomm.hardware.sparkfun.SparkFunOTOS;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
-@TeleOp(name = "gamepad OTOS Movement", group = "Sensor")
+@TeleOp(name = "gamepad OTOS Movement", group = "OTOS")
 public class gamepadOTOSMovement extends LinearOpMode {
     // Create an instance of the sensor
     SparkFunOTOS myOtos;

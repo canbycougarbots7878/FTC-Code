@@ -5,6 +5,7 @@
 */
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -12,7 +13,8 @@ import com.qualcomm.hardware.sparkfun.SparkFunOTOS;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
-@TeleOp(name = "TeleOp OTOS Movement", group = "Sensor")
+@Disabled
+@TeleOp(name = "TeleOp OTOS Movement", group = "OTOS")
 public class TeleOpOtosMovement extends LinearOpMode {
     // Create an instance of the sensor
     SparkFunOTOS myOtos;

@@ -5,6 +5,7 @@
 */
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -12,7 +13,8 @@ import com.qualcomm.hardware.sparkfun.SparkFunOTOS;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
-@TeleOp(name = "Roland: OTOS Testing", group = "OTOS")
+@Disabled
+@TeleOp(name = "OTOS Drive in circles", group = "OTOS")
 public class RolandOtos extends LinearOpMode {
     // Create an instance of the sensor
     SparkFunOTOS myOtos;

@@ -12,7 +12,7 @@ import com.qualcomm.hardware.sparkfun.SparkFunOTOS;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
-@TeleOp(name = "spiral of Archimedes", group = "Sensor")
+@TeleOp(name = "spiral of Archimedes", group = "OTOS")
 public class spiral_of_Archimedes extends LinearOpMode {
     // Create an instance of the sensor
     SparkFunOTOS myOtos;

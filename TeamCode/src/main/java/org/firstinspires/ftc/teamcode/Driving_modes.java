@@ -1,11 +1,13 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.hardware.sparkfun.SparkFunOTOS;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.IMU;
 
 @TeleOp(name = "Driving Modes", group = "Concept")
 public class Driving_modes extends LinearOpMode {
@@ -16,6 +18,7 @@ public class Driving_modes extends LinearOpMode {
     MovementLib.DriveWheels Wheels = null;
     SparkFunOTOS OtosSensor = null;
     MovementLib.OTOSControl Otos = null;
+    IMU imu = null;
 
     public void runOpMode() {
         Front_Right = hardwareMap.get(DcMotor.class, "FrontRight");
@@ -28,6 +31,10 @@ public class Driving_modes extends LinearOpMode {
         OtosSensor = hardwareMap.get(SparkFunOTOS.class, "sensor_otos");
         Otos = new MovementLib.OTOSControl(Wheels, OtosSensor);
 
+        imu = hardwareMap.get(IMU.class, "imu");
+        RevHubOrientationOnRobot orientationOnRobot = new RevHubOrientationOnRobot(RevHubOrientationOnRobot.LogoFacingDirection.RIGHT, RevHubOrientationOnRobot.UsbFacingDirection.UP);
+        imu.initialize(new IMU.Parameters(orientationOnRobot));
+
         String driving_mode = "Basic";
         double field_size = 0.3;
 
@@ -39,19 +46,10 @@ public class Driving_modes extends LinearOpMode {
                 Wheels.Omni_Move(forward, strafe, gamepad1.right_stick_x, 1);
             }
             else if(driving_mode.equals("PRM")) {
-                SparkFunOTOS.Pose2D pos = OtosSensor.getPosition();
-                double heading = Math.toRadians(pos.h);
+                double heading = imu.getRobotYawPitchRollAngles().getYaw();
                 double forward = Math.cos(heading) * gamepad1.left_stick_y - Math.sin(heading) * -gamepad1.left_stick_x;
                 double strafe = Math.sin(heading) * gamepad1.left_stick_y + Math.cos(heading) * -gamepad1.left_stick_x;
                 Wheels.Omni_Move(forward, strafe, gamepad1.right_stick_x, 1);
-            }
-            else if(driving_mode.equals("Barrier")) {
-                SparkFunOTOS.Pose2D pos = OtosSensor.getPosition();
-                Otos.OTOS_Move(pos.x,pos.y,pos.h,1);
-                telemetry.addData("X",pos.x);
-                telemetry.addData("Y",pos.y);
-                telemetry.addData("H",pos.h);
-                telemetry.update();
             }
             if(gamepad1.a) {
                 driving_mode = "Basic";
@@ -66,6 +64,8 @@ public class Driving_modes extends LinearOpMode {
             if(gamepad1.start) {
                 Otos.calibrate();
             }
+            telemetry.addData("Mode", driving_mode);
+            telemetry.update();
         }
     }
 }

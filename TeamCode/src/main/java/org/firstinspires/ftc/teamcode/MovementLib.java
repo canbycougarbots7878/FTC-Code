@@ -1,13 +1,48 @@
 package org.firstinspires.ftc.teamcode;
 
+import android.util.Size;
+
 import com.qualcomm.robotcore.hardware.DcMotor;
 
+import org.firstinspires.ftc.robotcore.external.hardware.camera.Camera;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.CameraName;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.vision.VisionPortal;
+import org.firstinspires.ftc.vision.opencv.ColorBlobLocatorProcessor;
+import org.firstinspires.ftc.vision.opencv.ColorRange;
+import org.firstinspires.ftc.vision.opencv.ImageRegion;
+import org.opencv.core.RotatedRect;
 
 import com.qualcomm.hardware.sparkfun.SparkFunOTOS;
+import com.qualcomm.robotcore.hardware.HardwareMap;
+
+import java.util.List;
 
 public class MovementLib {
+    public static class OmniDirections {
+        double forward;
+        double right;
+        double turn;
+        double speed = 1;
+        public OmniDirections() {
+            this.forward = 0;
+            this.right = 0;
+            this.turn = 0;
+        }
+        public OmniDirections(double f, double r, double t) {
+            this.forward = f;
+            this.right = r;
+            this.turn = t;
+        }
+        public OmniDirections(double f, double r, double t, double s) {
+            this.forward = f;
+            this.right = r;
+            this.turn = t;
+            this.speed = s;
+        }
+    }
     public static class DriveWheels {
         public DcMotor Front_Right;
         public DcMotor Front_Left;
@@ -33,6 +68,9 @@ public class MovementLib {
             double Back_Right_Power = Math.min(Math.max(- Forward - Right - Rotate, -1), 1);
             double Back_Left_Power = Math.min(Math.max(- Forward + Right + Rotate, -1), 1);
             this.Set_Wheels(speed * Front_Right_Power, speed * Front_Left_Power, speed * Back_Right_Power, speed * Back_Left_Power);
+        }
+        public void Omni_Move(OmniDirections dir) {
+            Omni_Move(dir.forward,dir.right,dir.turn,dir.speed);
         }
 
         public void Stop_Wheels() {
@@ -171,6 +209,38 @@ public class MovementLib {
         private double speed_clamp_roland(double speed) {
             double roland_split = Math.atan(2*speed);
             return roland_split;
+        }
+    }
+    public static class CameraColorSensor {
+        ColorBlobLocatorProcessor colorLocator;
+        VisionPortal portal;
+        public CameraColorSensor() {}
+        public CameraColorSensor(CameraName cam) {
+            this.colorLocator = new ColorBlobLocatorProcessor.Builder()
+                    .setTargetColorRange(ColorRange.BLUE)
+                    .setContourMode(ColorBlobLocatorProcessor.ContourMode.EXTERNAL_ONLY)
+                    .setRoi(ImageRegion.asUnityCenterCoordinates(-0.5, 0.5, 0.5, -0.5))
+                    .setDrawContours(true)
+                    .setBlurSize(5)
+                    .build();
+            this.portal = new VisionPortal.Builder()
+                    .addProcessor(colorLocator)
+                    .setCameraResolution(new Size(320, 240))
+                    .setCamera(cam)
+                    .build();
+        }
+        public List<ColorBlobLocatorProcessor.Blob> GetBlobs() {
+            List<ColorBlobLocatorProcessor.Blob> blobs = this.colorLocator.getBlobs();
+            ColorBlobLocatorProcessor.Util.filterByArea(50, 20000, blobs);
+            return blobs;
+
+        }
+        public OmniDirections GetDirectionsToBlob(ColorBlobLocatorProcessor.Blob blob) {
+            RotatedRect boxFit = blob.getBoxFit();
+            double turn = (128 - boxFit.center.x) / 10;
+            OmniDirections directions = new OmniDirections();
+            directions.turn = turn;
+            return directions;
         }
     }
 }
