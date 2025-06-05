@@ -29,7 +29,7 @@ public class Driving_modes extends LinearOpMode {
         Front_Right.setDirection(DcMotorSimple.Direction.REVERSE);
         Back_Right.setDirection(DcMotorSimple.Direction.REVERSE);
         OtosSensor = hardwareMap.get(SparkFunOTOS.class, "sensor_otos");
-        Otos = new MovementLib.OTOSControl(Wheels, OtosSensor);
+        Otos = new MovementLib.OTOSControl(Wheels, OtosSensor, telemetry);
 
         imu = hardwareMap.get(IMU.class, "imu");
         RevHubOrientationOnRobot orientationOnRobot = new RevHubOrientationOnRobot(RevHubOrientationOnRobot.LogoFacingDirection.RIGHT, RevHubOrientationOnRobot.UsbFacingDirection.UP);

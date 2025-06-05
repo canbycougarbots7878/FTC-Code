@@ -35,7 +35,7 @@ public class RolandOtos extends LinearOpMode {
         Front_Left.setDirection(DcMotorSimple.Direction.REVERSE);
         Back_Left.setDirection(DcMotorSimple.Direction.REVERSE);
         myOtos = hardwareMap.get(SparkFunOTOS.class, "sensor_otos");
-        OC = new MovementLib.OTOSControl(Wheels, myOtos);
+        OC = new MovementLib.OTOSControl(Wheels, myOtos, telemetry);
         int corner = 0;
         int ticks = 0;
         waitForStart();

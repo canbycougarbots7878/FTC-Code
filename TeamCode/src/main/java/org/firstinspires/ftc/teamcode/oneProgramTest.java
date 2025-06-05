@@ -1,4 +1,4 @@
-// Date: 2025-05-28
+// Date: 2025-06-04
 
 package org.firstinspires.ftc.teamcode;
 
@@ -22,57 +22,56 @@ public class oneProgramTest {
             this.telemetry = telemetry;
             this.opMode = opMode;
 
-            // Get references to the motors
+            // Initialize motors
             DcMotor frontRight = hardwareMap.get(DcMotor.class, "FrontRight");
             DcMotor frontLeft = hardwareMap.get(DcMotor.class, "FrontLeft");
             DcMotor backRight = hardwareMap.get(DcMotor.class, "BackRight");
             DcMotor backLeft = hardwareMap.get(DcMotor.class, "BackLeft");
 
-            // Set directions as needed (check if reversed on left/right sides)
-            frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
-            backRight.setDirection(DcMotorSimple.Direction.REVERSE);
+            // Motor directions
+            frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+            frontRight.setDirection(DcMotorSimple.Direction.FORWARD);
+            backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+            backRight.setDirection(DcMotorSimple.Direction.FORWARD);
+
+            // Optional: Reset motor encoders if needed
+            frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            frontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            backLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            backRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+            frontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            frontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            backLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            backRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
             // Get OTOS sensor
             SparkFunOTOS myOtos = hardwareMap.get(SparkFunOTOS.class, "sensor_otos");
 
-            // Create helper classes
+            // Create DriveWheels instance
             MovementLib.DriveWheels wheels = new MovementLib.DriveWheels(frontRight, frontLeft, backRight, backLeft);
-            this.OC = new MovementLib.OTOSControl(wheels, myOtos);
+
+            // Create OTOSControl instance
+            this.OC = new MovementLib.OTOSControl(wheels, myOtos, telemetry);
         }
 
         public void goToPosition(int position) {
             if (position == 1) {
-                double destinationX = 1;
-                double destinationY = 0;
-                double destinationH = 0;
-                double speed = 0.2;
+                double destinationX = 1.0;
+                double destinationY = 0.0;
+                double destinationH = 0.0;
+                double speed = 0.3;
 
-                long startTime = System.currentTimeMillis();
-                long timeout = 5000; // 5 seconds timeout max
 
-                // Loop while OTOS_Move returns true (still moving), op mode active, and within timeout
-                while (OC.OTOS_Move(destinationX, destinationY, destinationH, speed)
-                        && opMode.opModeIsActive()
-                        && System.currentTimeMillis() - startTime < timeout) {
-
-                    SparkFunOTOS.Pose2D pos = OC.otos.getPosition();
-                    telemetry.addData("X:", pos.x);
-                    telemetry.addData("Y:", pos.y);
-                    telemetry.addData("H:", pos.h);
-                    telemetry.update();
+                while (OC.OTOS_Move(destinationX, destinationY, destinationH, speed) && opMode.opModeIsActive()) {
+                    // OTOS_Move handles all motion & telemetry updates
                 }
 
-                // Stop wheels explicitly after movement completes or timeout reached
                 OC.dw.Stop_Wheels();
-
-                telemetry.addLine("Target reached or timeout.");
+                telemetry.addLine("Target reached or timed out.");
                 telemetry.update();
 
-                try {
-                    Thread.sleep(250); // Brief pause to let robot stabilize
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                }
+                opMode.sleep(250); // Safe sleep inside opMode
             }
         }
     }
