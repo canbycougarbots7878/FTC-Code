@@ -23,29 +23,9 @@ public class motorSpeedTest extends LinearOpMode {
         motorBL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         motorFL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        motorFR.setDirection(DcMotor.Direction.REVERSE);
-
-
-        motorFR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motorBR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motorBL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motorFL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-        motorFR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        motorBR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        motorBL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        motorFL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         waitForStart();
         while (opModeIsActive()) {
-
-            TelemetryPosition();
-
-            motorFR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            motorBR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            motorBL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            motorFL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
 
             motorFR.setPower(1);
             motorBR.setPower(1);
@@ -55,12 +35,4 @@ public class motorSpeedTest extends LinearOpMode {
             telemetry.update();
         }
     }
-
-    private void TelemetryPosition() {
-        telemetry.addData("Front Right", motorFR.getCurrentPosition());
-        telemetry.addData("Back Right", motorBR.getCurrentPosition());
-        telemetry.addData("Back Left", motorBL.getCurrentPosition());
-        telemetry.addData("Front Left", motorFL.getCurrentPosition());
-    }
-
 }
