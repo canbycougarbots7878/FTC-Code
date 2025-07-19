@@ -28,16 +28,13 @@ public class spiral_of_Archimedes extends LinearOpMode {
         Front_Left.setDirection(DcMotorSimple.Direction.REVERSE);
         Back_Left.setDirection(DcMotorSimple.Direction.REVERSE);
         myOtos = hardwareMap.get(SparkFunOTOS.class, "sensor_otos");
-        MovementLib.OTOSControl OC = new MovementLib.OTOSControl(Wheels, myOtos, telemetry, hardwareMap);
+        MovementLib.OTOSControl OC = new MovementLib.OTOSControl(Wheels, myOtos);
         double theta = 0;
         double delta_theta = 1;
         int number_of_rotations = 4;
 
         waitForStart();
         while (opModeIsActive()) {
-            if(gamepad1.start) {
-                OC.calibrate();
-            }
             double x = theta * Math.cos(Math.toRadians(theta));
             double y = theta * Math.sin(Math.toRadians(theta));
             OC.OTOS_Move( x/100.0f, y/100.0f, theta, 0.2);

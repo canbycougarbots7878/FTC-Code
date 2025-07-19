@@ -35,14 +35,11 @@ public class RolandOtos extends LinearOpMode {
         Front_Left.setDirection(DcMotorSimple.Direction.REVERSE);
         Back_Left.setDirection(DcMotorSimple.Direction.REVERSE);
         myOtos = hardwareMap.get(SparkFunOTOS.class, "sensor_otos");
-        OC = new MovementLib.OTOSControl(Wheels, myOtos, telemetry, hardwareMap);
+        OC = new MovementLib.OTOSControl(Wheels, myOtos);
         int corner = 0;
         int ticks = 0;
         waitForStart();
         while (opModeIsActive()) {
-            if(gamepad1.start) {
-                OC.calibrate();
-            }
 
             double seconds = getRuntime() / 3;
             OC.OTOS_Move(Math.sin(seconds)/2,Math.cos(seconds)/2,Math.toDegrees(seconds),.5);

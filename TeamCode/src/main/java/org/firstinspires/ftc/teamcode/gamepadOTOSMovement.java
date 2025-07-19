@@ -28,13 +28,10 @@ public class gamepadOTOSMovement extends LinearOpMode {
         Front_Left.setDirection(DcMotorSimple.Direction.REVERSE);
         Back_Left.setDirection(DcMotorSimple.Direction.REVERSE);
         myOtos = hardwareMap.get(SparkFunOTOS.class, "sensor_otos");
-        MovementLib.OTOSControl OC = new MovementLib.OTOSControl(Wheels, myOtos, telemetry, hardwareMap);
+        MovementLib.OTOSControl OC = new MovementLib.OTOSControl(Wheels, myOtos);
 
         waitForStart();
         while (opModeIsActive()) {
-            if(gamepad1.start) {
-                OC.calibrate();
-            }
             OC.OTOS_Move(gamepad1.left_stick_y, -gamepad1.left_stick_x, -180 * gamepad1.right_stick_x, 1);
             SparkFunOTOS.Pose2D pos = OC.otos.getPosition();
             telemetry.addData("X:", pos.x);
